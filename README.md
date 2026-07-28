@@ -79,10 +79,9 @@ docs/tree-reason.md     # algorithm + knobs
 
 ## Roadmap
 
-- Now: harden tree-reason (gates, budgets, fail-closed JSON); polish docs, examples, and evals.
-- Next: fold link-follow into tree-reason (`search → read → follow → re-search`). Multi-hop gold stays a known miss until then.
-- Later: wiki maintenance loop, denser corpora, PyPI release.
-- Non-goals: reimplementing QMD, Cognee, or PageIndex; productizing flat baselines.
+- [ ] Reranker; harden tree-reason
+- [ ] Fold link-follow into tree-reason
+- [ ] Run evals on third-party benchmarks
 
 ## License
 

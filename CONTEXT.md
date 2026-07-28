@@ -24,7 +24,7 @@ Terms used in code, docs, and architecture reviews. Prefer these names over syno
 | **gold** | Annotated evidence spans in query JSONL under `evals/fixtures/queries/`. |
 | **span_recall** | Primary ranking metric (fraction of gold spans overlapped); then `latency_ms` within track + model. |
 | **ops** | Latency, tokens, cost, model_calls, hops, truncated, tree extras. |
-| **track** | Experimental condition: cold/warm; constraint tracks vectorless/open. |
+| **track** | Condition: cold/warm; constraint tracks vectorless/open. |
 | **fixtures** | Gold corpus + queries under `evals/fixtures/`. |
 | **examples** | Demo path (`examples/sample-bundle` → shared lab wiki). Same content as eval gold today. |
 | **evals.index** | `.fastindex/` sidecar builder/loader for warm baselines (not product). |

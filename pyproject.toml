@@ -1,7 +1,7 @@
 [project]
 name = "fastindex"
 version = "0.1.0"
-description = "Experimental tree-reason: browse OKF wiki trees with LLM relevance-gated descent"
+description = "Vectorless first-order log-n retrieval for OKF wiki trees — reason through the hierarchy, skip the vector DB"
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]

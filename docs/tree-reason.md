@@ -40,7 +40,7 @@ Inject a fake chat model in tests via `StrategyConfig(extra={"model": fake})` or
 ## Constraints
 
 - **Cold / vectorless** — no `.fastindex/` sidecars required.
-- **No wikilink hops** — parent→child dirs and in-doc headings only. Multi-hop bridges are planned (see [ROADMAP.md](../ROADMAP.md)).
+- **No wikilink hops** — parent→child dirs and in-doc headings only. Multi-hop bridges are planned (see [Roadmap](../README.md#roadmap)).
 - **Spans, not answers** — retrieval returns `{path, start_line, end_line, text}`.
 
 ## Related

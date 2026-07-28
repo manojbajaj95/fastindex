@@ -1,6 +1,6 @@
 # fastindex
 
-**Experimental.** Browse large corpora of wikis and documents — [OKF](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md) markdown trees — with **tree-reason**: an LLM relevance-gated walk inspired by [PageIndex](https://github.com/VectifyAI/PageIndex).
+Browse large corpora of wikis and documents — [OKF](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md) markdown trees — with **tree-reason**: an LLM relevance-gated walk inspired by [PageIndex](https://github.com/VectifyAI/PageIndex).
 
 Instead of embedding every chunk and hoping top‑k catches the right page, tree-reason walks the directory tree like a careful reader: at each folder it asks “is this relevant?”, opens only promising children, then bubbles **evidence spans** (`path` + line range) — not a generated answer.
 
@@ -19,7 +19,7 @@ This repo ships that walker as the product, plus an optional **`evals/`** harnes
 3. **Section gate** — for each opened page, LLM returns line ranges that evidence the query.
 4. Stop on wall-time / model-call budgets (`truncated=true` with partial spans).
 
-**Honest limit:** hierarchy walk ≠ multi-hop. Cross-page wikilinks are not followed yet, so bridge queries can miss far hops. Link-follow is on the [ROADMAP](ROADMAP.md).
+**Honest limit:** hierarchy walk ≠ multi-hop. Cross-page wikilinks are not followed yet, so bridge queries can miss far hops — see [Roadmap](#roadmap).
 
 Detail: [docs/tree-reason.md](docs/tree-reason.md).
 
@@ -77,6 +77,13 @@ examples/sample-bundle  # demo wiki
 docs/tree-reason.md     # algorithm + knobs
 ```
 
+## Roadmap
+
+- **Now** — harden tree-reason (gates, budgets, fail-closed JSON); polish docs/examples/evals.
+- **Next** — fold link-follow into tree-reason (`search → read → follow → re-search`); multi-hop gold stays a known miss until then.
+- **Later** — wiki maintenance loop, denser corpora, PyPI release.
+- **Non-goals** — reimplementing QMD, Cognee, or PageIndex; productizing flat baselines.
+
 ## License
 
-[MIT](LICENSE). Contributions welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). Planned work: [ROADMAP.md](ROADMAP.md).
+[MIT](LICENSE). Contributions welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).

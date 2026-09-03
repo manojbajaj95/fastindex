@@ -24,7 +24,7 @@ evals = [
   "huggingface_hub>=0.23",
 ]
 kg = [
-  "cognee>=1.4.0",
+  "cognee>=1.5.0",
 ]
 # Alias kept for older commands
 bench = [

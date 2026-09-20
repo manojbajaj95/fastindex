@@ -1,12 +1,12 @@
 # Agent notes
 
 - **Story:** `tree-reason` is the owned product. Flat lexical/vector (`bm25`, `fts`, `vsearch`) and external peers (`qmd`, `cognee`) live under **`evals/`** for benchmarking, not the product surface.
-- Domain glossary: [`CONTEXT.md`](CONTEXT.md). Planned work: README [Roadmap](README.md#roadmap). Contributing: [`CONTRIBUTING.md`](CONTRIBUTING.md).
+- Domain glossary: [`CONTEXT.md`](CONTEXT.md). Research questions: README [Open questions](README.md#open-questions). Contributing: [`CONTRIBUTING.md`](CONTRIBUTING.md).
 - Strategy docs: [`docs/tree-reason.md`](docs/tree-reason.md).
-- CLI: `lint`, `generate-index`, `query` (owned strategies only). No `build` — tree-reason is cold; eval sidecars are built by `evals.bench` / `evals.index`.
-- Product helpers: `fastindex.utils` (`lint`, `generate`, `links`). Sidecar I/O: `evals.index`.
+- CLI: `prepare`, `lint`, `generate-index`, `query` (owned strategies only). No vector `build` — tree-reason is vectorless; eval sidecars are built by `evals.bench` / `evals.index`.
+- Product helpers: `fastindex.utils` (`prepare`, `lint`, `generate`, `links`). Sidecar I/O: `evals.index`.
 - Bench is `python -m evals.bench` — writes **local** `evals/results/` (gitignored; do not commit runs).
-- Wiki maintenance (`ingest` / `reflect` / Error Book) is deferred — see README [Roadmap](README.md#roadmap).
+- Wiki maintenance (`ingest` / `reflect` / Error Book) is deferred.
 - Do not reimplement QMD or Cognee — external baselines only.
 - `.fastindex/` is gitignored; regenerable for warm eval baselines only.
 - Prefer span-level gold (`path` + line range) over file-only metrics.
@@ -19,6 +19,7 @@ uv sync --extra dev
 uv sync --extra evals   # baselines + prepare downloads (included in dev)
 uv sync --extra kg      # optional: local Cognee baseline
 uv run pytest
+uv run fastindex prepare examples/sample-bundle  # fills missing index.md files using a model
 uv run fastindex lint examples/sample-bundle
 uv run fastindex query examples/sample-bundle "…" --strategy tree-reason
 uv run python -m evals.bench

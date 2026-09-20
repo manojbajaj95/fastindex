@@ -29,6 +29,7 @@ class StrategyConfig:
     top_k: int = 2
     wall_time_budget_s: float = 60.0
     model_call_budget: int = 32
+    parallelism: int = 4
     extra: dict = field(default_factory=dict)
 
 

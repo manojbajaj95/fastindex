@@ -5,11 +5,18 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
+from threading import RLock
 from typing import Any
 
 import yaml
 
 RESERVED = frozenset({"index.md", "log.md", "_error.log"})
+SKIP_DIRS = frozenset({
+    ".fastindex", ".git", ".hg", ".svn", ".venv", "venv", "__pycache__",
+    "node_modules", "dist", "build", ".next", ".nuxt", ".pytest_cache", ".mypy_cache",
+    ".ruff_cache", ".cache", ".tox", "coverage", ".coverage", "target",
+})
+PLAIN_CHUNK_LINES = 80
 HEADING_RE = re.compile(r"^(#{1,6})\s+(.+?)\s*$")
 FRONTMATTER_RE = re.compile(r"\A---\s*\n(.*?)\n---\s*\n?", re.DOTALL)
 
@@ -55,6 +62,101 @@ class Bundle:
     concepts: dict[str, Concept] = field(default_factory=dict)
     indexes: dict[str, str] = field(default_factory=dict)  # dir path -> index.md text
     tree: dict[str, DirNode] = field(default_factory=dict)
+    _lazy: bool = False
+    _lock: RLock = field(default_factory=RLock, repr=False, compare=False)
+
+    def get_node(self, dir_path: str) -> DirNode | None:
+        """Return a directory and its immediate children, loading it on demand."""
+        if not self._lazy:
+            return self.tree.get(dir_path)
+        with self._lock:
+            if dir_path in self.tree:
+                return self.tree[dir_path]
+        path = _safe_path(self.root, dir_path)
+        if path is None or not path.is_dir():
+            return None
+        index_md = self.get_index(dir_path)
+        with self._lock:
+            if dir_path in self.tree:
+                return self.tree[dir_path]
+            node = DirNode(path=dir_path, index_md=index_md)
+            for child in sorted(path.iterdir()):
+                if child.is_symlink():
+                    continue
+                rel = _posix_rel(self.root, child)
+                if child.is_dir():
+                    if child.name not in SKIP_DIRS:
+                        node.children_dirs.append(rel)
+                elif child.is_file():
+                    if child.name not in RESERVED and not child.name.startswith("."):
+                        node.concepts.append(rel)
+            self.tree[dir_path] = node
+            return node
+
+    def get_index(self, dir_path: str) -> str | None:
+        if not self._lazy:
+            return self.indexes.get(dir_path)
+        with self._lock:
+            if dir_path in self.indexes:
+                return self.indexes[dir_path]
+        directory = _safe_path(self.root, dir_path)
+        if directory is None or not directory.is_dir():
+            return None
+        index_path = directory / "index.md"
+        if index_path.is_symlink() or not index_path.is_file():
+            return None
+        raw = _read_text_file(index_path)
+        if raw is None:
+            return None
+        with self._lock:
+            return self.indexes.setdefault(dir_path, raw)
+
+    def get_concept(self, path: str) -> Concept | None:
+        """Read one selected file, including non-Markdown UTF-8 text files."""
+        if not self._lazy:
+            return self.concepts.get(path)
+        with self._lock:
+            cached = self.concepts.get(path)
+        if cached is not None:
+            return cached
+        file_path = _safe_path(self.root, path)
+        if file_path is None or not file_path.is_file():
+            return None
+        parent = str(Path(path).parent)
+        if parent == ".":
+            parent = ""
+        node = self.get_node(parent)
+        if node is None or path not in node.concepts:
+            return None
+        raw = _read_text_file(file_path)
+        if raw is None:
+            return None
+        concept = _concept_from_raw(self.root, file_path, raw)
+        with self._lock:
+            return self.concepts.setdefault(path, concept)
+
+
+def _safe_path(root: Path, rel: str) -> Path | None:
+    """Reject traversal, generated directories, and symlinks before opening a path."""
+    path = Path(rel)
+    if path.is_absolute() or any(part in {"..", "."} for part in path.parts):
+        return None
+    current = root
+    for part in path.parts:
+        if part in SKIP_DIRS:
+            return None
+        current = current / part
+        if current.is_symlink():
+            return None
+    return current
+
+
+def _read_text_file(path: Path) -> str | None:
+    try:
+        raw = path.read_text(encoding="utf-8")
+    except (OSError, UnicodeError):
+        return None
+    return None if "\0" in raw else raw
 
 
 def _posix_rel(root: Path, path: Path) -> str:
@@ -66,7 +168,10 @@ def parse_frontmatter(raw: str) -> tuple[dict[str, Any], str, int]:
     m = FRONTMATTER_RE.match(raw)
     if not m:
         return {}, raw, 1
-    fm = yaml.safe_load(m.group(1)) or {}
+    try:
+        fm = yaml.safe_load(m.group(1)) or {}
+    except yaml.YAMLError:
+        return {}, raw, 1
     if not isinstance(fm, dict):
         fm = {}
     body = raw[m.end() :]
@@ -137,13 +242,13 @@ def sectionize(path: str, lines: list[str], body_start_line: int) -> list[Sectio
     return sections
 
 
-def _load_concept(root: Path, path: Path) -> Concept:
+def _concept_from_raw(root: Path, path: Path, raw: str) -> Concept:
     rel = _posix_rel(root, path)
-    raw = path.read_text(encoding="utf-8")
     lines = raw.splitlines(keepends=True)
     if not lines and raw:
         lines = [raw]
-    fm, body, body_start = parse_frontmatter(raw)
+    is_markdown = path.suffix.lower() == ".md"
+    fm, body, body_start = parse_frontmatter(raw) if is_markdown else ({}, raw, 1)
     tags = fm.get("tags") or []
     if isinstance(tags, str):
         tags = [tags]
@@ -161,8 +266,33 @@ def _load_concept(root: Path, path: Path) -> Concept:
         lines=lines,
         body_start_line=body_start,
     )
-    concept.sections = sectionize(rel, lines, body_start)
+    if is_markdown:
+        concept.sections = sectionize(rel, lines, body_start)
+    else:
+        concept.sections = [
+            Section(
+                path=rel,
+                start_line=start + 1,
+                end_line=min(start + PLAIN_CHUNK_LINES, len(lines)),
+                heading=f"Lines {start + 1}–{min(start + PLAIN_CHUNK_LINES, len(lines))}",
+                level=0,
+                text="".join(lines[start : start + PLAIN_CHUNK_LINES]),
+            )
+            for start in range(0, len(lines), PLAIN_CHUNK_LINES)
+        ]
     return concept
+
+
+def _load_concept(root: Path, path: Path) -> Concept:
+    return _concept_from_raw(root, path, path.read_text(encoding="utf-8"))
+
+
+def load_lazy_bundle(root: str | Path) -> Bundle:
+    """Open a repository without reading its tree or files until requested."""
+    root = Path(root).resolve()
+    if not root.is_dir():
+        raise FileNotFoundError(f"Bundle root not found: {root}")
+    return Bundle(root=root, _lazy=True)
 
 
 def load_bundle(root: str | Path) -> Bundle:

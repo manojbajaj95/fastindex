@@ -11,8 +11,8 @@ Terms used in code, docs, and architecture reviews. Prefer these names over syno
 | **span** | Evidence hit `{path, start_line, end_line[, text]}`. Prefer span-level gold over file-only. |
 | **strategy** | Named retrieve implementation behind the `Strategy` protocol. |
 | **owned strategy** | Product registry only: currently `tree-reason`. |
-| **CLI** | `lint`, `generate-index`, `query` — product commands only (no `build`). |
-| **utils** | Product helpers under `fastindex.utils`: lint, generate-index, markdown links. |
+| **CLI** | `prepare`, `lint`, `generate-index`, `query` — product commands only (no vector `build`). |
+| **utils** | Product helpers under `fastindex.utils`: prepare, lint, generate-index, markdown links. |
 
 ## Evaluation surface (`evals/`)
 

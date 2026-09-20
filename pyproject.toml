@@ -1,7 +1,7 @@
 [project]
 name = "fastindex"
 version = "0.1.0"
-description = "Vectorless first-order log-n retrieval for OKF wiki trees — reason through the hierarchy, skip the vector DB"
+description = "Research preview: model-guided retrieval through prepared repository and wiki trees"
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]

@@ -1,6 +1,6 @@
 # Agent notes
 
-- **Story:** `tree-reason` and experimental `tree-watt`, `tree-jev`, and `tree-laya` are owned tree strategies. Flat lexical/vector (`bm25`, `fts`, `vsearch`) and external peers (`qmd`, `cognee`) live under **`evals/`** for benchmarking, not the product surface.
+- **Story:** `tree-reason` and experimental `tree-decision` are owned tree strategies. Flat lexical/vector (`bm25`, `fts`, `vsearch`) and external peers (`qmd`, `cognee`) live under **`evals/`** for benchmarking, not the product surface.
 - Domain glossary: [`CONTEXT.md`](CONTEXT.md). Research questions: README [Open questions](README.md#open-questions). Contributing: [`CONTRIBUTING.md`](CONTRIBUTING.md).
 - Strategy docs: [`docs/tree-reason.md`](docs/tree-reason.md); decision-model results: [`docs/tree-decision-evaluation.md`](docs/tree-decision-evaluation.md).
 - CLI: `prepare`, `lint`, `generate-index`, `query` (owned strategies only). No vector `build` — all tree strategies are vectorless; eval sidecars are built by `evals.bench` / `evals.index`.
@@ -22,9 +22,10 @@ uv run pytest
 uv run fastindex prepare examples/sample-bundle  # fills missing index.md files using a model
 uv run fastindex lint examples/sample-bundle
 uv run fastindex query examples/sample-bundle "…" --strategy tree-reason
-uv run fastindex query examples/sample-bundle "…" --strategy tree-watt  # free hosted preview
-uv run fastindex query examples/sample-bundle "…" --strategy tree-jev   # free hosted route
-uv run fastindex query examples/sample-bundle "…" --strategy tree-laya  # free hosted trial
+uv run fastindex query examples/sample-bundle "…" --strategy tree-decision \
+  --decision-model classifier/jev
+uv run fastindex query examples/sample-bundle "…" --strategy tree-decision \
+  --decision-model typesafe/jev-latest  # requires TYPESAFE_API_KEY
 uv run python -m evals.bench
 uv run python -m evals.bench --strategies tree-reason,bm25,fts \
   --fixtures evals/fixtures/queries/multi_hop.jsonl

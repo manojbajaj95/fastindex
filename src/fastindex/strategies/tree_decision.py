@@ -8,6 +8,7 @@ import re
 import time
 from collections import deque
 from pathlib import Path
+from typing import Protocol
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
@@ -18,77 +19,46 @@ from fastindex.strategies.tree_reason import _section_preview
 from fastindex.types import RetrieveResult, RunStats, Span
 
 _LINK = re.compile(r"\[[^]]+\]\(([^)]+)\)\s*[—–-]?\s*(.*)")
+_DEFAULT_INSTRUCTIONS = "Choose the source with direct evidence to answer the user question."
+_TYPESAFE_INSTRUCTIONS = (
+    "Choose the best route toward answer evidence. Directory options summarize descendants, "
+    "so select a directory when a descendant could answer. Choose none only when the question "
+    "is unrelated to every option."
+)
 
 
 class _CallBudgetExhausted(Exception):
     pass
 
 
-class WattModel:
-    """HTTP client for WattAI's System One choice API."""
+class DecisionModel(Protocol):
+    chat_model: str
+    max_options: int
+    max_request_chars: int
+    input_cost_per_million: float
 
-    chat_model = "watt-v0.5"
-    max_options = 254
-    max_request_chars = 2800
-    max_option_chars = 800
+    def format_option(self, option: str) -> str: ...
 
-    def __init__(self, *, url: str | None = None) -> None:
-        self.url = url or os.getenv("FASTINDEX_WATT_URL", "https://api.wattai.dev/v1/systemone")
-
-    def format_option(self, option: str) -> str:
-        return option[:self.max_option_chars]
-
-    def choose(self, state: str, options: list[str]) -> tuple[list[float], ModelUsage]:
-        body = {
-            "state": state,
-            "questions": [{
-                "q": "Which option contains the most direct evidence for the user's question?",
-                "options": options,
-                "kind": "choice",
-                "add_none": True,
-            }],
-        }
-        headers = {"content-type": "application/json"}
-        if key := os.getenv("WATTAI_API_KEY"):
-            headers["authorization"] = f"Bearer {key}"
-        request = Request(self.url, json.dumps(body).encode(), headers, method="POST")
-        try:
-            with urlopen(request, timeout=30) as response:
-                data = json.load(response)
-        except HTTPError as exc:
-            raise RuntimeError(f"WattAI HTTP {exc.code}") from exc
-        results = data.get("results")
-        if not isinstance(results, list) or len(results) != 1:
-            raise RuntimeError("WattAI returned an incomplete choice result")
-        result = results[0]
-        labels, probs = result.get("options"), result.get("probs")
-        if (
-            result.get("kind") != "choice"
-            or labels != [*options, "none of these"]
-            or not isinstance(probs, list)
-            or len(probs) != len(options) + 1
-            or any(not isinstance(p, (int, float)) or not 0 <= p <= 1 for p in probs)
-        ):
-            raise RuntimeError("WattAI returned invalid choice probabilities")
-        # The API does not report usage; this is a rough input estimate for ops comparison.
-        usage = ModelUsage(calls=1, input_tokens=len(json.dumps(body)) // 4, model_id=data["model"])
-        return [float(p) for p in probs], usage
+    def choose(self, state: str, options: list[str]) -> tuple[list[float], ModelUsage]: ...
 
 
-class ClassifierModel:
+class ClassifierDevModel:
     """Free classifier.dev routes to Jev or the Laya trial."""
 
     def __init__(self, model: str = "jev", *, instructions: str | None = None) -> None:
         if model not in {"jev", "laya"}:
             raise ValueError("Classifier model must be 'jev' or 'laya'")
         self.model = model
-        self.chat_model = model
+        self.chat_model = f"classifier/{model}"
+        self.input_cost_per_million = 0.0
         self.max_options = 15 if model == "laya" else 99
         self.max_request_chars = 1200 if model == "laya" else 2800
         self.max_option_chars = 95 if model == "laya" else 190
-        self.instructions = instructions or os.getenv(
-            "FASTINDEX_CLASSIFIER_INSTRUCTIONS",
-            "Choose the source with direct evidence to answer the user question.",
+        self.instructions = (
+            instructions
+            or os.getenv("FASTINDEX_DECISION_INSTRUCTIONS")
+            or os.getenv("FASTINDEX_CLASSIFIER_INSTRUCTIONS")
+            or _DEFAULT_INSTRUCTIONS
         )
 
     def format_option(self, option: str) -> str:
@@ -136,13 +106,124 @@ class ClassifierModel:
         if any(label not in scores or not isinstance(scores[label], (int, float))
                for label in labels):
             raise RuntimeError("classifier.dev returned invalid choice probabilities")
-        usage = ModelUsage(calls=1, input_tokens=len(json.dumps(body)) // 4,
-                           model_id=actual_model)
+        usage = ModelUsage(
+            calls=1,
+            input_tokens=len(json.dumps(body)) // 4,
+            model_id=f"classifier.dev/{actual_model}",
+        )
         return [float(scores[label]) for label in labels], usage
 
 
+class TypeSafeModel:
+    """TypeSafe System One Choice API using an account API key."""
+
+    max_options = 254
+    max_request_chars = 48_000
+    max_option_chars = 800
+    input_cost_per_million = 0.042
+
+    def __init__(
+        self, model: str = "jev-latest", *, instructions: str | None = None,
+        url: str | None = None,
+    ) -> None:
+        self.model = model
+        self.chat_model = f"typesafe/{model}"
+        self.instructions = (
+            instructions
+            or os.getenv("FASTINDEX_DECISION_INSTRUCTIONS")
+            or _TYPESAFE_INSTRUCTIONS
+        )
+        self.url = url or os.getenv(
+            "FASTINDEX_TYPESAFE_URL", "https://api.typesafe.ai/v1/systemone"
+        )
+
+    def format_option(self, option: str) -> str:
+        return option[:self.max_option_chars]
+
+    def choose(self, state: str, options: list[str]) -> tuple[list[float], ModelUsage]:
+        api_key = os.getenv("TYPESAFE_API_KEY")
+        if not api_key:
+            raise RuntimeError("Set TYPESAFE_API_KEY to use a typesafe/* decision model")
+        option_ids = [f"option_{i}" for i in range(len(options))]
+        all_ids = [*option_ids, "none_of_these"]
+        criteria = dict(zip(
+            all_ids,
+            [*options, "None contains direct answer evidence"],
+            strict=True,
+        ))
+        body = {
+            "state": state,
+            "model": self.model,
+            "questions": {
+                "route": {
+                    "type": "choice",
+                    "instructions": self.instructions,
+                    "criteria": criteria,
+                },
+            },
+        }
+        request = Request(
+            self.url,
+            json.dumps(body).encode(),
+            {
+                "authorization": f"Bearer {api_key}",
+                "content-type": "application/json",
+                "user-agent": "fastindex/0.1",
+            },
+            method="POST",
+        )
+        for attempt in range(4):
+            try:
+                with urlopen(request, timeout=30) as response:
+                    data = json.load(response)
+                break
+            except HTTPError as exc:
+                if exc.code in {429, 529} and attempt < 3:
+                    delay = float(exc.headers.get("Retry-After", 2 ** attempt))
+                    time.sleep(min(max(delay, 1), 15))
+                    continue
+                raise RuntimeError(f"TypeSafe HTTP {exc.code}") from exc
+        answer = data.get("answers", {}).get("route", {})
+        probabilities = answer.get("probabilities")
+        if (
+            answer.get("type") != "choice"
+            or not isinstance(probabilities, dict)
+            or any(
+                key not in probabilities
+                or not isinstance(probabilities[key], (int, float))
+                or not 0 <= probabilities[key] <= 1
+                for key in all_ids
+            )
+        ):
+            raise RuntimeError("TypeSafe returned invalid choice probabilities")
+        raw_usage = data.get("usage", {})
+        usage = ModelUsage(
+            calls=1,
+            input_tokens=int(raw_usage.get("input_tokens", 0)),
+            output_tokens=int(raw_usage.get("output_tokens", 0)),
+            model_id=f"typesafe/{data.get('model', self.model)}",
+        )
+        return [float(probabilities[key]) for key in all_ids], usage
+
+
+def make_decision_model(spec: str | None = None) -> DecisionModel:
+    """Create a provider adapter from ``provider/model`` configuration."""
+    spec = spec or os.getenv("FASTINDEX_DECISION_MODEL", "classifier/jev")
+    provider, separator, model = spec.partition("/")
+    if not separator or not model:
+        raise ValueError(
+            "Decision model must be provider/model, for example classifier/jev "
+            "or typesafe/jev-latest"
+        )
+    if provider == "classifier":
+        return ClassifierDevModel(model)
+    if provider == "typesafe":
+        return TypeSafeModel(model)
+    raise ValueError(f"Unknown decision model provider: {provider}")
+
+
 def _choose(
-    model: WattModel | ClassifierModel, state: str, options: list[str], max_calls: int
+    model: DecisionModel, state: str, options: list[str], max_calls: int
 ) -> tuple[list[float], ModelUsage]:
     """Score groups that fit the API's question and context limits."""
     scores: list[float] = []
@@ -201,24 +282,27 @@ def _route_option(bundle: Bundle, index: str, kind: str, path: str) -> str:
 
 def _section_option(section: Section, concept: Concept, query: str) -> str:
     if section.heading == "(preamble)":
-        # Frontmatter's when_to_use repeats likely query words and distracts the model.
-        return f"Metadata for {concept.title}: {concept.description}; source URL and tags"
+        details = [concept.description]
+        if resource := concept.frontmatter.get("resource"):
+            details.append(f"resource URL: {resource}")
+        return f"Metadata for {concept.title}: {'; '.join(details)}"
     return f"{section.heading}: {_section_preview(section, query)[:650]}"
 
 
 @register
-class TreeWattStrategy:
+class TreeDecisionStrategy:
     """Descend through prepared indexes using categorical branch probabilities."""
 
-    name = "tree-watt"
+    name = "tree-decision"
     constraints = StrategyConstraints(allows_cold=True, track="vectorless")
-    default_model = WattModel
 
-    def __init__(self, model: WattModel | ClassifierModel | None = None) -> None:
+    def __init__(self, model: DecisionModel | None = None) -> None:
         self.model = model
 
     def retrieve(self, query: str, bundle: Bundle, cfg: StrategyConfig) -> RetrieveResult:
-        model = self.model or cfg.extra.get("model") or self.default_model()
+        model = self.model or cfg.extra.get("model") or make_decision_model(
+            cfg.extra.get("decision_model")
+        )
         deadline = time.monotonic() + cfg.wall_time_budget_s
         pending = [("dir", "", 0)]
         spans: list[Span] = []
@@ -310,8 +394,10 @@ class TreeWattStrategy:
         stats = RunStats(
             model_calls=usage.calls,
             input_tokens=usage.input_tokens,
-            output_tokens=0,
-            estimated_cost_usd=0.0,
+            output_tokens=usage.output_tokens,
+            estimated_cost_usd=(
+                usage.input_tokens * model.input_cost_per_million / 1_000_000
+            ),
             hops=visited,
             nodes_visited=visited,
             max_depth=max_depth,
@@ -321,19 +407,3 @@ class TreeWattStrategy:
             extra={"dirs_visited": dirs_visited, "branch_opens": visited - 1},
         )
         return RetrieveResult(spans=spans, stats=stats)
-
-
-@register
-class TreeJevStrategy(TreeWattStrategy):
-    """Same tree walk, using Jev through classifier.dev's free fast route."""
-
-    name = "tree-jev"
-    default_model = staticmethod(lambda: ClassifierModel("jev"))
-
-
-@register
-class TreeLayaStrategy(TreeWattStrategy):
-    """Same tree walk, using the free hosted Laya trial."""
-
-    name = "tree-laya"
-    default_model = staticmethod(lambda: ClassifierModel("laya"))

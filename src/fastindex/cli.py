@@ -138,6 +138,13 @@ def query(
         int,
         typer.Option("--parallelism", min=1, help="Maximum concurrent model calls"),
     ] = 4,
+    decision_model: Annotated[
+        str | None,
+        typer.Option(
+            "--decision-model",
+            help="Decision provider/model, such as classifier/jev or typesafe/jev-latest.",
+        ),
+    ] = None,
     as_json: Annotated[
         bool,
         typer.Option("--json", help="Print full JSON (spans + stats)"),
@@ -163,6 +170,7 @@ def query(
         wall_time_budget_s=wall_budget,
         model_call_budget=call_budget,
         parallelism=parallelism,
+        extra={"decision_model": decision_model} if decision_model else {},
     )
     try:
         t0 = time.perf_counter()
@@ -180,8 +188,10 @@ def query(
     if verbose:
         typer.echo(
             f"strategy={strategy} track={result.stats.track} "
+            f"model={result.stats.model_id} "
             f"latency_ms={latency_ms:.1f} model_calls={result.stats.model_calls} "
             f"tokens_in={result.stats.input_tokens} tokens_out={result.stats.output_tokens} "
+            f"cost_usd={result.stats.estimated_cost_usd:.6f} "
             f"truncated={result.stats.truncated}",
             err=True,
         )

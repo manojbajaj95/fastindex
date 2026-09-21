@@ -17,10 +17,12 @@ import json
 import os
 import re
 import time
+from collections import deque
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any, Protocol
 
-from fastindex.bundle import Bundle, Concept, DirNode
+from fastindex.bundle import Bundle, Concept, DirNode, Section
 from fastindex.models import ModelUsage, RemoteModel, estimate_cost_usd
 from fastindex.strategies import StrategyConfig, StrategyConstraints, register
 from fastindex.types import RetrieveResult, RunStats, Span
@@ -95,39 +97,15 @@ def _as_bool(value: Any, default: bool = False) -> bool:
     return bool(value)
 
 
-def _normalize_dir(dir_path: str, child: str, tree: dict[str, DirNode]) -> str | None:
-    """Resolve a model-returned child dir against the bundle tree."""
-    child = child.strip().strip("/")
-    if not child:
+def _match_child(returned: str, allowed: list[str]) -> str | None:
+    """Accept only an immediate child named in the current directory."""
+    if not isinstance(returned, str):
         return None
-    candidates = [child]
-    if dir_path and not child.startswith(dir_path + "/") and child != dir_path:
-        candidates.append(f"{dir_path}/{child}")
-        leaf = Path(child).name
-        candidates.append(f"{dir_path}/{leaf}")
-    for cand in candidates:
-        if cand in tree:
-            return cand
-    return None
-
-
-def _normalize_concept(dir_path: str, cpath: str, concepts: dict[str, Concept]) -> Concept | None:
-    cpath = cpath.strip().lstrip("/")
-    if not cpath:
-        return None
-    if not cpath.endswith(".md"):
-        cpath = f"{cpath}.md"
-    if cpath in concepts:
-        return concepts[cpath]
-    if dir_path:
-        alt = f"{dir_path}/{Path(cpath).name}"
-        if alt in concepts:
-            return concepts[alt]
-    name = Path(cpath).name
-    for path, concept in concepts.items():
-        if Path(path).name == name and (not dir_path or path.startswith(dir_path + "/")):
-            return concept
-    return None
+    candidate = returned.strip().strip("/")
+    if candidate in allowed:
+        return candidate
+    matches = [path for path in allowed if Path(path).name == candidate]
+    return matches[0] if len(matches) == 1 else None
 
 
 def _clamp_span(concept: Concept, start: int, end: int) -> tuple[int, int]:
@@ -135,6 +113,25 @@ def _clamp_span(concept: Concept, start: int, end: int) -> tuple[int, int]:
     start = max(1, int(start))
     end = min(n, max(start, int(end)))
     return start, end
+
+
+def _section_preview(section: Section, query: str) -> str:
+    """Show short sections fully and surface query matches deep in longer ones."""
+    if len(section.text) <= 2400:
+        return section.text
+    terms = {
+        word.lower()
+        for word in re.findall(r"[\w-]{3,}", query)
+        if word.lower() not in {"the", "and", "for", "what", "where", "how", "does"}
+    }
+    matches = [
+        f"L{section.start_line + offset}: {line}"
+        for offset, line in enumerate(section.text.splitlines())
+        if any(term in line.lower() for term in terms)
+    ]
+    if not matches:
+        return section.text[:2400]
+    return (section.text[:400] + "\n...\n" + "\n".join(matches))[:2400]
 
 
 @register
@@ -170,78 +167,77 @@ class TreeReasonStrategy:
         model_calls = 0
         selected: list[tuple[str, int, int]] = []
 
-        stack: list[tuple[str, int]] = [("", 0)]
-        visited_dirs: set[str] = set()
+        pending = deque([("dir", "", 0)])
+        queued_dirs = {""}
+        queued_concepts: set[str] = set()
+        scheduled_calls = 0
+        workers = max(1, cfg.parallelism)
 
-        while stack:
-            if time.monotonic() > deadline or model_calls >= call_budget:
-                truncated = True
-                break
+        def visit(task: tuple[str, str, int]) -> tuple[DirNode | Concept | None, dict | None]:
+            kind, path, _depth = task
+            if kind == "dir":
+                node = bundle.get_node(path)
+                if node is None:
+                    return None, None
+                return node, self._gate_dir(model, query, bundle, node, path)
+            concept = bundle.get_concept(path)
+            if concept is None:
+                return None, None
+            return concept, self._gate_sections(model, query, concept)
 
-            dir_path, depth = stack.pop()
-            if dir_path in visited_dirs:
-                continue
-            visited_dirs.add(dir_path)
-            nodes_visited += 1
-            max_depth = max(max_depth, depth)
-            hops += 1
-
-            node = bundle.tree.get(dir_path)
-            if node is None:
-                continue
-
-            gate = self._gate_dir(model, query, bundle, node, dir_path)
-            usage: ModelUsage = gate["usage"]
-            model_calls += usage.calls
-            input_tokens += usage.input_tokens
-            output_tokens += usage.output_tokens
-            gate_count += 1
-
-            if not gate.get("relevant", False):
-                continue
-
-            open_dirs = list(gate.get("open_dirs") or [])
-            open_concepts = list(gate.get("open_concepts") or [])
-            branch_opens += len(open_dirs) + len(open_concepts)
-
-            resolved_dirs: list[str] = []
-            for child in open_dirs:
-                resolved = _normalize_dir(dir_path, child, bundle.tree)
-                if resolved and resolved not in visited_dirs:
-                    resolved_dirs.append(resolved)
-            for child in reversed(resolved_dirs):
-                stack.append((child, depth + 1))
-
-            for cpath in open_concepts:
-                if time.monotonic() > deadline or model_calls >= call_budget:
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            while pending:
+                if time.monotonic() > deadline or scheduled_calls >= call_budget:
                     truncated = True
                     break
-                concept = _normalize_concept(dir_path, cpath, bundle.concepts)
-                if not concept:
-                    continue
-                sec_gate = self._gate_sections(model, query, concept)
-                usage = sec_gate["usage"]
-                model_calls += usage.calls
-                input_tokens += usage.input_tokens
-                output_tokens += usage.output_tokens
-                nodes_visited += 1
-                hops += 1
 
-                if not sec_gate.get("relevant", False):
-                    continue
-                sections = list(sec_gate.get("sections") or [])
-                if not sections:
-                    sections = [{"start_line": 1, "end_line": max(1, len(concept.lines))}]
-                for sec in sections:
-                    start, end = _clamp_span(
-                        concept,
-                        sec.get("start_line", 1),
-                        sec.get("end_line", len(concept.lines)),
-                    )
-                    selected.append((concept.path, start, end))
+                batch_size = min(len(pending), workers, call_budget - scheduled_calls)
+                batch = [pending.popleft() for _ in range(batch_size)]
+                scheduled_calls += batch_size
+                for (kind, path, depth), (item, gate) in zip(
+                    batch, executor.map(visit, batch), strict=True
+                ):
+                    if item is None or gate is None:
+                        continue
+                    usage: ModelUsage = gate["usage"]
+                    model_calls += usage.calls
+                    input_tokens += usage.input_tokens
+                    output_tokens += usage.output_tokens
+                    nodes_visited += 1
+                    hops += 1
 
-            if truncated:
-                break
+                    if kind == "dir":
+                        node = item
+                        assert isinstance(node, DirNode)
+                        max_depth = max(max_depth, depth)
+                        gate_count += 1
+                        if not gate.get("relevant", False):
+                            continue
+                        for child in gate.get("open_dirs") or []:
+                            resolved = _match_child(child, node.children_dirs)
+                            if resolved and resolved not in queued_dirs:
+                                queued_dirs.add(resolved)
+                                pending.append(("dir", resolved, depth + 1))
+                                branch_opens += 1
+                        for child in gate.get("open_concepts") or []:
+                            resolved = _match_child(child, node.concepts)
+                            if resolved and resolved not in queued_concepts:
+                                queued_concepts.add(resolved)
+                                pending.append(("concept", resolved, depth + 1))
+                                branch_opens += 1
+                    elif gate.get("relevant", False):
+                        concept = item
+                        assert isinstance(concept, Concept)
+                        sections = list(gate.get("sections") or [])
+                        if not sections:
+                            sections = [{"start_line": 1, "end_line": max(1, len(concept.lines))}]
+                        for sec in sections:
+                            start, end = _clamp_span(
+                                concept,
+                                sec.get("start_line", 1),
+                                sec.get("end_line", len(concept.lines)),
+                            )
+                            selected.append((concept.path, start, end))
 
         spans = self._materialize_spans(bundle, selected, cfg.top_k)
         avg_branch = (branch_opens / gate_count) if gate_count else 0.0
@@ -257,7 +253,7 @@ class TreeReasonStrategy:
             track="cold",
             model_id=model.chat_model,
             extra={
-                "dirs_visited": len(visited_dirs),
+                "dirs_visited": gate_count,
                 "branch_opens": branch_opens,
                 "avg_branching": round(avg_branch, 3),
                 "gate_count": gate_count,
@@ -284,7 +280,7 @@ class TreeReasonStrategy:
             if key in seen:
                 continue
             seen.add(key)
-            concept = bundle.concepts.get(path)
+            concept = bundle.get_concept(path)
             if not concept:
                 continue
             start, end = _clamp_span(concept, start, end)
@@ -305,26 +301,16 @@ class TreeReasonStrategy:
         children = []
         for cd in node.children_dirs:
             name = Path(cd).name
-            idx = (bundle.indexes.get(cd) or "")[:500]
-            children.append({"dir": cd, "name": name, "index_preview": idx})
-        concepts = []
-        for cpath in node.concepts:
-            c = bundle.concepts[cpath]
-            concepts.append(
-                {
-                    "path": c.path,
-                    "title": c.title,
-                    "description": c.description,
-                    "when_to_use": c.when_to_use,
-                    "type": c.type,
-                    "tags": c.tags,
-                }
-            )
-        index_preview = (node.index_md or bundle.indexes.get(dir_path) or "")[:1500]
+            children.append({"dir": cd, "name": name})
+        concepts = [{"path": path, "name": Path(path).name} for path in node.concepts]
+        index_md = bundle.get_index(dir_path)
+        if not index_md or not index_md.strip():
+            location = dir_path or "/"
+            raise RuntimeError(f"Missing index.md in {location}; run fastindex prepare first")
         prompt = {
             "query": query,
             "current_dir": dir_path or "/",
-            "index_md": index_preview,
+            "index_md": index_md,
             "child_dirs": children,
             "concepts": concepts,
             "instructions": (
@@ -371,7 +357,7 @@ class TreeReasonStrategy:
                 "start_line": s.start_line,
                 "end_line": s.end_line,
                 "heading": s.heading,
-                "preview": s.text[:400],
+                "preview": _section_preview(s, query),
             }
             for s in concept.sections
         ]

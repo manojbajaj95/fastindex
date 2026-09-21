@@ -1,4 +1,4 @@
-"""fastindex CLI: lint, generate-index, query (tree-reason)."""
+"""fastindex CLI: prepare, query, and bundle utilities."""
 
 from __future__ import annotations
 
@@ -10,10 +10,11 @@ from typing import Annotated
 
 import typer
 
-from fastindex.bundle import load_bundle
+from fastindex.bundle import load_lazy_bundle
 from fastindex.strategies import StrategyConfig, get_strategy, list_strategies
 from fastindex.utils.generate import generate_indexes, generate_section_synopses
 from fastindex.utils.lint import lint_bundle
+from fastindex.utils.prepare import prepare
 
 BundlePath = Annotated[
     Path,
@@ -28,7 +29,7 @@ BundlePath = Annotated[
 
 app = typer.Typer(
     name="fastindex",
-    help="Browse OKF wiki trees with tree-reason. Baselines live under evals/.",
+    help="Browse OKF wiki trees with owned tree strategies. Baselines live under evals/.",
     no_args_is_help=True,
     pretty_exceptions_show_locals=False,
 )
@@ -52,7 +53,7 @@ def _root(
         ),
     ] = None,
 ) -> None:
-    """Browse OKF wiki trees with tree-reason."""
+    """Browse OKF wiki trees with tree strategies."""
 
 
 @app.command()
@@ -90,6 +91,28 @@ def generate_index(
         typer.echo("Wrote .fastindex/section_synopses.md")
 
 
+@app.command("prepare")
+def prepare_bundle(
+    bundle: BundlePath,
+    force: Annotated[
+        bool,
+        typer.Option("--force", help="Regenerate existing index.md files too."),
+    ] = False,
+) -> None:
+    """Create model-written OKF index.md files throughout a repository or wiki."""
+    try:
+        stats = prepare(bundle, force=force)
+    except Exception as e:
+        typer.echo(str(e), err=True)
+        raise typer.Exit(1) from e
+    typer.echo(
+        f"Wrote {stats.written} index.md file(s); preserved {stats.preserved}; "
+        f"summarized {stats.files_summarized} file(s); skipped {stats.files_skipped}; "
+        f"model calls {stats.usage.calls}; input tokens {stats.usage.input_tokens}; "
+        f"output tokens {stats.usage.output_tokens}."
+    )
+
+
 @app.command()
 def query(
     bundle: BundlePath,
@@ -99,7 +122,7 @@ def query(
         typer.Option(
             "--strategy",
             "-s",
-            help="Owned retrieval strategy (default: tree-reason). Baselines: evals harness.",
+            help="Owned tree strategy (default: tree-reason). Baselines: evals harness.",
         ),
     ] = "tree-reason",
     top_k: Annotated[int, typer.Option("--top-k", help="Max spans to return")] = 2,
@@ -111,6 +134,17 @@ def query(
         int,
         typer.Option("--call-budget", help="Max model calls"),
     ] = 32,
+    parallelism: Annotated[
+        int,
+        typer.Option("--parallelism", min=1, help="Maximum concurrent model calls"),
+    ] = 4,
+    decision_model: Annotated[
+        str | None,
+        typer.Option(
+            "--decision-model",
+            help="Decision provider/model, such as classifier/jev or typesafe/jev-latest.",
+        ),
+    ] = None,
     as_json: Annotated[
         bool,
         typer.Option("--json", help="Print full JSON (spans + stats)"),
@@ -120,7 +154,7 @@ def query(
         typer.Option("--verbose", "-v", help="Print run stats to stderr"),
     ] = False,
 ) -> None:
-    """Run a single query with tree-reason and print matching spans."""
+    """Run an owned retrieval strategy and print matching spans."""
     known = list_strategies()
     if strategy not in known:
         typer.echo(
@@ -130,15 +164,17 @@ def query(
         )
         raise typer.Exit(1)
 
-    b = load_bundle(bundle)
     strat = get_strategy(strategy)
     cfg = StrategyConfig(
         top_k=top_k,
         wall_time_budget_s=wall_budget,
         model_call_budget=call_budget,
+        parallelism=parallelism,
+        extra={"decision_model": decision_model} if decision_model else {},
     )
     try:
         t0 = time.perf_counter()
+        b = load_lazy_bundle(bundle)
         result = strat.retrieve(query_text, b, cfg)
         latency_ms = (time.perf_counter() - t0) * 1000
     except Exception as e:
@@ -152,8 +188,10 @@ def query(
     if verbose:
         typer.echo(
             f"strategy={strategy} track={result.stats.track} "
+            f"model={result.stats.model_id} "
             f"latency_ms={latency_ms:.1f} model_calls={result.stats.model_calls} "
             f"tokens_in={result.stats.input_tokens} tokens_out={result.stats.output_tokens} "
+            f"cost_usd={result.stats.estimated_cost_usd:.6f} "
             f"truncated={result.stats.truncated}",
             err=True,
         )

@@ -1,4 +1,4 @@
-"""Owned strategy protocol and product registry (tree-reason only)."""
+"""Owned strategy protocol and product registry."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ class StrategyConstraints:
     """Capability flags for a retrieve strategy.
 
     ``requires_index`` / ``requires_embeddings`` are used by evals baselines;
-    product tree-reason is always cold (both False).
+    product tree strategies are always cold (both False).
     """
 
     requires_index: bool = False
@@ -29,6 +29,7 @@ class StrategyConfig:
     top_k: int = 2
     wall_time_budget_s: float = 60.0
     model_call_budget: int = 32
+    parallelism: int = 4
     extra: dict = field(default_factory=dict)
 
 
@@ -52,6 +53,7 @@ def register(cls: type) -> type:
 
 def _ensure_loaded() -> None:
     """Import owned strategy modules so the product registry is complete."""
+    from fastindex.strategies import tree_decision as _decision  # noqa: F401
     from fastindex.strategies import tree_reason as _tree  # noqa: F401
 
 

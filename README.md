@@ -10,7 +10,9 @@
 
 At query time, `tree-reason` reads the root index, asks a model which immediate children might hold evidence, and opens selected branches. Several branches can run concurrently. For selected files, it returns source text with paths and line numbers. It does not generate an answer or follow cross-page links. The approach is inspired by [PageIndex](https://github.com/VectifyAI/PageIndex).
 
-The preparation pass reads the corpus and makes model calls. Queries need only visited indexes and selected files, but ambiguous queries can open many branches. There is no worst-case logarithmic guarantee. The current classifier can also prune a relevant branch or select plausible but non-gold evidence.
+Experimental `tree-decision` uses typed choices to select branches and page sections. Its model is configurable: `classifier/jev` and `classifier/laya` use [classifier.dev](https://classifier.dev/), while `typesafe/jev-latest` uses the official [TypeSafe System One API](https://docs.typesafe.ai/api). Index preparation still uses an LLM. Run `uv run fastindex query examples/sample-bundle "your question" --strategy tree-decision --decision-model classifier/jev`. See [strategy details](docs/tree-reason.md#decision-model-variant) and [matched evaluations](docs/tree-decision-evaluation.md).
+
+The preparation pass reads the corpus and makes model calls. `tree-reason` queries read only visited indexes and selected files; decision-model queries also read bounded descendant index titles for routing. Ambiguous queries can open many branches. There is no worst-case logarithmic guarantee. A model can prune a relevant branch or select plausible but non-gold evidence.
 
 ## Early observation
 
@@ -33,7 +35,7 @@ uv run fastindex query examples/sample-bundle \
   "What columns are on the orders BigQuery table?" -v
 ```
 
-Set `FASTINDEX_MODEL` and its provider key first; see [`.env.example`](.env.example). The CLI uses [LiteLLM](https://docs.litellm.ai/) for model calls. Preparation sends source text to the configured model provider; queries send visited indexes and selected file previews. To prepare a new repository or wiki:
+Set `FASTINDEX_MODEL` and its provider key for `prepare` and `tree-reason`; see [`.env.example`](.env.example). Those commands use [LiteLLM](https://docs.litellm.ai/). Decision-model queries use hosted APIs without keys under the current free terms. Preparation sends source text to the configured model provider; queries send index summaries and selected file previews. To prepare a new repository or wiki:
 
 ```bash
 uv run fastindex prepare PATH
@@ -67,7 +69,7 @@ BM25, FTS, vector search, and external QMD/Cognee adapters live under `evals/` f
 - Does directory routing keep recall on larger repositories and less curated trees?
 - How should evidence from several branches be ranked before the `top_k` cutoff?
 - When does parallel traversal lower latency enough to justify its extra calls?
-- Can a classifier such as Jev replace the query-time directory gate without losing spans?
+- Can a typed decision model match LLM span recall on larger corpora and multi-page questions?
 - How should cross-page links be followed for multi-hop queries?
 
 ## License

@@ -53,3 +53,36 @@ Inject a fake chat model in tests via `StrategyConfig(extra={"model": fake})` or
 - Product CLI: `fastindex query`
 - Bench: `python -m evals.bench --strategies tree-reason,…`
 - Prior art: [LLM-Wiki](https://arxiv.org/abs/2605.25480), [OKF SPEC](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md)
+
+## Decision-model variant
+
+`tree-decision` walks the same prepared directory tree, but sends categorical
+choices over immediate children and page sections to a configured decision
+model. Options contain the index entry or section preview; the model returns a
+probability for each option instead of generating paths or line ranges. The
+walk follows the strongest branch first and also keeps plausible second
+branches for multi-page questions. Generation for `prepare` still uses the
+configured LLM. For directory choices, it reads up to three levels of bounded
+descendant index titles to make vague parent summaries more useful. A directory
+with one child needs no model call.
+
+Run:
+
+```bash
+uv run fastindex query examples/sample-bundle "…" \
+  --strategy tree-decision --decision-model classifier/jev
+```
+
+Supported model specs are `classifier/jev`, `classifier/laya`, and
+`typesafe/<model>`. The classifier.dev routes currently need no key. TypeSafe
+uses `TYPESAFE_API_KEY`, defaults to `jev-latest`, and reports the resolved
+model version. `FASTINDEX_DECISION_MODEL` provides the default model spec for
+the CLI and benchmark harness.
+
+classifier.dev does not report compatible token counts, so those runs record a
+rough character-based estimate. TypeSafe reports token usage, and cost is
+estimated from its documented input-token price. A large node may require
+several bounded requests. The strategy selects one section per opened page; if
+the model selects frontmatter, it returns the whole page to retain factual
+sections. See the [TypeSafe API](https://docs.typesafe.ai/api) and the
+[matched evaluation](tree-decision-evaluation.md).

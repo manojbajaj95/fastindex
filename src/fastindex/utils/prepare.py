@@ -159,9 +159,9 @@ def _summarize_file(
     _validate_text(path)
     subject = subject or path.name
     parts = [
-        _ask(model, stats, f"Describe the contents of {subject} for a table of contents. "
-             "Keep its stated when_to_use purpose, distinctive topics, and "
-             "relationships to other files. For overviews, say what they enumerate. "
+        _ask(model, stats, f"Describe what {subject} directly helps answer. "
+             "Keep its stated when_to_use purpose and distinctive entities. "
+             "For overviews, say what they enumerate. Exclude incidental linked topics. "
              f"Segment {number}:\n\n{chunk}")
         for number, chunk in enumerate(_text_chunks(path), 1)
     ]
@@ -172,7 +172,7 @@ def _reduce(parts: list[str], model: RemoteModel, stats: PrepareStats, subject: 
     while len(parts) > 1:
         parts = [
             _ask(model, stats, f"Combine these summaries of {subject} into one concise, "
-                 "faithful summary. Preserve distinct search cues and coverage:\n\n"
+                 "faithful routing sentence. Preserve direct evidence and distinct entities:\n\n"
                  + "\n".join(f"- {part}" for part in parts[i:i + GROUP_SIZE]))
             for i in range(0, len(parts), GROUP_SIZE)
         ]
@@ -182,29 +182,40 @@ def _reduce(parts: list[str], model: RemoteModel, stats: PrepareStats, subject: 
 def _ask(model: RemoteModel, stats: PrepareStats, prompt: str) -> str:
     messages = [
         {"role": "system", "content": (
-            "Write one plain sentence describing contents for a directory table "
-            "of contents. Preserve which questions this item answers, especially "
-            "any when_to_use statement. State distinctive topics and useful "
-            "relationships to other files. Ground it in the text; do not invent "
-            "contents or tell "
-            "the reader to open a path. No headings, lists, or metadata. "
-            "Use at most 35 words and 300 characters."
+            "Write one plain routing sentence saying which questions this item "
+            "directly answers, especially its when_to_use statement. Name exact "
+            "entities and evidence. Exclude incidental mentions and linked topics "
+            "that this item does not answer. Ground it in the text; do not invent "
+            "contents or tell the reader to open a path. No headings or lists. "
+            "Use at most 25 words and 220 characters."
         )},
         {"role": "user", "content": prompt},
     ]
     result = model.chat(messages)
     stats.usage.add(result.usage)
     summary = result.text.strip()
+    if not summary:
+        result = model.chat([
+            messages[0],
+            {"role": "user", "content": prompt + "\n\nReturn a nonempty routing sentence."},
+        ])
+        stats.usage.add(result.usage)
+        summary = result.text.strip()
     if len(summary) > SUMMARY_CHARS:
         result = model.chat([
             messages[0],
             {"role": "user", "content": (
-                "Shorten this to one plain sentence under 300 characters. "
-                "Keep its distinct topics and useful relationships:\n\n" + summary
+                "Shorten this to one plain sentence under 220 characters. "
+                "Keep only direct evidence and distinct entities:\n\n" + summary
             )},
         ])
         stats.usage.add(result.usage)
         summary = result.text.strip()
-    if not summary or len(summary) > SUMMARY_CHARS:
-        raise ValueError("Model returned an empty or oversized preparation summary")
-    return summary.replace("\n", " ")
+    summary = " ".join(summary.split())
+    if not summary:
+        raise ValueError("Model returned an empty preparation summary")
+    if len(summary) > SUMMARY_CHARS:
+        # Some models ignore the second length instruction. Keep preparation
+        # usable and bound the text sent to later routing calls.
+        summary = summary[:SUMMARY_CHARS - 1].rsplit(" ", 1)[0].rstrip(" ,;:.") + "."
+    return summary

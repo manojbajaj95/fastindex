@@ -81,3 +81,33 @@ def test_prepare_shortens_oversized_model_summary(tmp_path: Path) -> None:
     assert stats.usage.calls == 2
     assert "Shorten this to one plain sentence" in model.prompts[1]
     assert "[notes.md](notes.md) — alpha" in (tmp_path / "index.md").read_text()
+
+
+def test_prepare_bounds_summary_when_model_ignores_length_request(tmp_path: Path) -> None:
+    (tmp_path / "notes.md").write_text("alpha", encoding="utf-8")
+
+    class LongSummaryModel(StubModel):
+        def chat(self, messages: list[dict[str, str]]) -> ChatResult:
+            self.prompts.append(messages[-1]["content"])
+            return ChatResult("alpha " * 250, ModelUsage(calls=1))
+
+    model = LongSummaryModel()
+    stats = prepare(tmp_path, model=model)  # type: ignore[arg-type]
+
+    assert stats.usage.calls == 2
+    assert len((tmp_path / "index.md").read_text().split(" — ", 1)[1].strip()) <= 400
+
+
+def test_prepare_retries_empty_model_summary(tmp_path: Path) -> None:
+    (tmp_path / "notes.md").write_text("alpha", encoding="utf-8")
+
+    class EmptyOnceModel(StubModel):
+        def chat(self, messages: list[dict[str, str]]) -> ChatResult:
+            self.prompts.append(messages[-1]["content"])
+            return ChatResult("" if len(self.prompts) == 1 else "alpha", ModelUsage(calls=1))
+
+    model = EmptyOnceModel()
+    stats = prepare(tmp_path, model=model)  # type: ignore[arg-type]
+
+    assert stats.usage.calls == 2
+    assert "[notes.md](notes.md) — alpha" in (tmp_path / "index.md").read_text()

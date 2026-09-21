@@ -29,7 +29,7 @@ BundlePath = Annotated[
 
 app = typer.Typer(
     name="fastindex",
-    help="Browse OKF wiki trees with tree-reason. Baselines live under evals/.",
+    help="Browse OKF wiki trees with owned tree strategies. Baselines live under evals/.",
     no_args_is_help=True,
     pretty_exceptions_show_locals=False,
 )
@@ -53,7 +53,7 @@ def _root(
         ),
     ] = None,
 ) -> None:
-    """Browse OKF wiki trees with tree-reason."""
+    """Browse OKF wiki trees with tree strategies."""
 
 
 @app.command()
@@ -122,7 +122,7 @@ def query(
         typer.Option(
             "--strategy",
             "-s",
-            help="Owned retrieval strategy (default: tree-reason). Baselines: evals harness.",
+            help="Owned tree strategy (default: tree-reason). Baselines: evals harness.",
         ),
     ] = "tree-reason",
     top_k: Annotated[int, typer.Option("--top-k", help="Max spans to return")] = 2,
@@ -138,6 +138,13 @@ def query(
         int,
         typer.Option("--parallelism", min=1, help="Maximum concurrent model calls"),
     ] = 4,
+    decision_model: Annotated[
+        str | None,
+        typer.Option(
+            "--decision-model",
+            help="Decision provider/model, such as classifier/jev or typesafe/jev-latest.",
+        ),
+    ] = None,
     as_json: Annotated[
         bool,
         typer.Option("--json", help="Print full JSON (spans + stats)"),
@@ -147,7 +154,7 @@ def query(
         typer.Option("--verbose", "-v", help="Print run stats to stderr"),
     ] = False,
 ) -> None:
-    """Run a single query with tree-reason and print matching spans."""
+    """Run an owned retrieval strategy and print matching spans."""
     known = list_strategies()
     if strategy not in known:
         typer.echo(
@@ -163,6 +170,7 @@ def query(
         wall_time_budget_s=wall_budget,
         model_call_budget=call_budget,
         parallelism=parallelism,
+        extra={"decision_model": decision_model} if decision_model else {},
     )
     try:
         t0 = time.perf_counter()
@@ -180,8 +188,10 @@ def query(
     if verbose:
         typer.echo(
             f"strategy={strategy} track={result.stats.track} "
+            f"model={result.stats.model_id} "
             f"latency_ms={latency_ms:.1f} model_calls={result.stats.model_calls} "
             f"tokens_in={result.stats.input_tokens} tokens_out={result.stats.output_tokens} "
+            f"cost_usd={result.stats.estimated_cost_usd:.6f} "
             f"truncated={result.stats.truncated}",
             err=True,
         )

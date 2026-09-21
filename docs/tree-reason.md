@@ -53,3 +53,29 @@ Inject a fake chat model in tests via `StrategyConfig(extra={"model": fake})` or
 - Product CLI: `fastindex query`
 - Bench: `python -m evals.bench --strategies tree-reason,…`
 - Prior art: [LLM-Wiki](https://arxiv.org/abs/2605.25480), [OKF SPEC](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md)
+
+## Decision-model variants
+
+`tree-jev`, `tree-laya`, and `tree-watt` walk the same prepared directory tree,
+but send categorical choices over immediate children and page sections to a
+decision API. Options contain the index entry or section preview; the model
+returns a probability for each option instead of generating paths or line
+ranges. The walk follows the strongest branch first and also keeps plausible
+second branches for multi-page questions. Generation for `prepare` still uses
+the configured LLM. For directory choices, it reads up to three levels of
+bounded descendant index titles to make vague parent summaries more useful. A
+directory with one child needs no model call.
+
+Run `uv run fastindex query examples/sample-bundle "…" --strategy tree-jev` or
+`uv run python -m evals.bench --strategies tree-reason,tree-jev,tree-laya,tree-watt`.
+Jev and Laya use [classifier.dev](https://classifier.dev/); Watt uses
+[WattAI](https://wattai.dev/#api). Their current hosted free routes need no key.
+Set `WATTAI_API_KEY` for a higher Watt limit or `FASTINDEX_WATT_URL` for a
+compatible endpoint. `FASTINDEX_CLASSIFIER_INSTRUCTIONS` overrides the Jev and
+Laya classification instruction.
+
+The APIs report no compatible token counts; `input_tokens` is a rough
+character-based estimate and `cost_usd=0` reflects the current free routes. A
+large node may require several bounded requests. The strategy selects one
+section per opened page; if the model selects frontmatter, it returns the whole
+page to retain factual sections. See the [matched evaluation](tree-decision-evaluation.md).

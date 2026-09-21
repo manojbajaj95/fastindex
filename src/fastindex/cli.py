@@ -29,7 +29,7 @@ BundlePath = Annotated[
 
 app = typer.Typer(
     name="fastindex",
-    help="Browse OKF wiki trees with tree-reason. Baselines live under evals/.",
+    help="Browse OKF wiki trees with owned tree strategies. Baselines live under evals/.",
     no_args_is_help=True,
     pretty_exceptions_show_locals=False,
 )
@@ -53,7 +53,7 @@ def _root(
         ),
     ] = None,
 ) -> None:
-    """Browse OKF wiki trees with tree-reason."""
+    """Browse OKF wiki trees with tree strategies."""
 
 
 @app.command()
@@ -122,7 +122,7 @@ def query(
         typer.Option(
             "--strategy",
             "-s",
-            help="Owned retrieval strategy (default: tree-reason). Baselines: evals harness.",
+            help="Owned tree strategy (default: tree-reason). Baselines: evals harness.",
         ),
     ] = "tree-reason",
     top_k: Annotated[int, typer.Option("--top-k", help="Max spans to return")] = 2,
@@ -147,7 +147,7 @@ def query(
         typer.Option("--verbose", "-v", help="Print run stats to stderr"),
     ] = False,
 ) -> None:
-    """Run a single query with tree-reason and print matching spans."""
+    """Run an owned retrieval strategy and print matching spans."""
     known = list_strategies()
     if strategy not in known:
         typer.echo(

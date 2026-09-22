@@ -18,7 +18,7 @@ def register(cls: type) -> type:
 def _ensure_loaded() -> None:
     from evals.baselines import bm25 as _bm25  # noqa: F401
     from evals.baselines import cognee_kg as _cognee  # noqa: F401
-    from evals.baselines import qmd as _qmd  # noqa: F401
+    from evals.baselines import pi_agent as _pi_agent  # noqa: F401
     from evals.baselines import rerank as _rerank  # noqa: F401
     from evals.baselines import vsearch as _vsearch  # noqa: F401
 

@@ -1,7 +1,7 @@
 {"id": "q1-orders-schema", "query": "What columns are on the orders BigQuery table?", "gold": [{"path": "data/warehouse/tables/orders.md", "start_line": 11, "end_line": 18}]}
 {"id": "q2-espresso-build", "query": "How do I make an espresso tonic?", "gold": [{"path": "operations/kitchen/recipes/espresso-tonic.md", "start_line": 10, "end_line": 15}]}
 {"id": "q3-bean-supplier", "query": "Who supplies our espresso beans?", "gold": [{"path": "operations/vendors/alpine-roasters.md", "start_line": 1, "end_line": 13}]}
-{"id": "q4-customers-join", "query": "How do orders join to customers?", "gold": [{"path": "data/warehouse/tables/orders.md", "start_line": 11, "end_line": 22}, {"path": "data/warehouse/tables/customers.md", "start_line": 11, "end_line": 19}]}
+{"id": "q4-customers-join", "query": "How do orders join to customers?", "gold": [{"path": "data/warehouse/tables/orders.md", "start_line": 11, "end_line": 20}, {"path": "data/warehouse/tables/customers.md", "start_line": 11, "end_line": 19}]}
 {"id": "q5-pos-dataset", "query": "What tables are in the POS dataset?", "gold": [{"path": "data/warehouse/datasets/pos.md", "start_line": 1, "end_line": 13}]}
 {"id": "q6-espresso-sku", "query": "Which SKU tracks espresso tonic sales in orders?", "gold": [{"path": "operations/kitchen/recipes/espresso-tonic.md", "start_line": 17, "end_line": 17}, {"path": "data/warehouse/tables/orders.md", "start_line": 11, "end_line": 18}]}
 {"id": "q7-customer-schema", "query": "What is the schema of the customers table?", "gold": [{"path": "data/warehouse/tables/customers.md", "start_line": 11, "end_line": 17}]}

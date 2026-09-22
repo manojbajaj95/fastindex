@@ -24,7 +24,7 @@ from evals.baselines.cognee_kg import ensure_cognee_index
 from evals.index import build_index, is_fresh, read_meta
 from evals.metrics import GoldSpan, build_metrics
 from evals.registry import get_strategy, list_strategies
-from fastindex.bundle import load_bundle
+from fastindex.bundle import load_lazy_bundle
 from fastindex.strategies import StrategyConfig
 
 
@@ -36,6 +36,45 @@ def load_fixtures(path: Path) -> list[dict]:
             continue
         rows.append(json.loads(line))
     return rows
+
+
+def validate_fixtures(fixtures: list[dict], root: Path) -> None:
+    """Fail fast when fixture ids, paths, or line ranges do not match the corpus."""
+    root = root.resolve()
+    ids: set[str] = set()
+    for fixture in fixtures:
+        qid = str(fixture.get("id") or "")
+        if not qid or qid in ids:
+            raise ValueError(f"Fixture id must be nonempty and unique: {qid!r}")
+        ids.add(qid)
+        if not fixture.get("query") or not fixture.get("gold"):
+            raise ValueError(f"Fixture {qid} must have a query and gold spans")
+        for gold in fixture["gold"]:
+            path = root / str(gold["path"])
+            try:
+                path.resolve().relative_to(root)
+            except ValueError as exc:
+                raise ValueError(f"Fixture {qid} path escapes bundle: {gold['path']}") from exc
+            if path.is_symlink() or not path.is_file():
+                raise ValueError(f"Fixture {qid} path not found: {gold['path']}")
+            try:
+                line_count = len(path.read_text(encoding="utf-8").splitlines())
+            except (OSError, UnicodeError) as exc:
+                raise ValueError(f"Fixture {qid} path is not UTF-8 text: {gold['path']}") from exc
+            start = int(gold["start_line"])
+            end = int(gold["end_line"])
+            if start < 1 or end < start or end > line_count:
+                raise ValueError(
+                    f"Fixture {qid} invalid range {gold['path']}:{start}-{end} "
+                    f"(file has {line_count} lines)"
+                )
+
+
+def parse_cutoffs(raw: str, top_k: int) -> list[int]:
+    cutoffs = sorted({int(value) for value in raw.split(",") if value.strip()})
+    if any(value < 1 for value in cutoffs) or top_k < 1:
+        raise ValueError("top-k and cutoffs must be positive integers")
+    return cutoffs
 
 
 def ensure_vsearch_index(bundle: Path) -> bool:
@@ -78,6 +117,17 @@ def main() -> int:
         help="Comma-separated strategy names (default: tree-reason + lexical baselines)",
     )
     parser.add_argument("--top-k", type=int, default=2)
+    parser.add_argument(
+        "--cutoffs",
+        default="",
+        help="Also score returned rankings at comma-separated cutoffs, such as 2,4,8",
+    )
+    parser.add_argument(
+        "--repeats",
+        type=int,
+        default=1,
+        help="Repeat every strategy/query pair to measure run variance (default: 1)",
+    )
     parser.add_argument("--wall-budget", type=float, default=60.0)
     parser.add_argument("--call-budget", type=int, default=32)
     parser.add_argument(
@@ -86,19 +136,19 @@ def main() -> int:
         default=None,
         help="Write JSON results (default evals/results/bench-<ts>.json)",
     )
-    parser.add_argument(
-        "--skip-missing-constraints",
-        action="store_true",
-        default=True,
-        help="Skip strategies whose constraints are unmet (default)",
-    )
     args = parser.parse_args()
+
+    cutoffs = parse_cutoffs(args.cutoffs, args.top_k)
+    if args.repeats < 1:
+        parser.error("--repeats must be at least 1")
+    retrieval_k = max([args.top_k, *cutoffs])
 
     strategies = [s.strip() for s in args.strategies.split(",") if s.strip()]
     list_strategies()
 
-    bundle = load_bundle(args.bundle)
+    bundle = load_lazy_bundle(args.bundle)
     fixtures = load_fixtures(args.fixtures)
+    validate_fixtures(fixtures, args.bundle)
 
     vsearch_ready = False
     if "vsearch" in strategies:
@@ -107,8 +157,6 @@ def main() -> int:
     cognee_ready = False
     if "cognee" in strategies:
         cognee_ready = ensure_cognee_index(args.bundle)
-
-    warm = is_fresh(args.bundle)
 
     results: list[dict] = []
     for strat_name in strategies:
@@ -141,19 +189,6 @@ def main() -> int:
                     }
                 )
                 continue
-        elif c.requires_index and strat_name == "qmd":
-            if not warm:
-                msg = f"SKIP {strat_name}: requires warm index (evals.bench builds sidecars)"
-                print(msg, file=sys.stderr)
-                results.append(
-                    {
-                        "strategy": strat_name,
-                        "skipped": True,
-                        "reason": "requires_index",
-                        "metrics": {"track": "cold"},
-                    }
-                )
-                continue
         if c.requires_llm:
             from fastindex.models import RemoteModel
 
@@ -169,55 +204,66 @@ def main() -> int:
                 continue
 
         cfg = StrategyConfig(
-            top_k=args.top_k,
+            top_k=retrieval_k,
             wall_time_budget_s=args.wall_budget,
             model_call_budget=args.call_budget,
         )
 
-        for fix in fixtures:
-            qid = fix.get("id") or fix["query"][:40]
-            query = fix["query"]
-            gold = [
-                GoldSpan(
-                    path=g["path"],
-                    start_line=int(g["start_line"]),
-                    end_line=int(g["end_line"]),
-                    text=g.get("text"),
-                )
-                for g in fix.get("gold", [])
-            ]
-            try:
-                t0 = time.perf_counter()
-                out = strat.retrieve(query, bundle, cfg)
-                latency_ms = (time.perf_counter() - t0) * 1000
-                metrics = build_metrics(out.stats, out.spans, gold, latency_ms=latency_ms)
-                row = {
-                    "id": qid,
-                    "query": query,
-                    "strategy": strat_name,
-                    "skipped": False,
-                    **metrics.to_bench_fields(),
-                    "n_spans": len(out.spans),
-                    "spans": [s.to_dict() for s in out.spans],
-                }
-                results.append(row)
-                print(
-                    f"{strat_name:12} {qid:20} "
-                    f"rec={metrics.span_recall:.2f} f1={metrics.span_f1:.2f} "
-                    f"lat={metrics.latency_ms:7.1f}ms "
-                    f"${metrics.cost_usd:.4f} {metrics.track}"
-                )
-            except Exception as e:
-                print(f"FAIL {strat_name} {qid}: {e}", file=sys.stderr)
-                results.append(
-                    {
+        for repeat in range(1, args.repeats + 1):
+            for fix in fixtures:
+                qid = fix.get("id") or fix["query"][:40]
+                query = fix["query"]
+                gold = [
+                    GoldSpan(
+                        path=g["path"],
+                        start_line=int(g["start_line"]),
+                        end_line=int(g["end_line"]),
+                        text=g.get("text"),
+                    )
+                    for g in fix.get("gold", [])
+                ]
+                try:
+                    t0 = time.perf_counter()
+                    out = strat.retrieve(query, bundle, cfg)
+                    latency_ms = (time.perf_counter() - t0) * 1000
+                    metrics = build_metrics(out.stats, out.spans, gold, latency_ms=latency_ms)
+                    metrics_at_k = {
+                        str(k): build_metrics(
+                            out.stats, out.spans[:k], gold, latency_ms=latency_ms
+                        ).to_bench_fields()
+                        for k in cutoffs
+                    }
+                    row = {
                         "id": qid,
                         "query": query,
                         "strategy": strat_name,
+                        "repeat": repeat,
                         "skipped": False,
-                        "error": str(e),
+                        **metrics.to_bench_fields(),
+                        "n_spans": len(out.spans),
+                        "spans": [s.to_dict() for s in out.spans],
                     }
-                )
+                    if metrics_at_k:
+                        row["metrics_at_k"] = metrics_at_k
+                    results.append(row)
+                    print(
+                        f"{strat_name:12} {qid:20} "
+                        f"rec={metrics.span_recall:.2f} f1={metrics.span_f1:.2f} "
+                        f"lat={metrics.latency_ms:7.1f}ms "
+                        f"${metrics.cost_usd:.4f} {metrics.track}"
+                    )
+                except Exception as e:
+                    print(f"FAIL {strat_name} {qid}: {e}", file=sys.stderr)
+                    results.append(
+                        {
+                            "id": qid,
+                            "query": query,
+                            "strategy": strat_name,
+                            "repeat": repeat,
+                            "skipped": False,
+                            "error": str(e),
+                        }
+                    )
 
     out_path = args.out
     if out_path is None:
@@ -235,6 +281,9 @@ def main() -> int:
                 "line_recall",
                 "line_precision",
                 "line_f1",
+                "file_recall",
+                "file_precision",
+                "file_f1",
             ],
             "ops": [
                 "latency_ms",
@@ -249,6 +298,9 @@ def main() -> int:
         "bundle": str(args.bundle),
         "fixtures": str(args.fixtures),
         "strategies": strategies,
+        "top_k": retrieval_k,
+        "cutoffs": cutoffs,
+        "repeats": args.repeats,
         "results": results,
     }
     out_path.parent.mkdir(parents=True, exist_ok=True)

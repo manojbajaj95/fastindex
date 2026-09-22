@@ -2,8 +2,6 @@
 
 Owned retrieval strategy: **LLM relevance-gated walk** over an OKF directory tree → evidence **spans**.
 
-Inspired by [PageIndex](https://github.com/VectifyAI/PageIndex) (vectorless ToC descent). We do not ship Vectify; this is an OKF-native walker.
-
 ## Algorithm
 
 1. `prepare` reads each UTF-8 file in bounded chunks and writes `index.md` from leaves to root. Each index lists its immediate subdirectories and files once, with a short model-written routing sentence per entry. A completed child index supplies the parent directory's entry; `log.md` is excluded. Existing nonempty indexes remain intact unless `--force` is given.

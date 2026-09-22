@@ -36,6 +36,9 @@ class MetricBundle:
     line_recall: float
     line_precision: float
     line_f1: float
+    file_recall: float
+    file_precision: float
+    file_f1: float
     # Setup
     track: str
     truncated: bool = False
@@ -56,6 +59,9 @@ class MetricBundle:
             "line_recall": self.line_recall,
             "line_precision": self.line_precision,
             "line_f1": self.line_f1,
+            "file_recall": self.file_recall,
+            "file_precision": self.file_precision,
+            "file_f1": self.file_f1,
             "latency_ms": self.latency_ms,
             "model_calls": self.model_calls,
             "input_tokens": self.input_tokens,
@@ -118,6 +124,21 @@ def span_set_metrics(
     return span_recall, span_precision, span_f1, line_recall, line_precision, line_f1
 
 
+def file_set_metrics(predicted: list[Span], gold: list[GoldSpan]) -> tuple[float, float, float]:
+    """Return file recall, precision, and F1 over unique paths."""
+    predicted_paths = {span.path for span in predicted}
+    gold_paths = {span.path for span in gold}
+    if not gold_paths and not predicted_paths:
+        return 1.0, 1.0, 1.0
+    if not gold_paths or not predicted_paths:
+        return 0.0, 0.0, 0.0
+    overlap = predicted_paths & gold_paths
+    recall = len(overlap) / len(gold_paths)
+    precision = len(overlap) / len(predicted_paths)
+    f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
+    return recall, precision, f1
+
+
 def build_metrics(
     stats: RunStats,
     predicted: list[Span],
@@ -127,6 +148,7 @@ def build_metrics(
 ) -> MetricBundle:
     """Build metrics. ``latency_ms`` is measured by the bench harness around retrieve."""
     sr, sp, sf, lr, lp, lf = span_set_metrics(predicted, gold)
+    fr, fp, ff = file_set_metrics(predicted, gold)
     return MetricBundle(
         latency_ms=latency_ms,
         model_calls=stats.model_calls,
@@ -140,6 +162,9 @@ def build_metrics(
         line_recall=lr,
         line_precision=lp,
         line_f1=lf,
+        file_recall=fr,
+        file_precision=fp,
+        file_f1=ff,
         track=stats.track,
         truncated=stats.truncated,
         nodes_visited=stats.nodes_visited,

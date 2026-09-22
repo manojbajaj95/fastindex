@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from fastindex.bundle import concept_search_text, load_bundle
+from fastindex.bundle import concept_search_text, load_lazy_bundle
 from fastindex.models import RemoteModel
 
 META_NAME = "meta.json"
@@ -26,19 +26,18 @@ def fastindex_dir(root: Path) -> Path:
 
 
 def content_hash(root: Path) -> str:
-    """Hash all concept markdown (and index.md) under the bundle."""
+    """Hash every searchable UTF-8 file and prepared directory index."""
     h = hashlib.sha256()
-    root = root.resolve()
-    paths = sorted(
-        p
-        for p in root.rglob("*.md")
-        if ".fastindex" not in p.parts and not any(part.startswith(".") for part in p.parts)
-    )
-    for path in paths:
-        rel = path.relative_to(root).as_posix()
-        h.update(rel.encode())
+    bundle = load_lazy_bundle(root)
+    for concept in bundle.iter_concepts():
+        h.update(concept.path.encode())
         h.update(b"\0")
-        h.update(path.read_bytes())
+        h.update(concept.raw.encode())
+        h.update(b"\0")
+    for path, text in sorted(bundle.indexes.items()):
+        h.update(f"{path}/index.md".lstrip("/").encode())
+        h.update(b"\0")
+        h.update(text.encode())
         h.update(b"\0")
     return h.hexdigest()
 
@@ -90,7 +89,7 @@ def build_index(
     model: RemoteModel | None = None,
 ) -> IndexMeta:
     root = Path(root).resolve()
-    bundle = load_bundle(root)
+    bundle = load_lazy_bundle(root)
     digest = content_hash(root)
     out = fastindex_dir(root)
     out.mkdir(parents=True, exist_ok=True)
@@ -101,7 +100,8 @@ def build_index(
             return meta
 
     docs: list[dict[str, Any]] = []
-    for path, concept in sorted(bundle.concepts.items()):
+    for concept in bundle.iter_concepts():
+        path = concept.path
         docs.append(
             {
                 "id": f"{path}#meta",

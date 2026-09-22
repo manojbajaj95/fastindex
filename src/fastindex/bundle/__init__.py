@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+from collections.abc import Iterator
 from dataclasses import dataclass, field
 from pathlib import Path
 from threading import RLock
@@ -134,6 +135,27 @@ class Bundle:
         concept = _concept_from_raw(self.root, file_path, raw)
         with self._lock:
             return self.concepts.setdefault(path, concept)
+
+    def iter_concepts(self) -> Iterator[Concept]:
+        """Yield every searchable UTF-8 file in stable path order.
+
+        Lazy bundles traverse the directory tree on demand. Eager Markdown
+        bundles retain their existing behavior and yield their loaded files.
+        """
+        if not self._lazy:
+            yield from (self.concepts[path] for path in sorted(self.concepts))
+            return
+
+        pending = [""]
+        while pending:
+            node = self.get_node(pending.pop())
+            if node is None:
+                continue
+            for path in node.concepts:
+                concept = self.get_concept(path)
+                if concept is not None:
+                    yield concept
+            pending.extend(reversed(node.children_dirs))
 
 
 def _safe_path(root: Path, rel: str) -> Path | None:

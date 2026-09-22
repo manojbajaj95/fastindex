@@ -21,7 +21,8 @@ def tokenize(text: str) -> list[str]:
 
 def _docs_from_bundle(bundle: Bundle) -> list[dict]:
     docs: list[dict] = []
-    for path, concept in sorted(bundle.concepts.items()):
+    for concept in bundle.iter_concepts():
+        path = concept.path
         meta_text = concept_search_text(concept)
         docs.append(
             {

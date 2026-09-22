@@ -17,7 +17,7 @@ import numpy as np
 from matplotlib.patches import Circle
 from PIL import Image
 
-OUT = Path(__file__).with_name("tree-reason.gif")
+OUT = Path(__file__).parents[1] / "docs" / "assets" / "tree-reason.gif"
 BEAT_MS = 1100
 
 NODES = [

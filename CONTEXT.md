@@ -20,7 +20,7 @@ Terms used in code, docs, and architecture reviews. Prefer these names over syno
 |------|---------|
 | **evals** | Lab package for harness, gold scoring, baseline adapters, fixtures, and results. Depends on product; product never imports evals. |
 | **baseline** | Flat lexical/vector adapter used only for measurement (`bm25`, `fts`, `vsearch`, `rerank`). |
-| **peer** | Thin external adapter (`qmd`, `cognee`); never reimplemented. |
+| **peer** | External system used through a thin adapter (`pi`, `cognee`). |
 | **gold** | Annotated evidence spans in query JSONL under `evals/fixtures/queries/`. |
 | **span_recall** | Primary ranking metric (fraction of gold spans overlapped); then `latency_ms` within track + model. |
 | **ops** | Latency, tokens, cost, model_calls, hops, truncated, tree extras. |

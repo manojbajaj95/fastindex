@@ -74,6 +74,27 @@ The current evidence supports the architecture but not the chosen thresholds:
 both routing and answer generation have visible single-run variance. Repeated
 runs are required before treating the 0.042 score difference as stable.
 
+## Jev as a file reranker
+
+A follow-up experiment added eight unique BM25 files and eight unique FTS files
+to the Jev tree candidates, fused a pool of at most 16, and scored every
+candidate with one batched Jev Noul request. The best four whole files then went
+to one `gpt-5.6-luna` answer call.
+
+The retrieval-only run reached 0.905 gold-span coverage and 0.899 file recall at
+4.19 seconds and $0.00068 per question. On the exact same candidate pool,
+unreranked reciprocal-rank fusion reached only 0.698 coverage and 0.688 file
+recall. A lexical-only Jev rerank reached 0.736 coverage, showing that the tree
+and lexical candidates were complementary.
+
+The four-file answer run scored 0.891 with 39 of 48 full-score answers. It cost
+$0.00792 per question, 83% below the plain Pi agent's $0.04696, while Pi still
+scored higher at 0.953. An eight-file run also scored 0.891 but cost $0.01092,
+so extra whole-file context did not help this single run.
+
+See the [hybrid evaluation](hybrid-evaluation.md) for the ablations, cost split,
+failures, recommendation, and open studies.
+
 ## September 20–21, 2026 sample result
 
 These are single cold-track runs over the ten queries in
@@ -153,6 +174,8 @@ set of application smoke checks and is not comparable with span retrieval.
 FASTINDEX_DECISION_MODEL=typesafe/jev-latest \
   uv run python -m evals.bench --strategies tree-decision
 FASTINDEX_MAX_TOKENS=2048 uv run python -m evals.hybrid \
+  --sources jev,bm25,fts --jev-k 8 --bm25-k 8 --fts-k 8 \
+  --candidate-k 16 --file-k 4 --jev-rerank \
   --decision-min-probability 0.04 \
   --decision-relative-probability 0.05
 uv run python -m evals.bench --strategies tree-decision \

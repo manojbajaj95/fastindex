@@ -111,6 +111,45 @@ def test_typesafe_model_maps_choice_probabilities(monkeypatch):
     assert usage.model_id == "typesafe/jev-1.13.0"
 
 
+def test_typesafe_model_batches_noul_relevance_scores(monkeypatch):
+    captured = {}
+
+    class Response(BytesIO):
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_args):
+            self.close()
+
+    def fake_urlopen(request, timeout):
+        captured.update(json.loads(request.data))
+        payload = {
+            "model": "jev-1.13.0",
+            "answers": {
+                "candidate_0": {"type": "noul", "noul": 0.9},
+                "candidate_1": {"type": "noul", "noul": 0.2},
+            },
+            "usage": {"input_tokens": 80, "output_tokens": 6},
+        }
+        return Response(json.dumps(payload).encode())
+
+    monkeypatch.setenv("TYPESAFE_API_KEY", "test-key")
+    monkeypatch.setattr(tree_decision, "urlopen", fake_urlopen)
+
+    scores, usage = TypeSafeModel().score_relevance(
+        "Where is routing implemented?", ["Path: route.py", "Path: unrelated.py"]
+    )
+
+    assert scores == [0.9, 0.2]
+    assert set(captured["questions"]) == {"candidate_0", "candidate_1"}
+    assert all(q["type"] == "noul" for q in captured["questions"].values())
+    state = json.loads(captured["state"])
+    assert state["query"] == "Where is routing implemented?"
+    assert state["candidates"]["candidate_0"] == "Path: route.py"
+    assert usage.input_tokens == 80
+    assert usage.model_id == "typesafe/jev-1.13.0"
+
+
 def test_decision_model_factory_uses_configured_typesafe_model(monkeypatch):
     monkeypatch.setenv("FASTINDEX_DECISION_MODEL", "typesafe/jev-1.13.0")
 

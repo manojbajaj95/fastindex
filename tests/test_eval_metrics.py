@@ -1,4 +1,5 @@
 import json
+from argparse import Namespace
 from pathlib import Path
 
 import pytest
@@ -6,7 +7,7 @@ import pytest
 from evals import FIXTURES, SAMPLE_BUNDLE
 from evals.baselines.pi_agent import _parse_pi_output
 from evals.bench import load_fixtures, parse_cutoffs, validate_fixtures
-from evals.hybrid import _json_object, build_context
+from evals.hybrid import _json_object, _rrf, _write_results, build_context
 from evals.index import build_index, is_fresh, load_bm25_docs
 from evals.metrics import GoldSpan, file_set_metrics
 from fastindex.types import Span
@@ -152,3 +153,58 @@ def test_hybrid_context_preserves_ranked_whole_files_with_a_budget() -> None:
         "score": 5,
         "reasoning": "ok",
     }
+
+
+def test_hybrid_rrf_rewards_files_found_by_multiple_sources() -> None:
+    ordered, scores = _rrf({
+        "jev": ["tree.py", "shared.py"],
+        "bm25": ["lexical.py", "shared.py"],
+    })
+
+    assert ordered[0] == "shared.py"
+    assert scores["shared.py"] > scores["tree.py"]
+
+
+def test_hybrid_aggregate_includes_answer_usage(tmp_path: Path) -> None:
+    out = tmp_path / "result.json"
+    args = Namespace(
+        retrieval_only=False,
+        jev_rerank=True,
+        bundle=tmp_path,
+        fixtures=tmp_path / "queries.jsonl",
+        answer_model="answer",
+        judge_model="judge",
+        sources="jev,bm25",
+        file_k=4,
+        jev_k=8,
+        candidate_k=16,
+        bm25_k=8,
+        fts_k=0,
+        decision_min_probability=0.04,
+        decision_relative_probability=0.05,
+        max_context_chars=200_000,
+    )
+    row = {
+        "file_recall": 1.0,
+        "span_recall": 1.0,
+        "candidate_files": 4,
+        "context_chars": 100,
+        "latency_ms": 20,
+        "model_calls": 2,
+        "input_tokens": 100,
+        "output_tokens": 10,
+        "cost_usd": 0.01,
+        "answer_score": 1.0,
+        "answer_calls": 1,
+        "answer_input_tokens": 50,
+        "answer_output_tokens": 5,
+        "judge_cost_usd": 0.001,
+    }
+
+    _write_results(out, args, [row])
+
+    aggregate = json.loads(out.read_text())["aggregate"]
+    assert aggregate["retrieval_model_calls"] == 2
+    assert aggregate["model_calls"] == 3
+    assert aggregate["input_tokens"] == 150
+    assert aggregate["output_tokens"] == 15

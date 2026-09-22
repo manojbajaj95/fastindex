@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Evaluate cheap Jev file routing followed by one grounded answer call."""
+"""Evaluate fused file retrieval, optional Jev reranking, and one answer call."""
 
 from __future__ import annotations
 
@@ -12,14 +12,14 @@ from pathlib import Path
 from typing import Any
 
 from evals import FIXTURES, RESULTS
-from evals.baselines.bm25 import Bm25Strategy
+from evals.baselines.bm25 import Bm25Strategy, FtsStrategy
 from evals.bench import load_fixtures, validate_fixtures
 from evals.metrics import GoldSpan, build_metrics
 from fastindex.bundle import Bundle, load_lazy_bundle
 from fastindex.models import ModelUsage, RemoteModel, estimate_cost_usd
 from fastindex.strategies import StrategyConfig
-from fastindex.strategies.tree_decision import TreeDecisionStrategy
-from fastindex.types import RetrieveResult, Span
+from fastindex.strategies.tree_decision import TreeDecisionStrategy, TypeSafeModel
+from fastindex.types import RetrieveResult, RunStats, Span
 
 CODEBASE_FIXTURES = FIXTURES / "queries" / "codebase_qa.jsonl"
 DEFAULT_BUNDLE = FIXTURES / "external" / "codebase-qa-flask"
@@ -29,59 +29,158 @@ DEFAULT_GOLD = (
 )
 
 
+_SOURCE_STRATEGIES = {"bm25": Bm25Strategy, "fts": FtsStrategy}
+
+
+def _unique_lexical_files(
+    name: str, query: str, bundle: Bundle, unique_k: int
+) -> tuple[list[str], dict[str, str], str]:
+    """Return ranked unique paths and their best matching lexical excerpts."""
+    if unique_k == 0:
+        return [], {}, "warm"
+    strategy = _SOURCE_STRATEGIES[name]()
+    result = strategy.retrieve(
+        query,
+        bundle,
+        StrategyConfig(top_k=max(32, unique_k * 8)),
+    )
+    paths: list[str] = []
+    previews: dict[str, str] = {}
+    for hit in result.spans:
+        if hit.path in previews:
+            continue
+        paths.append(hit.path)
+        previews[hit.path] = hit.text[:2400]
+        if len(paths) == unique_k:
+            break
+    return paths, previews, result.stats.track
+
+
+def _file_summary(bundle: Bundle, path: str) -> str:
+    parent = Path(path).parent.as_posix()
+    if parent == ".":
+        parent = ""
+    index = bundle.get_index(parent) or ""
+    name = Path(path).name
+    for line in index.splitlines():
+        if f"]({name})" in line or f"](./{name})" in line:
+            return line.strip()[:1000]
+    return path
+
+
+def _rrf(rankings: dict[str, list[str]]) -> tuple[list[str], dict[str, float]]:
+    scores: dict[str, float] = {}
+    for paths in rankings.values():
+        for rank, path in enumerate(paths, start=1):
+            scores[path] = scores.get(path, 0.0) + 1 / (60 + rank)
+    ordered = sorted(scores, key=lambda path: (-scores[path], path))
+    return ordered, scores
+
+
 def candidate_files(
     query: str,
     bundle: Bundle,
     *,
+    sources: tuple[str, ...],
     file_k: int,
+    jev_k: int,
+    candidate_k: int,
     bm25_k: int,
+    fts_k: int,
+    jev_rerank: bool,
     wall_budget: float,
     call_budget: int,
     min_probability: float,
     relative_probability: float,
 ) -> RetrieveResult:
-    """Return whole candidate files, with Jev routes first and BM25 paths as fallback."""
-    routed = TreeDecisionStrategy().retrieve(
-        query,
-        bundle,
-        StrategyConfig(
-            top_k=file_k,
-            wall_time_budget_s=wall_budget,
-            model_call_budget=call_budget,
-            extra={
-                "decision_return_files": True,
-                "decision_min_probability": min_probability,
-                "decision_relative_probability": relative_probability,
-            },
-        ),
-    )
-    spans = list(routed.spans)
-    seen = {span.path for span in spans}
-    if bm25_k:
-        lexical = Bm25Strategy().retrieve(query, bundle, StrategyConfig(top_k=bm25_k))
-        for hit in lexical.spans:
-            if hit.path in seen:
-                continue
-            concept = bundle.get_concept(hit.path)
-            if concept is None:
-                continue
-            seen.add(hit.path)
-            spans.append(
-                Span(
-                    path=hit.path,
-                    start_line=1,
-                    end_line=len(concept.lines),
-                    text=concept.raw,
-                    score=hit.score,
-                )
-            )
-    routed.stats.extra["bm25_k"] = bm25_k
-    routed.stats.extra["candidate_paths"] = [span.path for span in spans]
-    return RetrieveResult(spans=spans, stats=routed.stats)
+    """Fuse unique file rankings and optionally rerank the pool with Jev Nouls."""
+    rankings: dict[str, list[str]] = {}
+    previews: dict[str, str] = {}
+    stats = RunStats(track="warm")
+    if "jev" in sources:
+        routed = TreeDecisionStrategy().retrieve(
+            query,
+            bundle,
+            StrategyConfig(
+                top_k=jev_k,
+                wall_time_budget_s=wall_budget,
+                model_call_budget=call_budget,
+                extra={
+                    "decision_return_files": True,
+                    "decision_min_probability": min_probability,
+                    "decision_relative_probability": relative_probability,
+                },
+            ),
+        )
+        rankings["jev"] = list(dict.fromkeys(span.path for span in routed.spans))
+        stats = routed.stats
+
+    for name, unique_k in (("bm25", bm25_k), ("fts", fts_k)):
+        if name not in sources:
+            continue
+        paths, excerpts, track = _unique_lexical_files(
+            name, query, bundle, unique_k
+        )
+        rankings[name] = paths
+        previews.update(excerpts)
+        if "jev" not in sources:
+            stats.track = track
+
+    ordered, rrf_scores = _rrf(rankings)
+    pool = ordered[:candidate_k]
+    rerank_scores: dict[str, float] = {}
+    rerank_usage = ModelUsage(model_id="typesafe/jev-latest")
+    if jev_rerank and pool:
+        model = TypeSafeModel()
+        descriptors = [
+            (
+                f"Path: {path}\nIndex summary: {_file_summary(bundle, path)}\n"
+                f"Lexical evidence:\n{previews.get(path, '(none)')}"
+            )[:3200]
+            for path in pool
+        ]
+        values, rerank_usage = model.score_relevance(query, descriptors)
+        rerank_scores = dict(zip(pool, values, strict=True))
+        ordered = sorted(pool, key=lambda path: (-rerank_scores[path], -rrf_scores[path], path))
+        stats.model_calls += rerank_usage.calls
+        stats.input_tokens += rerank_usage.input_tokens
+        stats.output_tokens += rerank_usage.output_tokens
+        stats.estimated_cost_usd += (
+            rerank_usage.input_tokens * model.input_cost_per_million / 1_000_000
+        )
+        stats.model_id = rerank_usage.model_id
+    else:
+        ordered = pool
+
+    spans: list[Span] = []
+    for path in ordered[:file_k]:
+        concept = bundle.get_concept(path)
+        if concept is None:
+            continue
+        spans.append(Span(
+            path=path,
+            start_line=1,
+            end_line=len(concept.lines),
+            text=concept.raw,
+            score=rerank_scores.get(path, rrf_scores[path]),
+        ))
+    stats.extra.update({
+        "sources": list(sources),
+        "source_rankings": rankings,
+        "candidate_pool": pool,
+        "rrf_scores": rrf_scores,
+        "jev_rerank": jev_rerank,
+        "rerank_scores": rerank_scores,
+        "rerank_calls": rerank_usage.calls,
+        "rerank_input_tokens": rerank_usage.input_tokens,
+        "rerank_output_tokens": rerank_usage.output_tokens,
+        "candidate_paths": [span.path for span in spans],
+    })
+    return RetrieveResult(spans=spans, stats=stats)
 
 
 def build_context(spans: list[Span], max_chars: int) -> tuple[str, list[Span], list[str]]:
-    """Build line-numbered context, keeping Jev-ranked files before lexical fallbacks."""
+    """Build line-numbered context in fused or reranked file order."""
     blocks: list[str] = []
     included: list[Span] = []
     dropped: list[str] = []
@@ -139,25 +238,46 @@ def _write_results(path: Path, args: argparse.Namespace, results: list[dict]) ->
             / len(completed),
             "context_chars": sum(row["context_chars"] for row in completed) / len(completed),
             "latency_ms": sum(row["latency_ms"] for row in completed) / len(completed),
+            "retrieval_model_calls": sum(row["model_calls"] for row in completed)
+            / len(completed),
+            "retrieval_input_tokens": sum(row["input_tokens"] for row in completed)
+            / len(completed),
+            "retrieval_output_tokens": sum(row["output_tokens"] for row in completed)
+            / len(completed),
             "cost_usd": sum(row["cost_usd"] for row in completed) / len(completed),
         }
+        aggregate["model_calls"] = aggregate["retrieval_model_calls"]
+        aggregate["input_tokens"] = aggregate["retrieval_input_tokens"]
+        aggregate["output_tokens"] = aggregate["retrieval_output_tokens"]
     if scored:
         aggregate.update({
             "answer_score": sum(row["answer_score"] for row in scored) / len(scored),
+            "model_calls": sum(
+                row["model_calls"] + row["answer_calls"] for row in scored
+            ) / len(scored),
+            "input_tokens": sum(
+                row["input_tokens"] + row["answer_input_tokens"] for row in scored
+            ) / len(scored),
+            "output_tokens": sum(
+                row["output_tokens"] + row["answer_output_tokens"] for row in scored
+            ) / len(scored),
             "judge_cost_usd": sum(row["judge_cost_usd"] for row in scored) / len(scored),
         })
     payload = {
-        "recorded": (
-            "Jev file routing + BM25 fallback"
-            if args.retrieval_only
-            else "Jev file routing + BM25 fallback + one grounded answer call"
-        ),
+        "recorded": "Fused file retrieval"
+        + (" + Jev Noul rerank" if args.jev_rerank else "")
+        + ("" if args.retrieval_only else " + one grounded answer call"),
         "bundle": str(args.bundle),
         "fixtures": str(args.fixtures),
         "answer_model": args.answer_model,
         "judge_model": args.judge_model,
+        "sources": args.sources,
         "file_k": args.file_k,
+        "jev_k": args.jev_k,
+        "candidate_k": args.candidate_k,
         "bm25_k": args.bm25_k,
+        "fts_k": args.fts_k,
+        "jev_rerank": args.jev_rerank,
         "decision_min_probability": args.decision_min_probability,
         "decision_relative_probability": args.decision_relative_probability,
         "max_context_chars": args.max_context_chars,
@@ -181,8 +301,21 @@ def main() -> int:
         "--judge-model",
         default=os.getenv("FASTINDEX_JUDGE_MODEL") or "gpt-5.6-luna",
     )
-    parser.add_argument("--file-k", type=int, default=8)
-    parser.add_argument("--bm25-k", type=int, default=2)
+    parser.add_argument(
+        "--sources",
+        default="jev,bm25",
+        help="Comma-separated candidate sources: jev,bm25,fts",
+    )
+    parser.add_argument("--file-k", type=int, default=8, help="Final files sent to context")
+    parser.add_argument("--jev-k", type=int, default=8, help="Maximum Jev tree candidates")
+    parser.add_argument("--candidate-k", type=int, default=16, help="Fused pool size")
+    parser.add_argument("--bm25-k", type=int, default=2, help="Unique BM25 files")
+    parser.add_argument("--fts-k", type=int, default=8, help="Unique FTS files")
+    parser.add_argument(
+        "--jev-rerank",
+        action="store_true",
+        help="Rerank the fused pool with one batched Jev Noul request",
+    )
     parser.add_argument("--decision-min-probability", type=float, default=0.12)
     parser.add_argument("--decision-relative-probability", type=float, default=0.2)
     parser.add_argument("--max-context-chars", type=int, default=200_000)
@@ -192,8 +325,23 @@ def main() -> int:
     parser.add_argument("--retrieval-only", action="store_true")
     parser.add_argument("--out", type=Path)
     args = parser.parse_args()
-    if min(args.file_k, args.max_context_chars, args.call_budget) < 1 or args.bm25_k < 0:
-        parser.error("file-k, context, and call budget must be positive; bm25-k cannot be negative")
+    sources = tuple(dict.fromkeys(part.strip() for part in args.sources.split(",") if part.strip()))
+    unknown_sources = set(sources) - {"jev", "bm25", "fts"}
+    if not sources or unknown_sources:
+        parser.error("sources must contain one or more of: jev,bm25,fts")
+    args.sources = ",".join(sources)
+    if min(
+        args.file_k,
+        args.jev_k,
+        args.candidate_k,
+        args.max_context_chars,
+        args.call_budget,
+    ) < 1:
+        parser.error("file-k, jev-k, candidate-k, context, and call budget must be positive")
+    if min(args.bm25_k, args.fts_k) < 0:
+        parser.error("bm25-k and fts-k cannot be negative")
+    if args.candidate_k < args.file_k:
+        parser.error("candidate-k must be at least file-k")
     if not 0 <= args.decision_min_probability <= 1:
         parser.error("decision-min-probability must be between 0 and 1")
     if not 0 <= args.decision_relative_probability <= 1:
@@ -232,8 +380,13 @@ def main() -> int:
             candidates = candidate_files(
                 query,
                 bundle,
+                sources=sources,
                 file_k=args.file_k,
+                jev_k=args.jev_k,
+                candidate_k=args.candidate_k,
                 bm25_k=args.bm25_k,
+                fts_k=args.fts_k,
+                jev_rerank=args.jev_rerank,
                 wall_budget=args.wall_budget,
                 call_budget=args.call_budget,
                 min_probability=args.decision_min_probability,
@@ -280,7 +433,8 @@ def main() -> int:
                         "role": "user",
                         "content": f"Question:\n{query}\n\nCandidate source files:{context}",
                     },
-                ]
+                ],
+                temperature=None,
             )
             answer_ms = (time.perf_counter() - answer_started) * 1000
 
@@ -303,7 +457,8 @@ def main() -> int:
                             f"\n\nCandidate answer:\n{answer.text}"
                         ),
                     },
-                ]
+                ],
+                temperature=None,
             )
             judge_ms = (time.perf_counter() - judge_started) * 1000
             verdict = _json_object(judged.text)

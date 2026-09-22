@@ -1,4 +1,4 @@
-"""PageIndex-inspired tree-reason: relevance-gate → descend → bubble spans.
+"""Model-guided tree retrieval: relevance-gate, descend, then return spans.
 
 Walks the OKF directory tree top-down. At each dir node an LLM decides whether
 the node is relevant; only then opens child dirs / concepts. For each opened
@@ -314,7 +314,7 @@ class TreeReasonStrategy:
             "child_dirs": children,
             "concepts": concepts,
             "instructions": (
-                "Relevance-gate this directory for the query (PageIndex-style). "
+                "Relevance-gate this directory for the query. "
                 "If the directory subtree cannot help, set relevant=false and open nothing. "
                 "If relevant, open only child dirs / concept files that may contain evidence. "
                 "Do not answer the query. Return JSON only: "

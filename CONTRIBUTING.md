@@ -21,7 +21,7 @@ uv sync --extra kg      # Cognee baseline
 
 - **Conventional Commits** — `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:` (imperative, ≤72 char subject).
 - **Product vs evals** — `evals` may import `fastindex`; product must never import `evals`.
-- **Do not reimplement** QMD or Cognee — thin adapters only.
+- **Do not reimplement** Cognee — keep external peers behind thin adapters.
 - Prefer span-level gold (`path` + line range) over file-only metrics.
 - Keep changes focused; update README / docs when behavior changes.
 

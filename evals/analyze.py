@@ -50,6 +50,14 @@ def fnum(row: dict, key: str, *legacy: str) -> float:
     return float(row_get(row, key, *legacy, default=0) or 0)
 
 
+def metric_at(row: dict, key: str, cutoff: int | None = None) -> float:
+    if cutoff is not None:
+        metrics = (row.get("metrics_at_k") or {}).get(str(cutoff))
+        if metrics is not None:
+            return float(metrics.get(key) or 0)
+    return fnum(row, key)
+
+
 def analyze(path: Path, *, threshold: float, show_misses: bool, top_misses: int) -> int:
     data = json.loads(path.read_text(encoding="utf-8"))
     rows = data.get("results") or []
@@ -76,7 +84,7 @@ def analyze(path: Path, *, threshold: float, show_misses: bool, top_misses: int)
 
     print("## Strategy summary (means over scored queries)")
     print(
-        f"{'strategy':12} {'n':>3} {'rec':>6} {'prec':>6} {'f1':>6} "
+        f"{'strategy':12} {'n':>3} {'span_r':>6} {'file_r':>6} {'f1':>6} "
         f"{'lat_ms':>8} {'tok_in':>7} {'$':>8} {'track':>6} {'skip':>4} {'err':>3}"
     )
     summary_rows = []
@@ -89,14 +97,10 @@ def analyze(path: Path, *, threshold: float, show_misses: bool, top_misses: int)
                 "strategy": name,
                 "n": len(scored),
                 "rec": mean([fnum(r, "span_recall", "C_span_recall") for r in scored]),
-                "prec": mean(
-                    [fnum(r, "span_precision", "C_span_precision") for r in scored]
-                ),
+                "file_rec": mean([fnum(r, "file_recall") for r in scored]),
                 "f1": mean([fnum(r, "span_f1", "C_span_f1") for r in scored]),
                 "lat": mean([fnum(r, "latency_ms", "A_wall_ms") for r in scored]),
-                "tok_in": mean(
-                    [fnum(r, "input_tokens", "B_input_tokens") for r in scored]
-                ),
+                "tok_in": mean([fnum(r, "input_tokens", "B_input_tokens") for r in scored]),
                 "cost": mean([fnum(r, "cost_usd", "B_cost_usd") for r in scored]),
                 "track": track,
                 "skip": skipped.get(name, 0),
@@ -107,7 +111,7 @@ def analyze(path: Path, *, threshold: float, show_misses: bool, top_misses: int)
     summary_rows.sort(key=lambda s: (-s["rec"], s["lat"] if s["n"] else 1e18))
     for s in summary_rows:
         print(
-            f"{s['strategy']:12} {s['n']:3d} {s['rec']:6.2f} {s['prec']:6.2f} "
+            f"{s['strategy']:12} {s['n']:3d} {s['rec']:6.2f} {s['file_rec']:6.2f} "
             f"{s['f1']:6.2f} {s['lat']:8.1f} {s['tok_in']:7.0f} {s['cost']:8.4f} "
             f"{s['track']:>6} {s['skip']:4d} {s['err']:3d}"
         )
@@ -118,10 +122,52 @@ def analyze(path: Path, *, threshold: float, show_misses: bool, top_misses: int)
         "(compare ops within same track + model_id)."
     )
     print(
-        "Retrieval quality: span/line recall·precision·F1  |  "
+        "Retrieval quality: span/line/file recall·precision·F1  |  "
         "Ops: latency_ms, tokens, cost_usd, calls, hops  |  Setup: track, model_id"
     )
     print()
+
+    cutoffs = [int(value) for value in data.get("cutoffs") or []]
+    if cutoffs:
+        print("## Recall by cutoff")
+        print(f"{'strategy':12} {'k':>3} {'span_r':>7} {'file_r':>7} {'single':>7} {'multi':>7}")
+        for name in sorted(by_strat):
+            scored = by_strat[name]
+            for cutoff in cutoffs:
+                single = [
+                    r
+                    for r in scored
+                    if len({g["path"] for g in gold_by_id.get(str(r.get("id")), [])}) == 1
+                ]
+                multi = [
+                    r
+                    for r in scored
+                    if len({g["path"] for g in gold_by_id.get(str(r.get("id")), [])}) > 1
+                ]
+                print(
+                    f"{name:12} {cutoff:3d} "
+                    f"{mean([metric_at(r, 'span_recall', cutoff) for r in scored]):7.2f} "
+                    f"{mean([metric_at(r, 'file_recall', cutoff) for r in scored]):7.2f} "
+                    f"{mean([metric_at(r, 'span_recall', cutoff) for r in single]):7.2f} "
+                    f"{mean([metric_at(r, 'span_recall', cutoff) for r in multi]):7.2f}"
+                )
+        print()
+
+    if int(data.get("repeats") or 1) > 1 and by_strat.get("tree-reason"):
+        by_query: dict[str, list[float]] = defaultdict(list)
+        for row in by_strat["tree-reason"]:
+            by_query[str(row.get("id"))].append(fnum(row, "span_recall", "C_span_recall"))
+        persistent = sum(all(score < 1 for score in scores) for scores in by_query.values())
+        intermittent = sum(
+            any(score < 1 for score in scores) and any(score == 1 for score in scores)
+            for scores in by_query.values()
+        )
+        print(
+            "Tree-repeat misses: "
+            f"{persistent} persistent, {intermittent} intermittent "
+            f"across {data['repeats']} runs."
+        )
+        print()
 
     misses: list[dict] = []
     for _name, scored in by_strat.items():

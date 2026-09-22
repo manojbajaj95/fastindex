@@ -10,7 +10,7 @@ from pathlib import Path
 
 from evals.baselines import StrategyConfig, StrategyConstraints, register
 from evals.index import content_hash, fastindex_dir
-from fastindex.bundle import Bundle, load_bundle
+from fastindex.bundle import Bundle, load_lazy_bundle
 from fastindex.models import RemoteModel, estimate_cost_usd
 from fastindex.types import RetrieveResult, RunStats, Span
 
@@ -112,8 +112,8 @@ async def _rebuild_async(bundle_root: Path, model: RemoteModel) -> None:
     import cognee
 
     _configure_cognee(bundle_root, model)
-    bundle = load_bundle(bundle_root)
-    docs = [_concept_doc(p, c) for p, c in sorted(bundle.concepts.items())]
+    bundle = load_lazy_bundle(bundle_root)
+    docs = [_concept_doc(concept.path, concept) for concept in bundle.iter_concepts()]
     if not docs:
         raise RuntimeError("No concepts to ingest into Cognee")
 
@@ -197,6 +197,9 @@ async def _search_async(query: str, bundle: Bundle, top_k: int, model: RemoteMod
     from cognee import SearchType
 
     _configure_cognee(bundle.root, model)
+    # Cognee searches the whole prepared corpus, so path resolution needs the
+    # corresponding source-file map even when the bench opened a lazy bundle.
+    list(bundle.iter_concepts())
     results = await cognee.search(
         query_text=query,
         query_type=SearchType.CHUNKS,

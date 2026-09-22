@@ -1,76 +1,157 @@
 # fastindex
 
-**Research preview.** fastindex explores whether a model can find source context by walking a prepared directory tree. It is an experiment in retrieval quality and cost, not a demonstrated replacement for lexical or vector search.
+Fastindex is a research experiment in model-guided source retrieval. It prepares a
+small, readable directory index, then walks that tree at query time to return file and
+line spans. The aim is to reduce the search work an agent has to do before answering a
+codebase question.
 
-![tree-reason walk](docs/assets/tree-reason.gif)
+It is not a search engine replacement yet. The current result is a tradeoff: on one
+codebase benchmark, Fastindex used far fewer model tokens than a plain coding agent and
+a larger share of its returned spans overlapped gold, but it missed evidence that the
+agent found.
 
-## The experiment
+![A Fastindex tree walk](docs/assets/tree-reason.gif)
 
-`prepare` writes an `index.md` in each directory, from the leaves upward. Each index lists its immediate directories and searchable files with a short description. A parent entry summarizes its completed child index. The indexes are readable Markdown inspired by [OKF](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md); repositories with non-OKF source files can use them too.
+## Codebase QA result
 
-At query time, `tree-reason` reads the root index, asks a model which immediate children might hold evidence, and opens selected branches. Several branches can run concurrently. For selected files, it returns source text with paths and line numbers. It does not generate an answer or follow cross-page links. The approach is inspired by [PageIndex](https://github.com/VectifyAI/PageIndex).
+We evaluated retrieval only on all 48
+[Codebase QA](https://github.com/manojbajaj95/agent-learning-bench/tree/main/tasks/codebase-qa)
+questions against Flask at commit `85c5d93`. The fixture contains 99 hand-curated gold
+spans across 30 files. Every method returned at most eight ranked spans; none generated
+an answer.
 
-Experimental `tree-decision` uses typed choices to select branches and page sections. Its model is configurable: `classifier/jev` and `classifier/laya` use [classifier.dev](https://classifier.dev/), while `typesafe/jev-latest` uses the official [TypeSafe System One API](https://docs.typesafe.ai/api). Index preparation still uses an LLM. Run `uv run fastindex query examples/sample-bundle "your question" --strategy tree-decision --decision-model classifier/jev`. See [strategy details](docs/tree-reason.md#decision-model-variant) and [matched evaluations](docs/tree-decision-evaluation.md).
+| Retriever | Span recall@8 | Span precision@8 | Span F1@8 | File recall@8 | Time/query | Input tokens/query | Cost/query |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Fastindex `tree-reason` | 0.693 | 0.679 | **0.639** | 0.729 | 13.70 s | 11,019 | $0.00306 |
+| Plain Pi agent | **0.932** | 0.464 | 0.593 | **1.000** | 19.40 s | 51,196 | $0.00656 |
+| BM25 | 0.521 | 0.138 | 0.209 | 0.557 | **0.090 s** | 0 | $0 |
+| FTS | 0.370 | 0.070 | 0.115 | 0.370 | 0.127 s | 0 | $0 |
 
-The preparation pass reads the corpus and makes model calls. `tree-reason` queries read only visited indexes and selected files; decision-model queries also read bounded descendant index titles for routing. Ambiguous queries can open many branches. There is no worst-case logarithmic guarantee. A model can prune a relevant branch or select plausible but non-gold evidence.
+Span recall as the result budget grows:
 
-## Early observation
+| Retriever | Recall@2 | Recall@4 | Recall@8 |
+|---|---:|---:|---:|
+| Fastindex `tree-reason` | 0.519 | 0.622 | 0.693 |
+| Plain Pi agent | **0.679** | **0.866** | **0.932** |
+| BM25 | 0.274 | 0.373 | 0.521 |
+| FTS | 0.118 | 0.170 | 0.370 |
 
-On the bundled nine-directory, ten-query sample wiki, one local run with `gpt-5.6-luna` gave:
+In these runs, Fastindex was 29% faster than Pi, used 78% fewer input tokens, and cost
+53% less per query. Pi still found substantially more of the gold evidence. Fastindex's
+higher span precision made its span F1 slightly better, but that does not make up for the
+recall gap when missing evidence is expensive.
 
-| Generated indexes | Index text | Mean span recall | Mean query latency | Total query input tokens | Total estimated query cost |
-|---|---:|---:|---:|---:|---:|
-| Earlier verbose summaries | 16.2 KB | 0.95 | 12.1 s | 32,489 | $0.0112 |
-| Short table-of-contents entries | 3.7 KB | 0.90 | 15.9 s | 17,347 | $0.0082 |
+Both model-driven retrievers used `gpt-5.6-luna`. Fastindex, BM25, and FTS are means over
+three runs per question; Pi has one run per question. Pi ran in a fresh session with only
+`read`, `grep`, `find`, and `ls`, against the original source tree without generated
+indexes. Pi input tokens include cache reads. BM25 and FTS searched source files, not the
+generated summaries. Times are local wall-clock measurements and costs are the values
+recorded by the harness at run time.
 
-These are single runs on a small, hand-built fixture. The short indexes missed both gold spans on a query connecting an espresso-tonic recipe to its order SKU. The numbers show a prompt-size tradeoff, not a general quality, speed, or cost advantage. Larger corpora and repeated runs are needed.
+The table excludes one-time preparation. The completed artifact has 52 `index.md` files,
+59,951 bytes of index text, and covers 234 source files. Preparation was resumed after
+interrupted attempts, so its cumulative cost was not captured. The final resume alone
+took 832 seconds and 117 model calls; the true setup cost is higher. The raw runs remain
+under the gitignored `evals/results/` directory for later analysis.
+
+## How it works
+
+`fastindex prepare` writes an `index.md` in every directory, working from the leaves to
+the root. Each index describes its immediate files and child directories. Parent indexes
+summarize completed child indexes, producing a human-readable routing tree for ordinary
+UTF-8 source repositories as well as Markdown knowledge bundles.
+
+At query time, `tree-reason` starts at the root and asks a model which immediate children
+may contain evidence. It opens selected branches in parallel, selects line ranges from
+relevant files, and returns the source spans. It does not answer the question.
+
+The preparation pass reads the corpus and calls the configured model. A query reads only
+visited indexes and selected file previews. Ambiguous queries can still open many branches,
+and a routing decision can prune the right branch. There is no worst-case logarithmic
+guarantee.
+
+Fastindex also includes experimental `tree-decision`, which replaces generated routing
+choices with typed decisions from classifier.dev or TypeSafe System One. See the
+[strategy documentation](docs/tree-reason.md#decision-model-variant) and
+[matched evaluation](docs/tree-decision-evaluation.md).
 
 ## Try it
 
 ```bash
 uv sync --extra dev
-uv run pytest
-uv run fastindex lint examples/sample-bundle
-uv run fastindex query examples/sample-bundle \
-  "What columns are on the orders BigQuery table?" -v
+export FASTINDEX_MODEL=gpt-5.6-luna
+
+uv run fastindex prepare PATH_TO_REPOSITORY
+uv run fastindex query PATH_TO_REPOSITORY \
+  "Where is request context isolation implemented?" --top-k 8 -v
 ```
 
-Set `FASTINDEX_MODEL` and its provider key for `prepare` and `tree-reason`; see [`.env.example`](.env.example). Those commands use [LiteLLM](https://docs.litellm.ai/). Decision-model queries use hosted APIs without keys under the current free terms. Preparation sends source text to the configured model provider; queries send index summaries and selected file previews. To prepare a new repository or wiki:
+Set the provider key required by the model; [`.env.example`](.env.example) lists the
+supported environment variables. Fastindex uses [LiteLLM](https://docs.litellm.ai/) for
+preparation and `tree-reason` calls. Source text is sent to that provider.
 
-```bash
-uv run fastindex prepare PATH
-uv run fastindex query PATH "your question"
-```
-
-`prepare` preserves existing nonempty `index.md` files. Use `--force` to regenerate them after source changes; it overwrites hand-written indexes. `FASTINDEX_PREPARE_MODEL` can select a different preparation model, and `FASTINDEX_TREE_REASON_MODEL` can select a different query model. Preparation ignores `log.md`, common generated and dependency directories, symlinks, hidden files, and binary files. `fastindex lint` checks OKF Markdown bundles; arbitrary source repositories need not pass it.
-
-### Commands
+`prepare` keeps existing nonempty `index.md` files. Pass `--force` to regenerate them
+after source changes; this overwrites hand-written indexes. It skips hidden files,
+symlinks, binaries, and common generated or dependency directories.
 
 | Command | Purpose |
 |---|---|
-| `fastindex prepare` | Write model-generated `index.md` files bottom-up |
-| `fastindex query` | Retrieve evidence spans; `--parallelism` limits concurrent model calls |
+| `fastindex prepare` | Generate directory indexes from the bottom up |
+| `fastindex query` | Return ranked evidence spans from an owned tree strategy |
 | `fastindex lint` | Check an OKF Markdown bundle and its links |
-| `fastindex generate-index` | Generate indexes from concept frontmatter without model summaries |
+| `fastindex generate-index` | Build indexes from concept frontmatter without model summaries |
 
-### Run the evaluation harness
+## Reproduce the evaluation
+
+The gold fixture is tracked at
+[`evals/fixtures/queries/codebase_qa.jsonl`](evals/fixtures/queries/codebase_qa.jsonl).
+The Flask corpus comes from a sibling `agent-learning-bench` checkout and is copied into
+a gitignored directory before preparation.
 
 ```bash
-uv sync --extra evals
-uv run python -m evals.bench
-uv run python -m evals.bench --strategies tree-reason,bm25,fts
-uv run python -m evals.analyze --misses
+uv sync --extra dev
+uv run python -m evals.prepare stage-codebase-qa
+
+FASTINDEX_PREPARE_MODEL=gpt-5.6-luna FASTINDEX_MAX_TOKENS=4096 \
+  uv run fastindex prepare evals/fixtures/external/codebase-qa-flask
+
+FASTINDEX_TREE_REASON_MODEL=gpt-5.6-luna uv run python -m evals.bench \
+  --bundle evals/fixtures/external/codebase-qa-flask \
+  --fixtures evals/fixtures/queries/codebase_qa.jsonl \
+  --strategies tree-reason,bm25,fts \
+  --top-k 8 --cutoffs 2,4,8 --repeats 3
 ```
 
-BM25, FTS, vector search, and external QMD/Cognee adapters live under `evals/` for comparison. The harness records span-level quality, latency, model usage, and setup; its results go to gitignored `evals/results/`. See [the algorithm and knobs](docs/tree-reason.md) and [the domain glossary](CONTEXT.md).
+Run the plain-agent baseline against the original source tree so it cannot read the
+generated indexes:
 
-## Open questions
+```bash
+FASTINDEX_PI_MODEL=openai/gpt-5.6-luna uv run python -m evals.bench \
+  --bundle ../agent-learning-bench/tasks/codebase-qa/environment/data/repo \
+  --fixtures evals/fixtures/queries/codebase_qa.jsonl \
+  --strategies pi --top-k 8 --cutoffs 2,4,8 --wall-budget 180 \
+  --out evals/results/codebase-qa-pi.json
 
-- Does directory routing keep recall on larger repositories and less curated trees?
-- How should evidence from several branches be ranked before the `top_k` cutoff?
-- When does parallel traversal lower latency enough to justify its extra calls?
-- Can a typed decision model match LLM span recall on larger corpora and multi-page questions?
-- How should cross-page links be followed for multi-hop queries?
+uv run python -m evals.analyze evals/results/codebase-qa-pi.json --misses
+```
+
+Pi must be installed and available on `PATH`. The harness starts a new Pi session for
+each question, disables extensions, skills, prompt templates, context files, and write
+tools, then parses its ranked JSON spans. The evaluation package also contains BM25, FTS,
+vector, reranking, and optional knowledge-graph baselines.
+
+## Limits and open questions
+
+- The result covers one Python repository and one model. Pi has only one run, so its
+  variance is unknown.
+- Preparation has a real up-front cost. We do not yet have a complete setup measurement
+  or a defensible break-even point.
+- The current walk does not follow symbol references or links after retrieval, so it can
+  miss multi-hop evidence.
+- Returned spans are emitted in traversal order. A separate ranking step may improve the
+  top-k tradeoff.
+- The next controlled experiment is to give Pi a Fastindex retrieval tool and measure
+  whether it keeps Pi's recall while reducing agent search turns and tokens.
 
 ## License
 

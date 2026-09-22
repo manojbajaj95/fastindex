@@ -9,11 +9,10 @@ standalone demo bundle.
 
 ## Demo GIF
 
-`tree_reason_gif.py` renders the tree-reason walk animation used in the
-README (`docs/assets/tree-reason.gif`):
+`tree_reason_gif.py` renders the tree-reason walk animation directly to
+`docs/assets/tree-reason.gif`:
 
 ```bash
 uv run --with matplotlib --with networkx --with pillow \
   python examples/tree_reason_gif.py
-cp examples/tree-reason.gif docs/assets/tree-reason.gif
 ```

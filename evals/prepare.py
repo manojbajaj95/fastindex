@@ -14,8 +14,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import shutil
 import sys
 from dataclasses import asdict, dataclass, field
+from pathlib import Path
 from typing import Any
 
 from evals import FIXTURES, REPO_ROOT
@@ -23,6 +25,16 @@ from evals import FIXTURES, REPO_ROOT
 ROOT = REPO_ROOT
 EXTERNAL = FIXTURES / "external"
 CACHE = EXTERNAL / ".cache"
+CODEBASE_QA_BUNDLE = EXTERNAL / "codebase-qa-flask"
+DEFAULT_CODEBASE_QA_SOURCE = (
+    REPO_ROOT.parent
+    / "agent-learning-bench"
+    / "tasks"
+    / "codebase-qa"
+    / "environment"
+    / "data"
+    / "repo"
+)
 
 
 @dataclass(frozen=True)
@@ -126,7 +138,7 @@ BENCHMARKS: dict[str, BenchSource] = {
             "paper": "https://arxiv.org/abs/2311.11944",
             "github": "https://github.com/patronus-ai/financebench",
         },
-        notes="PageIndex/Mafin’s claimed arena (answer accuracy on SEC filings).",
+        notes="Long-document evaluation with evidence text and page-level provenance.",
         fetch="github",
     ),
     "contextbench": BenchSource(
@@ -149,38 +161,6 @@ BENCHMARKS: dict[str, BenchSource] = {
 
 
 PEERS: list[PeerEval] = [
-    PeerEval(
-        name="PageIndex / Mafin 2.5 (VectifyAI)",
-        paper_or_docs="No standalone PageIndex academic paper; product + FinanceBench eval repo",
-        benchmarks=("FinanceBench (SEC 10-K/Q/8-K QA)",),
-        metrics="Answer accuracy (~98.7% claimed on full set); not span-recall",
-        relevance="Long-doc / tree-reason later track. Their answer accuracy ≠ our C.",
-        urls={
-            "github": "https://github.com/VectifyAI/PageIndex",
-            "eval": "https://github.com/VectifyAI/Mafin2.5-FinanceBench",
-            "financebench": "https://arxiv.org/abs/2311.11944",
-            "blog": "https://pageindex.ai/blog/Mafin2.5",
-        },
-    ),
-    PeerEval(
-        name="QMD (tobi/qmd)",
-        paper_or_docs="No paper — CLI docs + qmd bench fixtures (regression, not SOTA leaderboard)",
-        benchmarks=(
-            "User vault fixtures (doc-level expected paths)",
-            "Shipped example: src/bench/fixtures/example.json + test/eval-docs/",
-        ),
-        metrics="Precision@k, recall, MRR, F1, latency across bm25/vector/hybrid/full",
-        relevance=(
-            "Closest operational twin: markdown KB, hybrid backends, fixture JSON. "
-            "File-level gold, not span lines. "
-            "Key peer ideas: BM25+vec+RRF+rerank cascade; path-prefix context tree on hits; "
-            "position-aware RRF/rerank blend. Our adapter uses qmd query (hybrid+rerank)."
-        ),
-        urls={
-            "github": "https://github.com/tobi/qmd",
-            "bench_pr": "https://github.com/tobi/qmd/pull/470",
-        },
-    ),
     PeerEval(
         name="Microsoft FastContext",
         paper_or_docs="FastContext: Training Efficient Repository Explorer (arXiv 2606.14066)",
@@ -305,6 +285,30 @@ def cmd_list(_: argparse.Namespace) -> int:
 
 def cmd_peers(_: argparse.Namespace) -> int:
     print(json.dumps([asdict(p) for p in PEERS], indent=2))
+    return 0
+
+
+def cmd_stage_codebase_qa(args: argparse.Namespace) -> int:
+    """Copy the frozen Codebase QA repository into local ignored fixtures."""
+    source = args.source.resolve()
+    if not source.is_dir():
+        print(f"Codebase QA source not found: {source}", file=sys.stderr)
+        return 2
+    if CODEBASE_QA_BUNDLE.exists():
+        print(
+            f"Destination already exists: {CODEBASE_QA_BUNDLE}\n"
+            "Remove it explicitly before restaging; existing prepared indexes are preserved.",
+            file=sys.stderr,
+        )
+        return 2
+    CODEBASE_QA_BUNDLE.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copytree(
+        source,
+        CODEBASE_QA_BUNDLE,
+        symlinks=True,
+        ignore=shutil.ignore_patterns(".git", ".fastindex", "__pycache__", "index.md"),
+    )
+    print(json.dumps({"source": str(source), "bundle": str(CODEBASE_QA_BUNDLE)}, indent=2))
     return 0
 
 
@@ -449,8 +453,20 @@ def main() -> int:
     p_list = sub.add_parser("list", help="List target public benchmarks (no network)")
     p_list.set_defaults(func=cmd_list)
 
-    p_peers = sub.add_parser("peers", help="What PageIndex/QMD/GraphRAG/etc. evaluate on")
+    p_peers = sub.add_parser("peers", help="Show evaluation methods used by related systems")
     p_peers.set_defaults(func=cmd_peers)
+
+    p_codebase = sub.add_parser(
+        "stage-codebase-qa",
+        help="Copy the sibling agent-learning-bench Flask corpus into ignored fixtures",
+    )
+    p_codebase.add_argument(
+        "--source",
+        type=Path,
+        default=DEFAULT_CODEBASE_QA_SOURCE,
+        help=f"Frozen Flask repository (default: {DEFAULT_CODEBASE_QA_SOURCE})",
+    )
+    p_codebase.set_defaults(func=cmd_stage_codebase_qa)
 
     p_dl = sub.add_parser(
         "download",

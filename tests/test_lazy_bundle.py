@@ -60,6 +60,10 @@ def test_lazy_bundle_opens_only_requested_directory_and_file(tmp_path: Path, mon
     code = bundle.get_concept("nested/code.py")
     assert code is not None
     assert [(s.start_line, s.end_line) for s in code.sections] == [(1, 80), (81, 81)]
+    assert [concept.path for concept in bundle.iter_concepts()] == [
+        "nested/code.py",
+        "nested/page.md",
+    ]
 
 
 def test_eager_bundle_accessors_keep_existing_behavior(tmp_path: Path) -> None:
@@ -70,6 +74,7 @@ def test_eager_bundle_accessors_keep_existing_behavior(tmp_path: Path) -> None:
     assert bundle.get_index("") == "# Index\n"
     assert bundle.get_concept("page.md") is bundle.concepts["page.md"]
     assert bundle.get_concept("missing.md") is None
+    assert [concept.path for concept in bundle.iter_concepts()] == ["page.md"]
 
 
 def test_lazy_bundle_cache_publication_is_safe_across_workers(tmp_path: Path) -> None:

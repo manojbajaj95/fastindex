@@ -5,50 +5,53 @@ small, readable directory index, then walks that tree at query time to return fi
 line spans. The aim is to reduce the search work an agent has to do before answering a
 codebase question.
 
-It is not a search engine replacement yet. The strongest measured hybrid combines a
-Jev tree walk, BM25 and FTS candidates, a batched Jev rerank, and one answer call. It
-scored 0.891 rather than a plain coding agent's 0.953 while reducing answer cost by 83%.
+Fastindex stops after finding context; answer generation is a separate downstream step.
+On Codebase QA, the strongest measured hybrid retrieved 0.905 of the curated gold
+evidence for $0.00068 per question. In the downstream answer experiment, retrieval was
+only 8.6% of system cost. The single LLM answer call cost 10.6 times more than finding
+the context.
 
 ![A Fastindex tree walk](docs/assets/tree-reason.gif)
 
-## Codebase QA result
+## Codebase QA retrieval result
 
 We used all 48
 [Codebase QA](https://github.com/manojbajaj95/agent-learning-bench/tree/main/tasks/codebase-qa)
 questions against Flask at commit `85c5d93`.
 
-### End-to-end answers
+Fastindex is being evaluated as a retriever: did it find the files containing the
+curated gold lines, how long did that take, and what did it cost? Generated-answer
+scoring is retained only as a downstream check that the retrieved context is useful. It
+also measures answer-model and judge behavior, so it is not the primary retrieval
+metric. Improving the answer stage is deferred.
 
-The first hybrids use TypeSafe Jev to route to whole files, add BM25 fallback results,
-then make one `gpt-5.6-luna` call. The newer reranked hybrid unions Jev, eight unique
-BM25 files, and eight unique FTS files; applies one batched Jev Noul rerank; and sends
-the best four whole files to the same answer model. All Jev hybrids use the wider
-`0.04` / `0.05` branch thresholds unless marked default.
+### Cost of finding context
 
-| System | Answer score | Model calls/query | Input tokens/query | Cost/query |
+The best retrieval-only pipeline uses a Jev tree walk, eight unique BM25 files, eight
+unique FTS files, and one batched Jev Noul rerank. It cost about $0.033 to retrieve
+context for all 48 questions.
+
+| Retriever | Gold coverage | File recall | Time/query | Cost/query |
 |---|---:|---:|---:|---:|
-| Plain Pi agent | **0.953** | 8.10 | 47,219 | $0.04696 |
-| Jev route + BM25, default | 0.828 | **3.46** | **22,328** | **$0.00444** |
-| Jev route + BM25, wider | 0.870 | 3.96 | 28,977 | $0.00562 |
-| Jev + BM25 + FTS, Jev rerank, top 4 | 0.891 | 4.96 | 49,009 | $0.00792 |
+| Plain Pi retrieval agent | **0.932** | **1.000** | 19.40 s | $0.00656 |
+| Jev + BM25 + FTS -> Jev Noul | 0.905 | 0.899 | **4.19 s** | **$0.00068** |
 
-The reranked hybrid produced 39 of 48 full-score answers. Against Pi it used 39% fewer
-model calls and cost 83% less, but scored 0.062 lower. It did **not** reduce input
-tokens: its 49,009 tokens per query were 4% higher than Pi's reported 47,219. The cost
-saving therefore comes from replacing agent turns with cheap decisions and one answer
-call, not from processing less text.
+The hybrid was 9.6 times cheaper and 4.6 times faster than Pi retrieval, with lower
+recall. This is not a perfectly like-for-like output: Pi returned up to eight precise
+spans, while the hybrid selected whole files subject to a 200,000-character context
+cap. The comparison answers the operational question—how cheaply can we put relevant
+code in front of an answering model—not which output is more precise.
 
-Against the cheaper wide route-and-answer hybrid, reranking raised answer score by
-0.021 and cost by 41%. Sending eight reranked files instead of four produced the same
-0.891 answer score in a separate single run, while raising cost from $0.00792 to
-$0.01092. Four files are the best measured operating point, not a proven optimum.
+In the four-file downstream run, the cost separated as follows:
 
-The answer score uses the benchmark's 1–5 rubric normalized to 0–1. The hybrid harness
-used the same judge model and criterion as Codebase QA, but ran directly rather than
-inside Harbor. Judge calls cost another $0.00043 per question and are evaluation
-overhead, so they are excluded from system cost. All answer results are single runs. Pi
-tokens include cache reads; TypeSafe and answer-model usage come from their respective
-APIs.
+| Stage | Cost/query | Time/query | Share of system cost |
+|---|---:|---:|---:|
+| Find and rerank context | **$0.00068** | 4.36 s | 8.6% |
+| Generate one answer with `gpt-5.6-luna` | $0.00723 | 8.84 s | **91.4%** |
+| Retrieval + answer | $0.00792 | 13.20 s | 100% |
+
+Finding context is therefore already cheap. The major remaining cost is reading that
+context and generating the answer, which is a later optimization target.
 
 ### Hybrid retrieval ablations
 
@@ -74,6 +77,24 @@ coverage from 0.483 to 0.736, and adding tree candidates raised it to 0.905. The
 preserved most of that signal in the files that fit the context budget. See the
 [hybrid evaluation](docs/hybrid-evaluation.md) for the design, failure analysis, and
 open experiments.
+
+### Downstream answer diagnostic
+
+For completeness, we also gave the retrieved files to one `gpt-5.6-luna` call and
+scored its answer against the hidden reference. This evaluates the complete retrieval
+plus generation path; it does not isolate retrieval quality.
+
+| System | Answer score | Model calls/query | Input tokens/query | Cost/query |
+|---|---:|---:|---:|---:|
+| Plain Pi agent | **0.953** | 8.10 | 47,219 | $0.04696 |
+| Jev route + BM25, wider | 0.870 | **3.96** | **28,977** | **$0.00562** |
+| Jev + BM25 + FTS, Jev rerank, top 4 | 0.891 | 4.96 | 49,009 | $0.00792 |
+
+The top-four hybrid produced 39 of 48 full-score answers and cost 83% less than Pi,
+but scored 0.062 lower. Sending up to eight files produced the same 0.891 score while
+raising cost to $0.01092. These are single runs and include answer-model behavior;
+they should not be read as retriever scores. The benchmark judge added another
+$0.00044 per question as evaluation overhead, excluded from system cost.
 
 ### Retrieval-only controls
 

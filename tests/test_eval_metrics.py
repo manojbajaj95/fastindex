@@ -6,6 +6,7 @@ import pytest
 from evals import FIXTURES, SAMPLE_BUNDLE
 from evals.baselines.pi_agent import _parse_pi_output
 from evals.bench import load_fixtures, parse_cutoffs, validate_fixtures
+from evals.hybrid import _json_object, build_context
 from evals.index import build_index, is_fresh, load_bm25_docs
 from evals.metrics import GoldSpan, file_set_metrics
 from fastindex.types import Span
@@ -133,3 +134,21 @@ def test_pi_output_parser_ignores_invalid_spans(tmp_path: Path) -> None:
     assert [(span.path, span.start_line, span.end_line) for span in spans] == [
         ("answer.py", 1, 1)
     ]
+
+
+def test_hybrid_context_preserves_ranked_whole_files_with_a_budget() -> None:
+    spans = [
+        Span("first.py", 1, 2, "one\ntwo\n"),
+        Span("second.py", 1, 1, "three\n"),
+    ]
+
+    context, included, dropped = build_context(spans, max_chars=45)
+
+    assert "===== first.py =====" in context
+    assert "00002: two" in context
+    assert [span.path for span in included] == ["first.py"]
+    assert dropped == ["second.py"]
+    assert _json_object('prefix {"score": 5, "reasoning": "ok"}') == {
+        "score": 5,
+        "reasoning": "ok",
+    }

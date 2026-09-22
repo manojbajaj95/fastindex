@@ -28,6 +28,8 @@ uv run python -m evals.bench
 uv run python -m evals.bench --strategies tree-reason,bm25,fts \
   --fixtures evals/fixtures/queries/multi_hop.jsonl
 uv run python -m evals.analyze --misses
+uv run python -m evals.hybrid --decision-min-probability 0.04 \
+  --decision-relative-probability 0.05
 # Optional peers:
 # uv run python -m evals.bench --strategies tree-reason,bm25,fts,vsearch,pi
 # uv run python -m evals.bench --strategies tree-reason,cognee --fixtures evals/fixtures/queries/multi_hop.jsonl

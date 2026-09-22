@@ -49,6 +49,17 @@ def test_decision_walk_prunes_wrong_branch_and_returns_section(tmp_path):
     assert limited.stats.truncated
     assert not limited.spans
 
+    files = TreeDecisionStrategy(FakeDecisionModel()).retrieve(
+        "find the answer",
+        load_lazy_bundle(tmp_path),
+        StrategyConfig(top_k=1, extra={"decision_return_files": True}),
+    )
+    assert [(s.path, s.start_line, s.end_line) for s in files.spans] == [
+        ("right/answer.md", 1, 2)
+    ]
+    assert files.stats.model_calls == 1
+    assert files.stats.extra["files_reached"] == ["right/answer.md"]
+
 
 def test_typesafe_model_maps_choice_probabilities(monkeypatch):
     captured = {}

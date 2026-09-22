@@ -233,6 +233,9 @@ class TreeDecisionStrategy:
         max_depth = 0
         usage = ModelUsage()
         truncated = False
+        return_files = bool(cfg.extra.get("decision_return_files"))
+        files_reached: list[str] = []
+        files_rejected: list[str] = []
         min_probability = float(cfg.extra.get("decision_min_probability", 0.12))
         relative_probability = float(cfg.extra.get("decision_relative_probability", 0.2))
         while pending and len(spans) < cfg.top_k:
@@ -286,6 +289,16 @@ class TreeDecisionStrategy:
                 concept = bundle.get_concept(path)
                 if concept is None or not concept.sections:
                     continue
+                files_reached.append(path)
+                if return_files:
+                    visited += 1
+                    spans.append(Span(
+                        path=path,
+                        start_line=1,
+                        end_line=len(concept.lines),
+                        text=concept.raw,
+                    ))
+                    continue
                 options = [_section_option(s, concept, query) for s in concept.sections]
                 try:
                     scores, used = _choose(
@@ -300,6 +313,7 @@ class TreeDecisionStrategy:
                 best_idx = max(range(len(scores)), key=scores.__getitem__)
                 section = concept.sections[best_idx]
                 if scores[best_idx] < 0.12:
+                    files_rejected.append(path)
                     continue
                 if section.heading == "(preamble)":
                     # The heading gate can favor frontmatter over a factual section;
@@ -326,6 +340,11 @@ class TreeDecisionStrategy:
             truncated=truncated,
             track="cold",
             model_id=usage.model_id or model.chat_model,
-            extra={"dirs_visited": dirs_visited, "branch_opens": visited - 1},
+            extra={
+                "dirs_visited": dirs_visited,
+                "branch_opens": visited - 1,
+                "files_reached": files_reached,
+                "files_rejected": files_rejected,
+            },
         )
         return RetrieveResult(spans=spans, stats=stats)

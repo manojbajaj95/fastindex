@@ -23,8 +23,6 @@ uv run fastindex prepare examples/sample-bundle  # fills missing index.md files 
 uv run fastindex lint examples/sample-bundle
 uv run fastindex query examples/sample-bundle "…" --strategy tree-reason
 uv run fastindex query examples/sample-bundle "…" --strategy tree-decision \
-  --decision-model classifier/jev
-uv run fastindex query examples/sample-bundle "…" --strategy tree-decision \
   --decision-model typesafe/jev-latest  # requires TYPESAFE_API_KEY
 uv run python -m evals.bench
 uv run python -m evals.bench --strategies tree-reason,bm25,fts \

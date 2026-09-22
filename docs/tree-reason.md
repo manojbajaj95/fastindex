@@ -68,19 +68,16 @@ Run:
 
 ```bash
 uv run fastindex query examples/sample-bundle "…" \
-  --strategy tree-decision --decision-model classifier/jev
+  --strategy tree-decision --decision-model typesafe/jev-latest
 ```
 
-Supported model specs are `classifier/jev`, `classifier/laya`, and
-`typesafe/<model>`. The classifier.dev routes currently need no key. TypeSafe
-uses `TYPESAFE_API_KEY`, defaults to `jev-latest`, and reports the resolved
-model version. `FASTINDEX_DECISION_MODEL` provides the default model spec for
-the CLI and benchmark harness.
+TypeSafe uses `TYPESAFE_API_KEY`, defaults to `typesafe/jev-latest`, and reports
+the resolved model version. `FASTINDEX_DECISION_MODEL` can pin another TypeSafe
+Jev version for the CLI and benchmark harness.
 
-classifier.dev does not report compatible token counts, so those runs record a
-rough character-based estimate. TypeSafe reports token usage, and cost is
-estimated from its documented input-token price. A large node may require
-several bounded requests. The strategy selects one section per opened page; if
-the model selects frontmatter, it returns the whole page to retain factual
-sections. See the [TypeSafe API](https://docs.typesafe.ai/api) and the
+TypeSafe reports token usage, and cost is estimated from its documented
+input-token price. A large node may require several bounded requests. The
+strategy selects one section per opened page; if the model selects frontmatter,
+it returns the whole page to retain factual sections. See the
+[TypeSafe API](https://docs.typesafe.ai/api) and the
 [matched evaluation](tree-decision-evaluation.md).

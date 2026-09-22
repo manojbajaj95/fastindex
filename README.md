@@ -23,6 +23,7 @@ an answer.
 | Retriever | Span recall@8 | Span precision@8 | Span F1@8 | File recall@8 | Time/query | Input tokens/query | Cost/query |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | Fastindex `tree-reason` | 0.693 | 0.679 | **0.639** | 0.729 | 13.70 s | 11,019 | $0.00306 |
+| Fastindex `tree-decision` / TypeSafe Jev | 0.391 | 0.585 | 0.439 | 0.668 | 3.68 s | 7,156 | $0.00030 |
 | Plain Pi agent | **0.932** | 0.464 | 0.593 | **1.000** | 19.40 s | 51,196 | $0.00656 |
 | BM25 | 0.521 | 0.138 | 0.209 | 0.557 | **0.090 s** | 0 | $0 |
 | FTS | 0.370 | 0.070 | 0.115 | 0.370 | 0.127 s | 0 | $0 |
@@ -32,21 +33,29 @@ Span recall as the result budget grows:
 | Retriever | Recall@2 | Recall@4 | Recall@8 |
 |---|---:|---:|---:|
 | Fastindex `tree-reason` | 0.519 | 0.622 | 0.693 |
+| Fastindex `tree-decision` / TypeSafe Jev | 0.370 | 0.391 | 0.391 |
 | Plain Pi agent | **0.679** | **0.866** | **0.932** |
 | BM25 | 0.274 | 0.373 | 0.521 |
 | FTS | 0.118 | 0.170 | 0.370 |
 
-In these runs, Fastindex was 29% faster than Pi, used 78% fewer input tokens, and cost
-53% less per query. Pi still found substantially more of the gold evidence. Fastindex's
-higher span precision made its span F1 slightly better, but that does not make up for the
-recall gap when missing evidence is expensive.
+In these runs, `tree-reason` was 29% faster than Pi, used 78% fewer input tokens, and
+cost 53% less per query. Pi still found substantially more of the gold evidence.
+Tree-reason's higher span precision made its span F1 slightly better, but that does not
+make up for the recall gap when missing evidence is expensive.
 
-Both model-driven retrievers used `gpt-5.6-luna`. Fastindex, BM25, and FTS are means over
-three runs per question; Pi has one run per question. Pi ran in a fresh session with only
-`read`, `grep`, `find`, and `ls`, against the original source tree without generated
-indexes. Pi input tokens include cache reads. BM25 and FTS searched source files, not the
-generated summaries. Times are local wall-clock measurements and costs are the values
-recorded by the harness at run time.
+TypeSafe Jev made `tree-decision` 3.7 times faster and 10.2 times cheaper than
+`tree-reason`, but its span recall fell from 0.693 to 0.391. Its 0.668 file recall shows
+that it often reached a relevant file but chose the wrong fixed 80-line section. This is
+the main failure mode to investigate before using the cheaper decision model as an agent
+retrieval tool.
+
+`tree-reason` and Pi used `gpt-5.6-luna`; `tree-decision` used the official TypeSafe Jev
+API, which resolved `jev-latest` to Jev 1.13.0. Tree-reason, BM25, and FTS are means over
+three runs per question; TypeSafe Jev and Pi each have one run. Pi ran in a fresh session
+with only `read`, `grep`, `find`, and `ls`, against the original source tree without
+generated indexes. Pi input tokens include cache reads. BM25 and FTS searched source
+files, not the generated summaries. Times are local wall-clock measurements and costs
+are the values recorded by the harness at run time.
 
 The table excludes one-time preparation. The completed artifact has 52 `index.md` files,
 59,951 bytes of index text, and covers 234 source files. Preparation was resumed after
@@ -71,7 +80,7 @@ and a routing decision can prune the right branch. There is no worst-case logari
 guarantee.
 
 Fastindex also includes experimental `tree-decision`, which replaces generated routing
-choices with typed decisions from classifier.dev or TypeSafe System One. See the
+choices with typed decisions from TypeSafe System One using Jev. See the
 [strategy documentation](docs/tree-reason.md#decision-model-variant) and
 [matched evaluation](docs/tree-decision-evaluation.md).
 
@@ -120,7 +129,16 @@ FASTINDEX_TREE_REASON_MODEL=gpt-5.6-luna uv run python -m evals.bench \
   --fixtures evals/fixtures/queries/codebase_qa.jsonl \
   --strategies tree-reason,bm25,fts \
   --top-k 8 --cutoffs 2,4,8 --repeats 3
+
+FASTINDEX_DECISION_MODEL=typesafe/jev-latest uv run python -m evals.bench \
+  --bundle evals/fixtures/external/codebase-qa-flask \
+  --fixtures evals/fixtures/queries/codebase_qa.jsonl \
+  --strategies tree-decision --top-k 8 --cutoffs 2,4,8 \
+  --wall-budget 180 --call-budget 32 \
+  --out evals/results/codebase-qa-tree-decision-typesafe-r1.json
 ```
+
+The TypeSafe run requires `TYPESAFE_API_KEY`.
 
 Run the plain-agent baseline against the original source tree so it cannot read the
 generated indexes:
@@ -142,8 +160,8 @@ vector, reranking, and optional knowledge-graph baselines.
 
 ## Limits and open questions
 
-- The result covers one Python repository and one model. Pi has only one run, so its
-  variance is unknown.
+- The result covers one Python repository. TypeSafe Jev and Pi each have only one run,
+  so their variance is unknown.
 - Preparation has a real up-front cost. We do not yet have a complete setup measurement
   or a defensible break-even point.
 - The current walk does not follow symbol references or links after retrieval, so it can

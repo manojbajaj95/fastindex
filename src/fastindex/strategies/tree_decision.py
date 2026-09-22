@@ -19,7 +19,6 @@ from fastindex.strategies.tree_reason import _section_preview
 from fastindex.types import RetrieveResult, RunStats, Span
 
 _LINK = re.compile(r"\[[^]]+\]\(([^)]+)\)\s*[—–-]?\s*(.*)")
-_DEFAULT_INSTRUCTIONS = "Choose the source with direct evidence to answer the user question."
 _TYPESAFE_INSTRUCTIONS = (
     "Choose the best route toward answer evidence. Directory options summarize descendants, "
     "so select a directory when a descendant could answer. Choose none only when the question "
@@ -40,78 +39,6 @@ class DecisionModel(Protocol):
     def format_option(self, option: str) -> str: ...
 
     def choose(self, state: str, options: list[str]) -> tuple[list[float], ModelUsage]: ...
-
-
-class ClassifierDevModel:
-    """Free classifier.dev routes to Jev or the Laya trial."""
-
-    def __init__(self, model: str = "jev", *, instructions: str | None = None) -> None:
-        if model not in {"jev", "laya"}:
-            raise ValueError("Classifier model must be 'jev' or 'laya'")
-        self.model = model
-        self.chat_model = f"classifier/{model}"
-        self.input_cost_per_million = 0.0
-        self.max_options = 15 if model == "laya" else 99
-        self.max_request_chars = 1200 if model == "laya" else 2800
-        self.max_option_chars = 95 if model == "laya" else 190
-        self.instructions = (
-            instructions
-            or os.getenv("FASTINDEX_DECISION_INSTRUCTIONS")
-            or os.getenv("FASTINDEX_CLASSIFIER_INSTRUCTIONS")
-            or _DEFAULT_INSTRUCTIONS
-        )
-
-    def format_option(self, option: str) -> str:
-        head, _, topics = option.partition("; subtopics: ")
-        if topics:
-            path, _, summary = head.partition(": ")
-            option = f"{path}: {topics}; {summary[:85]}"
-        return option[:self.max_option_chars]
-
-    def choose(self, state: str, options: list[str]) -> tuple[list[float], ModelUsage]:
-        labels = [self.format_option(option) for option in options]
-        labels.append("none of these")
-        body = {
-            "model": self.model,
-            "processing": "fast",
-            "input": state,
-            "labels": labels,
-            "instructions": self.instructions,
-        }
-        request = Request(
-            "https://classifier.dev",
-            json.dumps(body).encode(),
-            {"content-type": "application/json", "user-agent": "fastindex/0.1"},
-            method="POST",
-        )
-        for attempt in range(4):
-            try:
-                with urlopen(request, timeout=30) as response:
-                    data = json.load(response)
-                break
-            except HTTPError as exc:
-                if self.model == "laya" and exc.code in {429, 503} and attempt < 3:
-                    delay = float(exc.headers.get("Retry-After", 2 ** attempt))
-                    time.sleep(min(max(delay, 1), 15))
-                    continue
-                raise RuntimeError(f"classifier.dev HTTP {exc.code}") from exc
-        results = data.get("results")
-        if not isinstance(results, list) or len(results) != 1:
-            raise RuntimeError("classifier.dev returned an incomplete choice result")
-        result = results[0]
-        actual_model = result.get("model", "")
-        if not actual_model.startswith(self.model) or not isinstance(result.get("scores"), dict):
-            raise RuntimeError("classifier.dev returned another model or no scores")
-        scores = result["scores"]
-        if any(label not in scores or not isinstance(scores[label], (int, float))
-               for label in labels):
-            raise RuntimeError("classifier.dev returned invalid choice probabilities")
-        usage = ModelUsage(
-            calls=1,
-            input_tokens=len(json.dumps(body)) // 4,
-            model_id=f"classifier.dev/{actual_model}",
-        )
-        return [float(scores[label]) for label in labels], usage
 
 
 class TypeSafeModel:
@@ -208,15 +135,10 @@ class TypeSafeModel:
 
 def make_decision_model(spec: str | None = None) -> DecisionModel:
     """Create a provider adapter from ``provider/model`` configuration."""
-    spec = spec or os.getenv("FASTINDEX_DECISION_MODEL", "classifier/jev")
+    spec = spec or os.getenv("FASTINDEX_DECISION_MODEL", "typesafe/jev-latest")
     provider, separator, model = spec.partition("/")
     if not separator or not model:
-        raise ValueError(
-            "Decision model must be provider/model, for example classifier/jev "
-            "or typesafe/jev-latest"
-        )
-    if provider == "classifier":
-        return ClassifierDevModel(model)
+        raise ValueError("Decision model must be typesafe/model, such as typesafe/jev-latest")
     if provider == "typesafe":
         return TypeSafeModel(model)
     raise ValueError(f"Unknown decision model provider: {provider}")

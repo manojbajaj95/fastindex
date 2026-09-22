@@ -5,7 +5,6 @@ from fastindex.bundle import load_lazy_bundle
 from fastindex.models import ModelUsage
 from fastindex.strategies import StrategyConfig, list_strategies, tree_decision
 from fastindex.strategies.tree_decision import (
-    ClassifierDevModel,
     TreeDecisionStrategy,
     TypeSafeModel,
     make_decision_model,
@@ -49,38 +48,6 @@ def test_decision_walk_prunes_wrong_branch_and_returns_section(tmp_path):
     assert limited.stats.model_calls == 1
     assert limited.stats.truncated
     assert not limited.spans
-
-
-def test_classifier_model_maps_returned_scores(monkeypatch):
-    captured = {}
-
-    class Response(BytesIO):
-        def __enter__(self):
-            return self
-
-        def __exit__(self, *_args):
-            self.close()
-
-    def fake_urlopen(request, timeout):
-        body = json.loads(request.data)
-        captured.update(body)
-        labels = body["labels"]
-        payload = {
-            "results": [{
-                "model": "jev-test",
-                "scores": dict(zip(labels, [0.8, 0.15, 0.05], strict=True)),
-            }],
-        }
-        return Response(json.dumps(payload).encode())
-
-    monkeypatch.setattr(tree_decision, "urlopen", fake_urlopen)
-
-    scores, usage = ClassifierDevModel("jev").choose("question", ["first", "second"])
-
-    assert captured["labels"] == ["first", "second", "none of these"]
-    assert scores == [0.8, 0.15, 0.05]
-    assert usage.calls == 1
-    assert usage.model_id == "classifier.dev/jev-test"
 
 
 def test_typesafe_model_maps_choice_probabilities(monkeypatch):
@@ -133,9 +100,10 @@ def test_typesafe_model_maps_choice_probabilities(monkeypatch):
     assert usage.model_id == "typesafe/jev-1.13.0"
 
 
-def test_decision_model_factory_selects_provider(monkeypatch):
+def test_decision_model_factory_uses_configured_typesafe_model(monkeypatch):
     monkeypatch.setenv("FASTINDEX_DECISION_MODEL", "typesafe/jev-1.13.0")
 
-    assert isinstance(make_decision_model(), TypeSafeModel)
-    assert isinstance(make_decision_model("classifier/laya"), ClassifierDevModel)
+    model = make_decision_model()
+    assert isinstance(model, TypeSafeModel)
+    assert model.model == "jev-1.13.0"
     assert list_strategies() == ["tree-decision", "tree-reason"]

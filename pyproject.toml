@@ -1,7 +1,7 @@
 [project]
 name = "fastindex"
 version = "0.1.0"
-description = "Research preview for model-guided code context retrieval with prepared tree indexes"
+description = "Fast code context retrieval with readable, model-guided tree indexes"
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]

@@ -1,10 +1,11 @@
-# Jev, lexical retrieval, and answer hybrid
+# Hybrid retrieval studies
 
 This note records the September 22, 2026 Codebase QA experiments that combine
-Fastindex's TypeSafe Jev tree walk, BM25, FTS, a Jev reranker, and one
-`gpt-5.6-luna` answer call. It reports single runs over all 48 questions against
-Flask commit `85c5d93`. The raw run files remain local under the gitignored
-`evals/results/` directory.
+Fastindex's TypeSafe Jev tree walk, BM25, FTS, and a Jev reranker. Retrieval is
+the system under study; a separate `gpt-5.6-luna` answer experiment is retained
+as a downstream context-utility diagnostic. Results are single runs over all 48
+questions against Flask commit `85c5d93`. Raw runs remain local under the
+gitignored `evals/results/` directory.
 
 ## System under test
 
@@ -17,8 +18,9 @@ The best measured pipeline is:
 3. Form a pool of at most 16 files with reciprocal-rank fusion.
 4. Send bounded path, index-summary, and lexical-excerpt descriptions to one
    TypeSafe System One request containing one Noul question per candidate.
-5. Rank by Noul relevance score and send the best four whole, line-numbered
-   files to one `gpt-5.6-luna` answer call.
+5. Rank by Noul relevance score and return up to eight whole, line-numbered
+   files under a 200,000-character cap. The downstream answer variant uses the
+   best four files.
 
 The reranker follows the pattern in TypeSafe's
 [reranking cookbook](https://docs.typesafe.ai/cookbooks/rerank_typesafe): use
@@ -29,6 +31,27 @@ experiment was motivated by
 [Steerable Reranking: How JEV Solves RAG](https://www.youtube.com/watch?v=UhGH8cNG0qs),
 but the implementation is based on the published Noul API rather than claims
 from the video.
+
+## Pi retrieval comparison
+
+The primary comparison asks whether retrieval returned context overlapping
+every curated gold span, and how long retrieval took. A query counts as
+complete only when every gold span is present.
+
+| Retriever | Complete context | Mean gold coverage | Time/query | Retrieval time per complete result |
+|---|---:|---:|---:|---:|
+| Plain Pi retrieval agent | **41/48 (85.4%)** | **0.932** | 19.40 s | 22.71 s |
+| Jev + BM25 + FTS -> Jev Noul | 38/48 (79.2%) | 0.905 | **4.19 s** | **5.29 s** |
+
+The last column divides total retrieval time by complete-context results. The
+hybrid was 4.3 times faster by that measure while completing 6.2 percentage
+points fewer questions. Across all 48 queries, it produced 38 complete contexts
+in about 201 seconds; Pi produced 41 in about 931 seconds.
+
+This is an outcome comparison, not a context-size comparison. Pi returned up
+to eight precise spans. The hybrid returned up to eight whole files under the
+context cap. The hybrid therefore reduced retrieval time while passing more
+text to whatever consumes the result.
 
 ## Retrieval ablations
 
@@ -130,9 +153,13 @@ but it is not part of the proposed system.
 
 ## Recommendation
 
-Use the top-four reranked pipeline as the best measured quality/cost point:
-Jev tree routing, unique BM25 and FTS candidates, a 16-file fused pool, one
-batched Jev Noul rerank, four whole files, then one answer call.
+For context retrieval, use Jev tree routing, unique BM25 and FTS candidates, a
+16-file fused pool, one batched Jev Noul rerank, and up to eight whole files
+under the context cap. This is the best measured retrieval configuration.
+
+For the separate downstream answer diagnostic, four reranked files were the
+best measured quality/cost point; eight files produced the same answer score
+at higher cost.
 
 Do not put BM25 or FTS on the Fastindex product surface. They remain evaluation
 sidecars in `evals/`; the owned retriever is still the tree. Do not claim that
@@ -141,7 +168,7 @@ evidence covers one repository with single runs.
 
 ## Open questions and next studies
 
-1. Repeat the top-four and wide route-and-answer runs to estimate routing,
+1. Repeat the retrieval comparison and top-four answer run to estimate routing,
    answer, and judge variance.
 2. Select two, four, or six files adaptively from Noul score margins instead of
    using a fixed cutoff.
@@ -158,16 +185,17 @@ evidence covers one repository with single runs.
 
 ## Reproduce
 
+Retrieval-only comparison:
+
 ```bash
 FASTINDEX_MAX_TOKENS=2048 uv run python -m evals.hybrid \
   --sources jev,bm25,fts --jev-k 8 --bm25-k 8 --fts-k 8 \
-  --candidate-k 16 --file-k 4 --jev-rerank \
+  --candidate-k 16 --file-k 8 --jev-rerank --retrieval-only \
   --decision-min-probability 0.04 \
   --decision-relative-probability 0.05 \
-  --out evals/results/codebase-qa-hybrid-reranked-r1.json
+  --out evals/results/codebase-qa-hybrid-reranked-retrieval-r1.json
 ```
 
-The run requires `TYPESAFE_API_KEY`, `OPENAI_API_KEY`, the prepared Flask
-bundle, and the sibling `agent-learning-bench` checkout for hidden reference
-answers. Add `--retrieval-only` to measure the retrieval stages without answer
-or judge calls.
+This run requires `TYPESAFE_API_KEY` and the prepared Flask bundle. Remove
+`--retrieval-only`, set `--file-k 4`, and provide `OPENAI_API_KEY` plus the
+sibling `agent-learning-bench` checkout to reproduce the answer diagnostic.

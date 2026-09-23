@@ -19,6 +19,7 @@ venv/
 goal.md
 DECISIONS.md
 gold.md
+setup.md
 
 # Bench outputs (local only — do not commit runs)
 results/

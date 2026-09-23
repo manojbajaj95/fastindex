@@ -1,6 +1,7 @@
 # Contributing
 
 Thanks for helping with **fastindex**. The product is **tree-reason**; measurement baselines live under **`evals/`**.
+Participation is governed by the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Setup
 
@@ -8,6 +9,8 @@ Thanks for helping with **fastindex**. The product is **tree-reason**; measureme
 uv sync --extra dev
 uv run pytest
 uv run ruff check src tests evals
+uv run fastindex lint examples/sample-bundle
+uv build
 ```
 
 Optional peers:
@@ -34,4 +37,5 @@ uv run python -m evals.bench
 uv run python -m evals.analyze --misses
 ```
 
-Open a PR against `main` with a short summary and how you tested.
+Open a focused PR against the protected `main` branch with a short summary and how you
+tested. The `quality` CI check must pass before merge.

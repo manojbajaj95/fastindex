@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+        with:
+          enable-cache: true
+          python-version: "3.11"
+
+      - name: Install development dependencies
+        run: uv sync --frozen --extra dev
+
+      - name: Lint
+        run: uv run --frozen ruff check src tests evals
+
+      - name: Test
+        run: uv run --frozen pytest -q
+
+      - name: Validate sample bundle
+        run: uv run --frozen fastindex lint examples/sample-bundle
+
+      - name: Build package
+        run: uv build

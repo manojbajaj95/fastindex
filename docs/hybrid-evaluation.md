@@ -1,11 +1,14 @@
 # Hybrid retrieval studies
 
 This note records the September 22, 2026 Codebase QA experiments that combine
-Fastindex's TypeSafe Jev tree walk, BM25, FTS, and a Jev reranker. Retrieval is
-the system under study; a separate `gpt-5.6-luna` answer experiment is retained
-as a downstream context-utility diagnostic. Results are single runs over all 48
-questions against Flask commit `85c5d93`. Raw runs remain local under the
-gitignored `evals/results/` directory.
+Fastindex's TypeSafe Jev tree walk, BM25, FTS, and a Jev reranker. Our best
+retrieval pipeline was **4.6x faster and 9.6x cheaper** than Pi's lowest-cost
+OpenAI configuration in this study, `openai/gpt-5.6-luna`.
+
+Retrieval is the system under study. We retain a separate `gpt-5.6-luna` answer
+experiment as a downstream context-utility diagnostic. Results are single runs
+over all 48 questions against Flask commit `85c5d93`. Raw runs remain local
+under the gitignored `evals/results/` directory.
 
 ## System under test
 
@@ -34,24 +37,24 @@ from the video.
 
 ## Pi retrieval comparison
 
-The primary comparison asks whether retrieval returned context overlapping
-every curated gold span, and how long retrieval took. A query counts as
-complete only when every gold span is present.
+The primary comparison measures retrieval quality, wall time, and model cost.
+A query counts as complete only when the returned context overlaps every
+curated gold span.
 
-| Retriever | Complete context | Mean gold coverage | Time/query | Retrieval time per complete result |
+| Retriever | Complete context | Mean gold coverage | Time/query | Cost/query |
 |---|---:|---:|---:|---:|
-| Plain Pi retrieval agent | **41/48 (85.4%)** | **0.932** | 19.40 s | 22.71 s |
-| Jev + BM25 + FTS -> Jev Noul | 38/48 (79.2%) | 0.905 | **4.19 s** | **5.29 s** |
+| Pi + `openai/gpt-5.6-luna` | **41/48 (85.4%)** | **0.932** | 19.40 s | $0.00656 |
+| Jev + BM25 + FTS -> Jev Noul | 38/48 (79.2%) | 0.905 | **4.19 s** | **$0.00068** |
 
-The last column divides total retrieval time by complete-context results. The
-hybrid was 4.3 times faster by that measure while completing 6.2 percentage
-points fewer questions. Across all 48 queries, it produced 38 complete contexts
-in about 201 seconds; Pi produced 41 in about 931 seconds.
+Across every query, the Fastindex hybrid was 4.63x faster and 9.66x cheaper.
+It produced 38 complete contexts in about 201 seconds. Pi produced 41 in about
+931 seconds. Dividing total retrieval time by complete results gives 5.29
+seconds for the hybrid and 22.71 seconds for Pi, a 4.3x advantage for the
+hybrid, with a 6.2-point lower complete-context rate.
 
-This is an outcome comparison, not a context-size comparison. Pi returned up
-to eight precise spans. The hybrid returned up to eight whole files under the
-context cap. The hybrid therefore reduced retrieval time while passing more
-text to whatever consumes the result.
+Pi returned up to eight precise spans. The hybrid returned up to eight whole
+files under the context cap. The hybrid won on retrieval time and cost while
+passing more text to the downstream consumer.
 
 ## Retrieval ablations
 
@@ -84,7 +87,7 @@ relevance decision.
 
 ## End-to-end answer ablation
 
-The answer score uses Codebase QA's 1–5 judge rubric normalized to 0–1. System
+The answer score uses Codebase QA's 1 to 5 judge rubric normalized to 0 to 1. System
 cost includes retrieval, reranking, and answering. It excludes the evaluation
 judge and one-time index preparation.
 
@@ -161,10 +164,22 @@ For the separate downstream answer diagnostic, four reranked files were the
 best measured quality/cost point; eight files produced the same answer score
 at higher cost.
 
-Do not put BM25 or FTS on the Fastindex product surface. They remain evaluation
-sidecars in `evals/`; the owned retriever is still the tree. Do not claim that
-this replaces an agent: Pi remained 0.062 higher on answer score, and the
-evidence covers one repository with single runs.
+BM25 and FTS remain evaluation sidecars in `evals/`; Fastindex owns the tree
+retriever. Pi remained 0.062 higher on the downstream answer score. That result
+comes from one repository and one run per configuration.
+
+## Scope and limitations
+
+- The headline comparison covers 48 questions against one Python repository.
+- Retrieval cost excludes one-time tree preparation. The prepared Flask bundle
+  contains 52 generated indexes over 234 source files, but the original setup
+  run did not capture complete preparation cost.
+- The hybrid returns whole files, while Pi returns spans. Latency, cost, and
+  gold coverage are directly measured; output context size is not equivalent.
+- The tree does not follow symbol references or cross-file links after
+  retrieval, so multi-hop assembly remains a weak point.
+- Repeated runs and more repositories are still needed to measure variance and
+  cross-language behavior.
 
 ## Open questions and next studies
 

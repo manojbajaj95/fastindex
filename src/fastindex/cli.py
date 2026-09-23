@@ -142,7 +142,7 @@ def query(
         str | None,
         typer.Option(
             "--decision-model",
-            help="Decision provider/model, such as classifier/jev or typesafe/jev-latest.",
+            help="TypeSafe decision model, such as typesafe/jev-latest.",
         ),
     ] = None,
     as_json: Annotated[

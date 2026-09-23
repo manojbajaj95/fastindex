@@ -42,7 +42,7 @@ class DecisionModel(Protocol):
 
 
 class TypeSafeModel:
-    """TypeSafe System One Choice API using an account API key."""
+    """TypeSafe System One Choice and Noul API using an account API key."""
 
     max_options = 254
     max_request_chars = 48_000
@@ -67,28 +67,10 @@ class TypeSafeModel:
     def format_option(self, option: str) -> str:
         return option[:self.max_option_chars]
 
-    def choose(self, state: str, options: list[str]) -> tuple[list[float], ModelUsage]:
+    def _request(self, body: dict) -> tuple[dict, ModelUsage]:
         api_key = os.getenv("TYPESAFE_API_KEY")
         if not api_key:
             raise RuntimeError("Set TYPESAFE_API_KEY to use a typesafe/* decision model")
-        option_ids = [f"option_{i}" for i in range(len(options))]
-        all_ids = [*option_ids, "none_of_these"]
-        criteria = dict(zip(
-            all_ids,
-            [*options, "None contains direct answer evidence"],
-            strict=True,
-        ))
-        body = {
-            "state": state,
-            "model": self.model,
-            "questions": {
-                "route": {
-                    "type": "choice",
-                    "instructions": self.instructions,
-                    "criteria": criteria,
-                },
-            },
-        }
         request = Request(
             self.url,
             json.dumps(body).encode(),
@@ -110,6 +92,34 @@ class TypeSafeModel:
                     time.sleep(min(max(delay, 1), 15))
                     continue
                 raise RuntimeError(f"TypeSafe HTTP {exc.code}") from exc
+        raw_usage = data.get("usage", {})
+        usage = ModelUsage(
+            calls=1,
+            input_tokens=int(raw_usage.get("input_tokens", 0)),
+            output_tokens=int(raw_usage.get("output_tokens", 0)),
+            model_id=f"typesafe/{data.get('model', self.model)}",
+        )
+        return data, usage
+
+    def choose(self, state: str, options: list[str]) -> tuple[list[float], ModelUsage]:
+        option_ids = [f"option_{i}" for i in range(len(options))]
+        all_ids = [*option_ids, "none_of_these"]
+        criteria = dict(zip(
+            all_ids,
+            [*options, "None contains direct answer evidence"],
+            strict=True,
+        ))
+        data, usage = self._request({
+            "state": state,
+            "model": self.model,
+            "questions": {
+                "route": {
+                    "type": "choice",
+                    "instructions": self.instructions,
+                    "criteria": criteria,
+                },
+            },
+        })
         answer = data.get("answers", {}).get("route", {})
         probabilities = answer.get("probabilities")
         if (
@@ -123,14 +133,52 @@ class TypeSafeModel:
             )
         ):
             raise RuntimeError("TypeSafe returned invalid choice probabilities")
-        raw_usage = data.get("usage", {})
-        usage = ModelUsage(
-            calls=1,
-            input_tokens=int(raw_usage.get("input_tokens", 0)),
-            output_tokens=int(raw_usage.get("output_tokens", 0)),
-            model_id=f"typesafe/{data.get('model', self.model)}",
-        )
         return [float(probabilities[key]) for key in all_ids], usage
+
+    def score_relevance(
+        self, query: str, candidates: list[str]
+    ) -> tuple[list[float], ModelUsage]:
+        """Score retrieval candidates with one batched Noul request."""
+        if not candidates:
+            return [], ModelUsage(model_id=self.chat_model)
+        candidate_ids = [f"candidate_{i}" for i in range(len(candidates))]
+        state = json.dumps({
+            "query": query[:1000],
+            "candidates": dict(zip(candidate_ids, candidates, strict=True)),
+        })
+        questions = {
+            candidate_id: {
+                "type": "noul",
+                "instructions": (
+                    f"Score whether {candidate_id} contains direct evidence needed to answer "
+                    "the query. A merely related file is not enough."
+                ),
+                "criteria": {
+                    "true": (
+                        "Contains direct evidence for the requested files, symbols, or behavior"
+                    ),
+                    "false": "Is irrelevant, incidental, or lacks evidence needed for the answer",
+                },
+            }
+            for candidate_id in candidate_ids
+        }
+        data, usage = self._request({
+            "state": state,
+            "model": self.model,
+            "questions": questions,
+        })
+        scores: list[float] = []
+        for candidate_id in candidate_ids:
+            answer = data.get("answers", {}).get(candidate_id, {})
+            score = answer.get("noul")
+            if (
+                answer.get("type") != "noul"
+                or not isinstance(score, (int, float))
+                or not 0 <= score <= 1
+            ):
+                raise RuntimeError(f"TypeSafe returned invalid Noul for {candidate_id}")
+            scores.append(float(score))
+        return scores, usage
 
 
 def make_decision_model(spec: str | None = None) -> DecisionModel:
@@ -233,6 +281,9 @@ class TreeDecisionStrategy:
         max_depth = 0
         usage = ModelUsage()
         truncated = False
+        return_files = bool(cfg.extra.get("decision_return_files"))
+        files_reached: list[str] = []
+        files_rejected: list[str] = []
         min_probability = float(cfg.extra.get("decision_min_probability", 0.12))
         relative_probability = float(cfg.extra.get("decision_relative_probability", 0.2))
         while pending and len(spans) < cfg.top_k:
@@ -286,6 +337,16 @@ class TreeDecisionStrategy:
                 concept = bundle.get_concept(path)
                 if concept is None or not concept.sections:
                     continue
+                files_reached.append(path)
+                if return_files:
+                    visited += 1
+                    spans.append(Span(
+                        path=path,
+                        start_line=1,
+                        end_line=len(concept.lines),
+                        text=concept.raw,
+                    ))
+                    continue
                 options = [_section_option(s, concept, query) for s in concept.sections]
                 try:
                     scores, used = _choose(
@@ -300,6 +361,7 @@ class TreeDecisionStrategy:
                 best_idx = max(range(len(scores)), key=scores.__getitem__)
                 section = concept.sections[best_idx]
                 if scores[best_idx] < 0.12:
+                    files_rejected.append(path)
                     continue
                 if section.heading == "(preamble)":
                     # The heading gate can favor frontmatter over a factual section;
@@ -326,6 +388,11 @@ class TreeDecisionStrategy:
             truncated=truncated,
             track="cold",
             model_id=usage.model_id or model.chat_model,
-            extra={"dirs_visited": dirs_visited, "branch_opens": visited - 1},
+            extra={
+                "dirs_visited": dirs_visited,
+                "branch_opens": visited - 1,
+                "files_reached": files_reached,
+                "files_rejected": files_rejected,
+            },
         )
         return RetrieveResult(spans=spans, stats=stats)

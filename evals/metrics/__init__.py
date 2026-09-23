@@ -73,6 +73,7 @@ class MetricBundle:
             "nodes_visited": self.nodes_visited,
             "max_depth": self.max_depth,
             "model_id": self.model_id,
+            "extra": dict(self.extra),
         }
 
 

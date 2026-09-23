@@ -83,7 +83,7 @@ cd fastindex
 uv sync --extra dev
 ```
 
-## Architecture
+## How it works
 
 ```mermaid
 flowchart LR

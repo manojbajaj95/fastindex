@@ -1,0 +1,37 @@
+{
+  "dataset": "Contextbench/ContextBench",
+  "revision": "c2855792b006af41c67202d33883fb9d46362853",
+  "parquet_path": "data/full.parquet",
+  "parquet_sha256": "2f56535bdc73eb8a68bf4ebb49789d8e9cd4f219ea60df6290b85278aee61ca8",
+  "selection": "First 12 rows per repository ordered by SHA-256(instance_id), after requiring a nonempty problem statement, nonempty gold spans with valid repository-relative paths and line ranges, and a 40-character lowercase hexadecimal base commit.",
+  "case_ids": {
+    "django/django": [
+      "SWE-Bench-Verified__python__maintenance__bugfix__d939b999",
+      "SWE-Bench-Verified__python__maintenance__bugfix__c684b666",
+      "SWE-Bench-Verified__python__maintenance__bugfix__c923cfa8",
+      "SWE-Bench-Verified__python__maintenance__bugfix__2ab7d0fc",
+      "SWE-Bench-Verified__python__maintenance__bugfix__e31a7bab",
+      "SWE-Bench-Verified__python__maintenance__bugfix__768d44e5",
+      "SWE-Bench-Verified__python__maintenance__bugfix__8fdc33d5",
+      "SWE-Bench-Verified__python__maintenance__bugfix__1efc2b51",
+      "SWE-Bench-Verified__python__maintenance__bugfix__0b74a2c7",
+      "SWE-Bench-Verified__python__maintenance__bugfix__8f9e4358",
+      "SWE-Bench-Verified__python__maintenance__bugfix__a5ec0eec",
+      "SWE-Bench-Verified__python__maintenance__bugfix__dc72c033"
+    ],
+    "sveltejs/svelte": [
+      "SWE-PolyBench__javascript__maintenance__bugfix__9ca0e415",
+      "Multi-SWE-Bench__javascript__maintenance__bugfix__a98dbc6f",
+      "SWE-PolyBench__javascript__maintenance__bugfix__90db6ffd",
+      "SWE-PolyBench__javascript__maintenance__bugfix__575f5d76",
+      "SWE-PolyBench__javascript__maintenance__bugfix__c26fd1ab",
+      "SWE-PolyBench__javascript__maintenance__bugfix__b9ce6a70",
+      "Multi-SWE-Bench__javascript__maintenance__bugfix__01d1908e",
+      "SWE-PolyBench__javascript__maintenance__bugfix__d1cb6b19",
+      "SWE-PolyBench__javascript__maintenance__bugfix__2abf0a6d",
+      "SWE-PolyBench__javascript__maintenance__bugfix__1ad00901",
+      "SWE-PolyBench__javascript__maintenance__bugfix__3b6063b3",
+      "SWE-PolyBench__javascript__maintenance__bugfix__7e3e2bb9"
+    ]
+  }
+}

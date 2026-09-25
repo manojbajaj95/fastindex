@@ -1,0 +1,44 @@
+{
+  "status": "Budget-amended one-benchmark design freeze before reduced-cohort lexical runs; not externally preregistered",
+  "frozen_at_utc": "2026-09-24T11:51:28.742Z",
+  "base_git_commit": "d8cec6620c880d0328413fef619f67f2a20d1d34",
+  "source_sha256": {
+    "evals/fixtures/queries/contextbench_paper.json": "42c470c29df04c04cc3072aae76ba29e42b8b270bf1e9d77b7785ab2c3918f43",
+    "evals/contextbench_holdout.py": "dc2dc91d2ec8a9223dd291b7ea57e232a85bcd07121ab4e7ff21fd60a90fb6ef",
+    "evals/contextbench_audit.py": "eb15896e3b2dbdc7b978804252e191f8852eb077c29b097aabd527b3e28eab16",
+    "evals/contextbench_gold_audit.py": "cebde24496153d09a75802b8032511b2c123df23831c126c5ce295fde7c82025",
+    "evals/contextbench_reuse_tree.py": "a29250e2e2714ec9bbb368f4ef3fe9cd5ae286754345bf1e206348b003aff6ac",
+    "evals/contextbench_tree.py": "27a0a09ddd4cb199e1cf6e77332c9ce291fbb316868835dcd20374312e23ba0e",
+    "evals/contextbench_fts.py": "17612d0ef6f82c955272950dc63a7deafbcbd06b48b4fefdba0dd1731fb882a4",
+    "evals/contextbench_rg.py": "02e13069b150c17ed9389b9b189b47b6d5aa8b8a2027198bdce8a6cf0def0dba",
+    "evals/contextbench_study.py": "ba86ac9abbe60bce7be751ff30320d982e8bee9d27eb63b02b0b88d40d7a1adf",
+    "evals/contextbench_context.py": "b5e6fb0a7f3dcaaeec8f4e77bd47895ec495c27d3c6f81bef8e5a61838f6eb16",
+    "evals/baselines/ripgrep.py": "bea9f7082c1d63d3a2a410b6b0a0478e2f8f618ac5101e54624da729505d25c4",
+    "evals/hybrid.py": "7a610676ff5da0a2215d6a6262bf7a0cafd31d8d1ebded6c88cc99d3a72729fc",
+    "src/fastindex/strategies/tree_decision.py": "3400ee4d101df9ae71f62fe88714d193c1bfbabddd8c67d5bfa1220bce3642d1",
+    "src/fastindex/bundle/__init__.py": "7c7eac1420e997ac423aad7716a72386d5e4cf99435b763fb01b74d360ea0e54"
+  },
+  "parent_artifact_sha256": {
+    "evals/results/contextbench-paper-tree.json": "42fdaeb46d6a7816978003fa9131dd50d6aeb7950dad9f5aa1414b20b8c8a4f9",
+    "evals/results/contextbench-paper-audited.json": "28b0f8961bf191da6e504b82df13bdabacca006565a901f52cedd40bb94e330e"
+  },
+  "study": {
+    "selected_cases": 87,
+    "audited_cases": 82,
+    "repositories": 11,
+    "tree": "existing first valid wide@16 route only; no rerun",
+    "lexical": [
+      "actual full-issue rg top16",
+      "SQLite FTS5 first500 top16"
+    ],
+    "fusion": "RRF k=60 of tree@16 and FTS5@16, truncate at 8 and 16",
+    "context": "merge4-200, 16000 cl100k_base tokens",
+    "uncertainty": "10000 paired repository-cluster bootstrap, seed 0",
+    "excluded": [
+      "BM25",
+      "second tree run",
+      "coding-agent eval",
+      "8K/32K sensitivity"
+    ]
+  }
+}

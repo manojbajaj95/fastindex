@@ -229,21 +229,23 @@ def _index_summary(index: str, path: str) -> str:
     return name
 
 
-def _route_option(bundle: Bundle, index: str, kind: str, path: str) -> str:
+def _route_option(
+    bundle: Bundle, index: str, kind: str, path: str, descendant_limit: int = 12
+) -> str:
     """Add bounded descendant titles when a prepared parent summary is too generic."""
     summary = _index_summary(index, path)
-    if kind != "dir":
+    if kind != "dir" or descendant_limit == 0:
         return f"{path}: {summary}"
     names: list[str] = []
     pending = deque([(path, 0)])
-    while pending and len(names) < 12:
+    while pending and len(names) < descendant_limit:
         current, depth = pending.popleft()
         node = bundle.get_node(current)
         if node is None:
             continue
         for child in [*node.children_dirs, *node.concepts]:
             names.append(Path(child).stem.replace("-", " "))
-            if len(names) >= 12:
+            if len(names) >= descendant_limit:
                 break
         if depth < 2:
             pending.extend((child, depth + 1) for child in node.children_dirs)
@@ -286,6 +288,9 @@ class TreeDecisionStrategy:
         files_rejected: list[str] = []
         min_probability = float(cfg.extra.get("decision_min_probability", 0.12))
         relative_probability = float(cfg.extra.get("decision_relative_probability", 0.2))
+        descendant_limit = int(cfg.extra.get("decision_descendant_limit", 12))
+        if not 0 <= descendant_limit <= 24:
+            raise ValueError("decision_descendant_limit must be between 0 and 24")
         while pending and len(spans) < cfg.top_k:
             if time.monotonic() >= deadline or usage.calls >= cfg.model_call_budget:
                 truncated = True
@@ -314,7 +319,8 @@ class TreeDecisionStrategy:
                     dirs_visited += 1
                     max_depth = max(max_depth, depth)
                     continue
-                options = [_route_option(bundle, index, kind, p) for kind, p in children]
+                options = [_route_option(bundle, index, kind, p, descendant_limit)
+                           for kind, p in children]
                 try:
                     scores, used = _choose(
                         model, f"User question: {query[:500]}", options,

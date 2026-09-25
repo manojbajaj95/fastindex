@@ -155,6 +155,17 @@ def test_hybrid_context_preserves_ranked_whole_files_with_a_budget() -> None:
     }
 
 
+def test_hybrid_context_drops_first_file_if_it_exceeds_budget() -> None:
+    context, included, dropped = build_context(
+        [Span("huge.py", 1, 1, "x" * 100), Span("small.py", 1, 1, "y\n")],
+        max_chars=45,
+    )
+
+    assert "small.py" in context
+    assert [span.path for span in included] == ["small.py"]
+    assert dropped == ["huge.py"]
+
+
 def test_hybrid_rrf_rewards_files_found_by_multiple_sources() -> None:
     ordered, scores = _rrf({
         "jev": ["tree.py", "shared.py"],
@@ -170,8 +181,10 @@ def test_hybrid_aggregate_includes_answer_usage(tmp_path: Path) -> None:
     args = Namespace(
         retrieval_only=False,
         jev_rerank=True,
+        descriptor_chars=3200,
         bundle=tmp_path,
         fixtures=tmp_path / "queries.jsonl",
+        ids=None,
         answer_model="answer",
         judge_model="judge",
         sources="jev,bm25",
@@ -180,9 +193,14 @@ def test_hybrid_aggregate_includes_answer_usage(tmp_path: Path) -> None:
         candidate_k=16,
         bm25_k=8,
         fts_k=0,
+        rg_k=8,
         decision_min_probability=0.04,
         decision_relative_probability=0.05,
         max_context_chars=200_000,
+        context_mode="files",
+        whole_file_lines=1200,
+        window_lines=160,
+        windows_per_file=3,
     )
     row = {
         "file_recall": 1.0,

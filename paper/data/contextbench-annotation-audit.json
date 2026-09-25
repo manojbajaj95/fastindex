@@ -1,0 +1,467 @@
+{
+  "meaning": "Mechanical text-location categories; not diagnoses of dataset causes",
+  "cases": 82,
+  "spans": 991,
+  "aligned_spans": 940,
+  "mismatched_cases": 27,
+  "mismatch_kinds": {
+    "text_not_found_in_file": 31,
+    "text_elsewhere_in_file": 20
+  },
+  "by_repo": {
+    "NodeBB/NodeBB": {
+      "cases": 8,
+      "mismatched": 5
+    },
+    "ansible/ansible": {
+      "cases": 8,
+      "mismatched": 4
+    },
+    "clap-rs/clap": {
+      "cases": 6,
+      "mismatched": 1
+    },
+    "cli/cli": {
+      "cases": 8,
+      "mismatched": 0
+    },
+    "flipt-io/flipt": {
+      "cases": 5,
+      "mismatched": 3
+    },
+    "huggingface/transformers": {
+      "cases": 8,
+      "mismatched": 0
+    },
+    "microsoft/vscode": {
+      "cases": 8,
+      "mismatched": 5
+    },
+    "mui/material-ui": {
+      "cases": 8,
+      "mismatched": 6
+    },
+    "ponylang/ponyc": {
+      "cases": 7,
+      "mismatched": 0
+    },
+    "serverless/serverless": {
+      "cases": 8,
+      "mismatched": 2
+    },
+    "sympy/sympy": {
+      "cases": 8,
+      "mismatched": 1
+    }
+  },
+  "mismatches": [
+    {
+      "id": "SWE-Bench-Verified__python__maintenance__bugfix__7080a326",
+      "repo": "sympy/sympy",
+      "path": "sympy/core/mod.py",
+      "start_line": 26,
+      "end_line": 141,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "SWE-Bench-Pro__python__maintenance__bugfix__739b23db",
+      "repo": "ansible/ansible",
+      "path": "lib/ansible/plugins/strategy/linear.py",
+      "start_line": 248,
+      "end_line": 253,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "SWE-Bench-Pro__python__maintenance__bugfix__183dd4c4",
+      "repo": "ansible/ansible",
+      "path": "lib/ansible/plugins/action/__init__.py",
+      "start_line": 1150,
+      "end_line": 1173,
+      "kind": "text_elsewhere_in_file"
+    },
+    {
+      "id": "SWE-Bench-Pro__python__maintenance__bugfix__d131db7a",
+      "repo": "ansible/ansible",
+      "path": "lib/ansible/module_utils/basic.py",
+      "start_line": 573,
+      "end_line": 587,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "SWE-Bench-Pro__python__maintenance__bugfix__d131db7a",
+      "repo": "ansible/ansible",
+      "path": "lib/ansible/module_utils/basic.py",
+      "start_line": 1482,
+      "end_line": 1505,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "SWE-Bench-Pro__python__maintenance__bugfix__d131db7a",
+      "repo": "ansible/ansible",
+      "path": "lib/ansible/module_utils/common/parameters.py",
+      "start_line": 569,
+      "end_line": 637,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "SWE-Bench-Pro__python__maintenance__bugfix__d131db7a",
+      "repo": "ansible/ansible",
+      "path": "lib/ansible/module_utils/common/parameters.py",
+      "start_line": 688,
+      "end_line": 785,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "SWE-Bench-Pro__python__maintenance__bugfix__d131db7a",
+      "repo": "ansible/ansible",
+      "path": "lib/ansible/module_utils/common/warnings.py",
+      "start_line": 9,
+      "end_line": 40,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "SWE-Bench-Pro__python__maintenance__bugfix__d131db7a",
+      "repo": "ansible/ansible",
+      "path": "lib/ansible/module_utils/csharp/Ansible.Basic.cs",
+      "start_line": 463,
+      "end_line": 518,
+      "kind": "text_elsewhere_in_file"
+    },
+    {
+      "id": "SWE-Bench-Pro__python__maintenance__bugfix__d131db7a",
+      "repo": "ansible/ansible",
+      "path": "lib/ansible/module_utils/errors.py",
+      "start_line": 9,
+      "end_line": 120,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "SWE-Bench-Pro__python__maintenance__bugfix__10a41eff",
+      "repo": "ansible/ansible",
+      "path": "lib/ansible/modules/get_url.py",
+      "start_line": 180,
+      "end_line": 194,
+      "kind": "text_elsewhere_in_file"
+    },
+    {
+      "id": "SWE-Bench-Pro__python__maintenance__bugfix__10a41eff",
+      "repo": "ansible/ansible",
+      "path": "lib/ansible/plugins/lookup/url.py",
+      "start_line": 100,
+      "end_line": 167,
+      "kind": "text_elsewhere_in_file"
+    },
+    {
+      "id": "SWE-PolyBench__typescript__evolution__feature__34826a6a",
+      "repo": "mui/material-ui",
+      "path": "packages/material-ui/src/StepLabel/StepLabel.js",
+      "start_line": 64,
+      "end_line": 80,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "SWE-PolyBench__typescript__evolution__feature__34826a6a",
+      "repo": "mui/material-ui",
+      "path": "packages/material-ui/src/StepLabel/StepLabel.js",
+      "start_line": 124,
+      "end_line": 180,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "SWE-PolyBench__typescript__maintenance__bugfix__05b26677",
+      "repo": "mui/material-ui",
+      "path": "packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js",
+      "start_line": 755,
+      "end_line": 760,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "SWE-PolyBench__typescript__evolution__feature__07098661",
+      "repo": "mui/material-ui",
+      "path": "packages/material-ui/src/withWidth/withWidth.js",
+      "start_line": 95,
+      "end_line": 135,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "SWE-PolyBench__typescript__maintenance__bugfix__6da325be",
+      "repo": "mui/material-ui",
+      "path": "packages/material-ui/src/Modal/ModalManager.js",
+      "start_line": 10,
+      "end_line": 50,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "SWE-PolyBench__typescript__maintenance__bugfix__15589352",
+      "repo": "mui/material-ui",
+      "path": "packages/mui-base/src/SliderUnstyled/useSlider.ts",
+      "start_line": 630,
+      "end_line": 674,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "SWE-PolyBench__typescript__maintenance__bugfix__338a2426",
+      "repo": "mui/material-ui",
+      "path": "packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js",
+      "start_line": 652,
+      "end_line": 659,
+      "kind": "text_elsewhere_in_file"
+    },
+    {
+      "id": "SWE-PolyBench__typescript__maintenance__bugfix__338a2426",
+      "repo": "mui/material-ui",
+      "path": "packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js",
+      "start_line": 726,
+      "end_line": 733,
+      "kind": "text_elsewhere_in_file"
+    },
+    {
+      "id": "SWE-PolyBench__typescript__maintenance__bugfix__4f3cb6be",
+      "repo": "microsoft/vscode",
+      "path": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+      "start_line": 554,
+      "end_line": 609,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "SWE-PolyBench__typescript__maintenance__bugfix__16d1ff7a",
+      "repo": "microsoft/vscode",
+      "path": "src/vs/editor/common/languages/linkComputer.ts",
+      "start_line": 271,
+      "end_line": 278,
+      "kind": "text_elsewhere_in_file"
+    },
+    {
+      "id": "SWE-PolyBench__typescript__maintenance__bugfix__16d1ff7a",
+      "repo": "microsoft/vscode",
+      "path": "src/vs/editor/common/languages/linkComputer.ts",
+      "start_line": 287,
+      "end_line": 291,
+      "kind": "text_elsewhere_in_file"
+    },
+    {
+      "id": "SWE-PolyBench__typescript__maintenance__bugfix__16d1ff7a",
+      "repo": "microsoft/vscode",
+      "path": "src/vs/editor/common/languages/linkComputer.ts",
+      "start_line": 318,
+      "end_line": 325,
+      "kind": "text_elsewhere_in_file"
+    },
+    {
+      "id": "SWE-PolyBench__typescript__maintenance__bugfix__2599ed5a",
+      "repo": "microsoft/vscode",
+      "path": "src/vs/workbench/contrib/debug/node/terminals.ts",
+      "start_line": 110,
+      "end_line": 127,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "SWE-PolyBench__typescript__maintenance__bugfix__2599ed5a",
+      "repo": "microsoft/vscode",
+      "path": "src/vs/workbench/contrib/debug/node/terminals.ts",
+      "start_line": 155,
+      "end_line": 162,
+      "kind": "text_elsewhere_in_file"
+    },
+    {
+      "id": "SWE-PolyBench__typescript__maintenance__bugfix__2487b02a",
+      "repo": "microsoft/vscode",
+      "path": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalLinkParsing.ts",
+      "start_line": 1,
+      "end_line": 30,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "SWE-PolyBench__typescript__maintenance__bugfix__2487b02a",
+      "repo": "microsoft/vscode",
+      "path": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalLinkParsing.ts",
+      "start_line": 205,
+      "end_line": 220,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "SWE-PolyBench__typescript__maintenance__bugfix__62f78810",
+      "repo": "microsoft/vscode",
+      "path": "src/vs/base/browser/markdownRenderer.ts",
+      "start_line": 120,
+      "end_line": 160,
+      "kind": "text_elsewhere_in_file"
+    },
+    {
+      "id": "SWE-PolyBench__typescript__maintenance__bugfix__62f78810",
+      "repo": "microsoft/vscode",
+      "path": "src/vs/base/browser/markdownRenderer.ts",
+      "start_line": 265,
+      "end_line": 275,
+      "kind": "text_elsewhere_in_file"
+    },
+    {
+      "id": "SWE-PolyBench__javascript__maintenance__bugfix__246db671",
+      "repo": "serverless/serverless",
+      "path": "docs/providers/aws/events/apigateway.md",
+      "start_line": 1494,
+      "end_line": 1499,
+      "kind": "text_elsewhere_in_file"
+    },
+    {
+      "id": "SWE-PolyBench__javascript__maintenance__bugfix__bdc85da2",
+      "repo": "serverless/serverless",
+      "path": "lib/plugins/aws/package/compile/events/cognitoUserPool/index.js",
+      "start_line": 39,
+      "end_line": 81,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "SWE-Bench-Pro__javascript__maintenance__bugfix__4eb0e647",
+      "repo": "NodeBB/NodeBB",
+      "path": "src/database/postgres/hash.js",
+      "start_line": 131,
+      "end_line": 152,
+      "kind": "text_elsewhere_in_file"
+    },
+    {
+      "id": "SWE-Bench-Pro__javascript__maintenance__bugfix__4eb0e647",
+      "repo": "NodeBB/NodeBB",
+      "path": "src/database/redis/hash.js",
+      "start_line": 84,
+      "end_line": 148,
+      "kind": "text_elsewhere_in_file"
+    },
+    {
+      "id": "SWE-Bench-Pro__javascript__maintenance__bugfix__4eb0e647",
+      "repo": "NodeBB/NodeBB",
+      "path": "src/user/delete.js",
+      "start_line": 86,
+      "end_line": 155,
+      "kind": "text_elsewhere_in_file"
+    },
+    {
+      "id": "SWE-Bench-Pro__javascript__maintenance__bugfix__4eb0e647",
+      "repo": "NodeBB/NodeBB",
+      "path": "test/database/hash.js",
+      "start_line": 209,
+      "end_line": 239,
+      "kind": "text_elsewhere_in_file"
+    },
+    {
+      "id": "SWE-Bench-Pro__javascript__maintenance__bugfix__ac8400d9",
+      "repo": "NodeBB/NodeBB",
+      "path": "public/src/client/flags/detail.js",
+      "start_line": 23,
+      "end_line": 33,
+      "kind": "text_elsewhere_in_file"
+    },
+    {
+      "id": "SWE-Bench-Pro__javascript__maintenance__bugfix__99b38b09",
+      "repo": "NodeBB/NodeBB",
+      "path": "public/src/modules/helpers.js",
+      "start_line": 277,
+      "end_line": 319,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "SWE-Bench-Pro__javascript__maintenance__bugfix__bc5ac89f",
+      "repo": "NodeBB/NodeBB",
+      "path": "src/middleware/header.js",
+      "start_line": 78,
+      "end_line": 108,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "SWE-Bench-Pro__javascript__maintenance__bugfix__ad093510",
+      "repo": "NodeBB/NodeBB",
+      "path": "public/src/client/groups/details.js",
+      "start_line": 72,
+      "end_line": 145,
+      "kind": "text_elsewhere_in_file"
+    },
+    {
+      "id": "SWE-Bench-Pro__javascript__maintenance__bugfix__ad093510",
+      "repo": "NodeBB/NodeBB",
+      "path": "src/groups/invite.js",
+      "start_line": 11,
+      "end_line": 74,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "SWE-Bench-Pro__go__maintenance__bugfix__40a717e5",
+      "repo": "flipt-io/flipt",
+      "path": "internal/config/config_test.go",
+      "start_line": 242,
+      "end_line": 273,
+      "kind": "text_elsewhere_in_file"
+    },
+    {
+      "id": "SWE-Bench-Pro__go__maintenance__bugfix__ebadd40b",
+      "repo": "flipt-io/flipt",
+      "path": "internal/storage/fs/object/store.go",
+      "start_line": 22,
+      "end_line": 140,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "SWE-Bench-Pro__go__maintenance__bugfix__ebadd40b",
+      "repo": "flipt-io/flipt",
+      "path": "internal/storage/fs/snapshot.go",
+      "start_line": 31,
+      "end_line": 88,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "SWE-Bench-Pro__go__maintenance__bugfix__ebadd40b",
+      "repo": "flipt-io/flipt",
+      "path": "internal/storage/fs/snapshot.go",
+      "start_line": 110,
+      "end_line": 145,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "SWE-Bench-Pro__go__maintenance__bugfix__ebadd40b",
+      "repo": "flipt-io/flipt",
+      "path": "internal/storage/fs/snapshot.go",
+      "start_line": 854,
+      "end_line": 866,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "SWE-Bench-Pro__go__maintenance__bugfix__ebadd40b",
+      "repo": "flipt-io/flipt",
+      "path": "internal/storage/fs/store.go",
+      "start_line": 185,
+      "end_line": 322,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "SWE-Bench-Pro__go__maintenance__bugfix__43d6d59b",
+      "repo": "flipt-io/flipt",
+      "path": "internal/server/audit/audit.go",
+      "start_line": 180,
+      "end_line": 259,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "Multi-SWE-Bench__rust__maintenance__bugfix__3c69099b",
+      "repo": "clap-rs/clap",
+      "path": "Cargo.toml",
+      "start_line": 64,
+      "end_line": 87,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "Multi-SWE-Bench__rust__maintenance__bugfix__3c69099b",
+      "repo": "clap-rs/clap",
+      "path": "src/builder/app_settings.rs",
+      "start_line": 466,
+      "end_line": 539,
+      "kind": "text_not_found_in_file"
+    },
+    {
+      "id": "Multi-SWE-Bench__rust__maintenance__bugfix__3c69099b",
+      "repo": "clap-rs/clap",
+      "path": "src/builder/command.rs",
+      "start_line": 637,
+      "end_line": 645,
+      "kind": "text_not_found_in_file"
+    }
+  ]
+}

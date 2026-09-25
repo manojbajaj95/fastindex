@@ -1,0 +1,38 @@
+{
+  "status": "Local pre-run design freeze; not externally preregistered",
+  "frozen_at_utc": "2026-09-24T11:13:05.830Z",
+  "pre_run_revision": "Before retrieval, added direct tree-versus-rg unique-file comparisons and objective subgroup fields; changed the mechanical audit to check selected gold paths; after the source-text audit but before retrieval, added aligned-text sensitivity analysis for line metrics.",
+  "base_git_commit": "d8cec6620c880d0328413fef619f67f2a20d1d34",
+  "source_sha256": {
+    "evals/fixtures/queries/contextbench_confirmatory.json": "658899a62dc24d87cb8120bd0183c523f53d835e324baceb493c7cbd4fd82e5c",
+    "evals/contextbench_holdout.py": "dc2dc91d2ec8a9223dd291b7ea57e232a85bcd07121ab4e7ff21fd60a90fb6ef",
+    "evals/contextbench_snapshots.py": "6e5a0dd7df0646be150d0fcb8b5d9b782f6428c832c008dfb7bf83b553c18215",
+    "evals/contextbench_audit.py": "999a32fb7d09196a9ad847a3555526c77a49de256cf285a07bde8b452d057bc8",
+    "evals/contextbench_tree.py": "27a0a09ddd4cb199e1cf6e77332c9ce291fbb316868835dcd20374312e23ba0e",
+    "evals/contextbench_lexical.py": "98c89d3fa60e35d7e70388472e556de5bb750a78db9cdcbedcf6ba701b1168b7",
+    "evals/contextbench_fts.py": "17612d0ef6f82c955272950dc63a7deafbcbd06b48b4fefdba0dd1731fb882a4",
+    "evals/contextbench_rg.py": "02e13069b150c17ed9389b9b189b47b6d5aa8b8a2027198bdce8a6cf0def0dba",
+    "evals/contextbench_study.py": "ae69d3e69be76588398f7bbdd1162a21813938b317ef2b5dfcb3d96ce994a261",
+    "evals/contextbench_gold_audit.py": "cebde24496153d09a75802b8032511b2c123df23831c126c5ce295fde7c82025",
+    "evals/contextbench_context.py": "b5e6fb0a7f3dcaaeec8f4e77bd47895ec495c27d3c6f81bef8e5a61838f6eb16",
+    "evals/baselines/ripgrep.py": "bea9f7082c1d63d3a2a410b6b0a0478e2f8f618ac5101e54624da729505d25c4",
+    "evals/arb_trace_ablation.py": "d9274bcbe0040691d5c583b636981fffb565243a4670d874137e0f7088fdcb3d",
+    "evals/hybrid.py": "7a610676ff5da0a2215d6a6262bf7a0cafd31d8d1ebded6c88cc99d3a72729fc",
+    "src/fastindex/strategies/tree_decision.py": "3400ee4d101df9ae71f62fe88714d193c1bfbabddd8c67d5bfa1220bce3642d1",
+    "src/fastindex/bundle/__init__.py": "7c7eac1420e997ac423aad7716a72386d5e4cf99435b763fb01b74d360ea0e54"
+  },
+  "study": {
+    "selected_cases": 171,
+    "selected_repositories": 11,
+    "source_audit": "exclude only missing/unreadable gold or gold outside common searchable corpus; no replacement",
+    "tree": "typesafe/jev-1.13.0, name-only, wide 0.01/0.01, descendant limit 12, call budget 32, top16",
+    "lexical_primary": "SQLite FTS5, first 500 issue characters, top16",
+    "controls": [
+      "full-issue BM25 top16",
+      "full-issue actual rg top16"
+    ],
+    "fusion": "RRF k=60 of tree@16 and FTS5@16, truncate at 8 and 16",
+    "context": "merge4-200, 16000 cl100k_base tokens",
+    "uncertainty": "10000 paired repository-cluster bootstrap, seed 0"
+  }
+}

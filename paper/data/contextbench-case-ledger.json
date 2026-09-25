@@ -1,0 +1,5665 @@
+{
+  "source_audited_sha256": "28b0f8961bf191da6e504b82df13bdabacca006565a901f52cedd40bb94e330e",
+  "dataset_revision": "c2855792b006af41c67202d33883fb9d46362853",
+  "parquet_sha256": "2f56535bdc73eb8a68bf4ebb49789d8e9cd4f219ea60df6290b85278aee61ca8",
+  "selected_n": 87,
+  "audited_n": 82,
+  "excluded": [
+    {
+      "id": "SWE-Bench-Pro__go__maintenance__bugfix__05aad678",
+      "repo": "flipt-io/flipt",
+      "reasons": [
+        "Gold file outside common searchable corpus: build/testing/integration.go"
+      ]
+    },
+    {
+      "id": "SWE-Bench-Pro__go__maintenance__bugfix__153337fe",
+      "repo": "flipt-io/flipt",
+      "reasons": [
+        "Gold file outside common searchable corpus: build/testing/integration.go",
+        "Gold file outside common searchable corpus: build/testing/integration/readonly/testdata/seed.yaml"
+      ]
+    },
+    {
+      "id": "SWE-Bench-Pro__go__maintenance__bugfix__157932b6",
+      "repo": "flipt-io/flipt",
+      "reasons": [
+        "Gold file outside common searchable corpus: build/hack/loadtest.go",
+        "Gold file outside common searchable corpus: build/testing/integration.go",
+        "Gold file outside common searchable corpus: build/testing/integration/api/api.go",
+        "Gold file outside common searchable corpus: build/testing/integration/readonly/testdata/default.yaml"
+      ]
+    },
+    {
+      "id": "Multi-SWE-Bench__rust__maintenance__bugfix__3be02163",
+      "repo": "clap-rs/clap",
+      "reasons": [
+        "Gold file outside common searchable corpus: src/build/app/mod.rs",
+        "Gold file outside common searchable corpus: src/build/arg/mod.rs",
+        "Gold file outside common searchable corpus: src/build/arg_group.rs"
+      ]
+    },
+    {
+      "id": "Multi-SWE-Bench__rust__maintenance__bugfix__627665a2",
+      "repo": "clap-rs/clap",
+      "reasons": [
+        "Gold file outside common searchable corpus: src/build/app/mod.rs",
+        "Gold file outside common searchable corpus: src/build/arg/mod.rs",
+        "Gold file outside common searchable corpus: src/build/mod.rs"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "SWE-PolyBench__python__maintenance__bugfix__b01e9113",
+      "repo": "huggingface/transformers",
+      "base_commit": "17b06e2c6650de162e7954babf6224c1975c2852",
+      "query_sha256": "69f1c1c3f2470e858d810919664d82d549da1fa106168da6cd0653dd50faaece",
+      "gold": [
+        {
+          "path": "src/transformers/models/idefics/processing_idefics.py",
+          "start_line": 108,
+          "end_line": 147
+        },
+        {
+          "path": "src/transformers/models/idefics/processing_idefics.py",
+          "start_line": 149,
+          "end_line": 155
+        },
+        {
+          "path": "src/transformers/models/idefics/processing_idefics.py",
+          "start_line": 165,
+          "end_line": 179
+        },
+        {
+          "path": "src/transformers/models/idefics/processing_idefics.py",
+          "start_line": 266,
+          "end_line": 340
+        },
+        {
+          "path": "src/transformers/models/idefics/processing_idefics.py",
+          "start_line": 333,
+          "end_line": 340
+        },
+        {
+          "path": "src/transformers/models/idefics/processing_idefics.py",
+          "start_line": 341,
+          "end_line": 375
+        },
+        {
+          "path": "src/transformers/models/idefics/processing_idefics.py",
+          "start_line": 344,
+          "end_line": 357
+        },
+        {
+          "path": "src/transformers/models/idefics/processing_idefics.py",
+          "start_line": 366,
+          "end_line": 373
+        },
+        {
+          "path": "src/transformers/models/idefics/processing_idefics.py",
+          "start_line": 376,
+          "end_line": 394
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__python__maintenance__bugfix__2f88019c",
+      "repo": "huggingface/transformers",
+      "base_commit": "cdfa56afe02c3ed5d2b86498515cfddf82d56f2c",
+      "query_sha256": "a643535e705faf211774338e3314388fb237be9648a4a6d5a0bb4c7e8a8332a1",
+      "gold": [
+        {
+          "path": "src/transformers/trainer.py",
+          "start_line": 586,
+          "end_line": 618
+        },
+        {
+          "path": "src/transformers/trainer.py",
+          "start_line": 676,
+          "end_line": 686
+        },
+        {
+          "path": "src/transformers/trainer.py",
+          "start_line": 709,
+          "end_line": 737
+        },
+        {
+          "path": "src/transformers/trainer.py",
+          "start_line": 749,
+          "end_line": 777
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__python__maintenance__bugfix__546cff10",
+      "repo": "huggingface/transformers",
+      "base_commit": "eadd870b2f503047dd81b8dcd9d115dc1b4a9196",
+      "query_sha256": "e73eed09e8937f84d5f226f038573d3c09a642379f265f83b7bb08d6c0cdb3ba",
+      "gold": [
+        {
+          "path": "src/transformers/modeling_funnel.py",
+          "start_line": 362,
+          "end_line": 384
+        },
+        {
+          "path": "src/transformers/modeling_funnel.py",
+          "start_line": 367,
+          "end_line": 373
+        },
+        {
+          "path": "src/transformers/modeling_funnel.py",
+          "start_line": 445,
+          "end_line": 454
+        },
+        {
+          "path": "src/transformers/modeling_funnel.py",
+          "start_line": 526,
+          "end_line": 534
+        },
+        {
+          "path": "src/transformers/modeling_funnel.py",
+          "start_line": 535,
+          "end_line": 560
+        },
+        {
+          "path": "src/transformers/modeling_funnel.py",
+          "start_line": 554,
+          "end_line": 560
+        },
+        {
+          "path": "src/transformers/modeling_funnel.py",
+          "start_line": 856,
+          "end_line": 862
+        },
+        {
+          "path": "src/transformers/modeling_tf_funnel.py",
+          "start_line": 555,
+          "end_line": 561
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__python__maintenance__bugfix__a89cc1dc",
+      "repo": "huggingface/transformers",
+      "base_commit": "2c1eebc1216549d8195d7d1c6adb8b99afee3ec5",
+      "query_sha256": "9ec169d2cdee4ea4a0fae79228621dd24a1468706546d0a7b560914ff16ec2a7",
+      "gold": [
+        {
+          "path": "src/transformers/models/whisper/modeling_whisper.py",
+          "start_line": 57,
+          "end_line": 62
+        },
+        {
+          "path": "src/transformers/models/whisper/modeling_whisper.py",
+          "start_line": 2955,
+          "end_line": 2978
+        },
+        {
+          "path": "src/transformers/models/whisper/modeling_whisper.py",
+          "start_line": 2957,
+          "end_line": 2962
+        },
+        {
+          "path": "src/transformers/models/whisper/modeling_whisper.py",
+          "start_line": 2969,
+          "end_line": 2975
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__python__maintenance__bugfix__37b10945",
+      "repo": "huggingface/transformers",
+      "base_commit": "c681b58b06f6fb8b5c331f380548af3b4b33f881",
+      "query_sha256": "81d4da82b235defbea2f7fd7247b7894c1f1d766960b45168734be362a736f47",
+      "gold": [
+        {
+          "path": "src/transformers/modeling_utils.py",
+          "start_line": 2900,
+          "end_line": 2902
+        },
+        {
+          "path": "src/transformers/modeling_utils.py",
+          "start_line": 3212,
+          "end_line": 3243
+        },
+        {
+          "path": "src/transformers/modeling_utils.py",
+          "start_line": 3244,
+          "end_line": 3269
+        },
+        {
+          "path": "src/transformers/modeling_utils.py",
+          "start_line": 3263,
+          "end_line": 3270
+        },
+        {
+          "path": "src/transformers/modeling_utils.py",
+          "start_line": 3284,
+          "end_line": 3293
+        },
+        {
+          "path": "src/transformers/modeling_utils.py",
+          "start_line": 3402,
+          "end_line": 3415
+        },
+        {
+          "path": "src/transformers/modeling_utils.py",
+          "start_line": 3410,
+          "end_line": 3417
+        },
+        {
+          "path": "src/transformers/utils/__init__.py",
+          "start_line": 226,
+          "end_line": 227
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__python__maintenance__bugfix__214ce29d",
+      "repo": "huggingface/transformers",
+      "base_commit": "4cbd50e611e5bace6ba81d7bb7e730852bb09142",
+      "query_sha256": "6a23cccf902a012cf2e55a75fa1b2794c8a4a98e7a3083de1090e15ddb17ef4c",
+      "gold": [
+        {
+          "path": "src/transformers/tokenization_t5.py",
+          "start_line": 96,
+          "end_line": 103
+        },
+        {
+          "path": "src/transformers/tokenization_t5.py",
+          "start_line": 210,
+          "end_line": 219
+        },
+        {
+          "path": "src/transformers/tokenization_t5.py",
+          "start_line": 211,
+          "end_line": 216
+        },
+        {
+          "path": "src/transformers/tokenization_t5.py",
+          "start_line": 343,
+          "end_line": 349
+        },
+        {
+          "path": "src/transformers/tokenization_t5.py",
+          "start_line": 344,
+          "end_line": 373
+        },
+        {
+          "path": "src/transformers/tokenization_t5.py",
+          "start_line": 358,
+          "end_line": 365
+        },
+        {
+          "path": "src/transformers/tokenization_t5.py",
+          "start_line": 370,
+          "end_line": 374
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__python__maintenance__bugfix__70acfaad",
+      "repo": "huggingface/transformers",
+      "base_commit": "b27aa206ddf3fe66b36db587603141b3d0379a82",
+      "query_sha256": "5e018078a1414f83e70ab6c252016526f73cc44a232ac939cea0cbbcc8cd50cf",
+      "gold": [
+        {
+          "path": "src/transformers/models/wav2vec2/tokenization_wav2vec2.py",
+          "start_line": 125,
+          "end_line": 131
+        },
+        {
+          "path": "src/transformers/models/wav2vec2/tokenization_wav2vec2.py",
+          "start_line": 433,
+          "end_line": 445
+        },
+        {
+          "path": "src/transformers/models/wav2vec2/tokenization_wav2vec2.py",
+          "start_line": 434,
+          "end_line": 440
+        },
+        {
+          "path": "src/transformers/models/wav2vec2/tokenization_wav2vec2.py",
+          "start_line": 895,
+          "end_line": 901
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__python__evolution__feature__17a093c8",
+      "repo": "huggingface/transformers",
+      "base_commit": "3d320c78c32334f66d72d57ff6322d9e3a7dc00b",
+      "query_sha256": "feddce76755dff5e175a2ddd90b469c9ad70ff6b680ce0408fcacf695e0e6dd8",
+      "gold": [
+        {
+          "path": "src/transformers/models/bert/__init__.py",
+          "start_line": 21,
+          "end_line": 36
+        },
+        {
+          "path": "src/transformers/models/bert/__init__.py",
+          "start_line": 67,
+          "end_line": 95
+        },
+        {
+          "path": "src/transformers/models/bert/tokenization_bert_tf.py",
+          "start_line": 1,
+          "end_line": 10
+        },
+        {
+          "path": "src/transformers/models/bert/tokenization_bert_tf.py",
+          "start_line": 3,
+          "end_line": 8
+        },
+        {
+          "path": "src/transformers/models/bert/tokenization_bert_tf.py",
+          "start_line": 11,
+          "end_line": 82
+        },
+        {
+          "path": "src/transformers/models/bert/tokenization_bert_tf.py",
+          "start_line": 47,
+          "end_line": 52
+        },
+        {
+          "path": "src/transformers/models/bert/tokenization_bert_tf.py",
+          "start_line": 62,
+          "end_line": 72
+        },
+        {
+          "path": "src/transformers/models/bert/tokenization_bert_tf.py",
+          "start_line": 83,
+          "end_line": 142
+        },
+        {
+          "path": "src/transformers/models/bert/tokenization_bert_tf.py",
+          "start_line": 138,
+          "end_line": 144
+        },
+        {
+          "path": "src/transformers/models/bert/tokenization_bert_tf.py",
+          "start_line": 143,
+          "end_line": 222
+        },
+        {
+          "path": "src/transformers/utils/dummy_tensorflow_text_objects.py",
+          "start_line": 1,
+          "end_line": 11
+        },
+        {
+          "path": "src/transformers/utils/import_utils.py",
+          "start_line": 557,
+          "end_line": 563
+        },
+        {
+          "path": "tests/models/bert/test_tokenization_bert_tf.py",
+          "start_line": 5,
+          "end_line": 15
+        },
+        {
+          "path": "tests/models/bert/test_tokenization_bert_tf.py",
+          "start_line": 20,
+          "end_line": 32
+        },
+        {
+          "path": "tests/models/bert/test_tokenization_bert_tf.py",
+          "start_line": 40,
+          "end_line": 75
+        },
+        {
+          "path": "tests/models/bert/test_tokenization_bert_tf.py",
+          "start_line": 76,
+          "end_line": 100
+        }
+      ]
+    },
+    {
+      "id": "SWE-Bench-Verified__python__maintenance__bugfix__5642a8e0",
+      "repo": "sympy/sympy",
+      "base_commit": "2dfa7457f20ee187fbb09b5b6a1631da4458388c",
+      "query_sha256": "5d95a063a1ada8b9273255940d122605d87ea3ab2aa27f524725442be780b5c6",
+      "gold": [
+        {
+          "path": "sympy/matrices/common.py",
+          "start_line": 220,
+          "end_line": 249
+        },
+        {
+          "path": "sympy/matrices/common.py",
+          "start_line": 457,
+          "end_line": 485
+        },
+        {
+          "path": "sympy/matrices/sparse.py",
+          "start_line": 949,
+          "end_line": 993
+        },
+        {
+          "path": "sympy/matrices/sparse.py",
+          "start_line": 985,
+          "end_line": 992
+        },
+        {
+          "path": "sympy/matrices/sparse.py",
+          "start_line": 1159,
+          "end_line": 1199
+        },
+        {
+          "path": "sympy/matrices/sparse.py",
+          "start_line": 1191,
+          "end_line": 1198
+        },
+        {
+          "path": "sympy/matrices/tests/test_commonmatrix.py",
+          "start_line": 212,
+          "end_line": 250
+        }
+      ]
+    },
+    {
+      "id": "SWE-Bench-Verified__python__maintenance__bugfix__3c7d37b7",
+      "repo": "sympy/sympy",
+      "base_commit": "39de9a2698ad4bb90681c0fdb70b30a78233145f",
+      "query_sha256": "6e2c57adb3bb75a9841d6ebb74f72bd5f711a1a11df1ed32906681eb3613dabd",
+      "gold": [
+        {
+          "path": "sympy/physics/hep/gamma_matrices.py",
+          "start_line": 337,
+          "end_line": 416
+        },
+        {
+          "path": "sympy/physics/hep/gamma_matrices.py",
+          "start_line": 418,
+          "end_line": 507
+        },
+        {
+          "path": "sympy/physics/hep/gamma_matrices.py",
+          "start_line": 552,
+          "end_line": 717
+        },
+        {
+          "path": "sympy/physics/hep/gamma_matrices.py",
+          "start_line": 694,
+          "end_line": 701
+        }
+      ]
+    },
+    {
+      "id": "SWE-Bench-Verified__python__maintenance__bugfix__7439767b",
+      "repo": "sympy/sympy",
+      "base_commit": "9cbea134220b0b951587e11b63e2c832c7246cbc",
+      "query_sha256": "3c0d98bb2098e4b8be846f95279696c6ab55e3ab5f22f05c946c0af281f81bda",
+      "gold": [
+        {
+          "path": "sympy/printing/pycode.py",
+          "start_line": 304,
+          "end_line": 360
+        },
+        {
+          "path": "sympy/printing/pycode.py",
+          "start_line": 332,
+          "end_line": 337
+        },
+        {
+          "path": "sympy/printing/tests/test_pycode.py",
+          "start_line": 40,
+          "end_line": 85
+        },
+        {
+          "path": "sympy/utilities/lambdify.py",
+          "start_line": 392,
+          "end_line": 417
+        }
+      ]
+    },
+    {
+      "id": "SWE-Bench-Verified__python__maintenance__bugfix__20294df2",
+      "repo": "sympy/sympy",
+      "base_commit": "c50643a49811e9fe2f4851adff4313ad46f7325e",
+      "query_sha256": "8bcff84556fbb7d34383e0f16d01027922121a39bb63b881fcd3d8f5e2e74f29",
+      "gold": [
+        {
+          "path": "sympy/crypto/crypto.py",
+          "start_line": 1507,
+          "end_line": 1536
+        },
+        {
+          "path": "sympy/crypto/crypto.py",
+          "start_line": 1520,
+          "end_line": 1526
+        },
+        {
+          "path": "sympy/crypto/crypto.py",
+          "start_line": 1539,
+          "end_line": 1583
+        },
+        {
+          "path": "sympy/crypto/crypto.py",
+          "start_line": 1586,
+          "end_line": 1617
+        }
+      ]
+    },
+    {
+      "id": "SWE-Bench-Verified__python__maintenance__bugfix__05d282ec",
+      "repo": "sympy/sympy",
+      "base_commit": "28d913d3cead6c5646307ffa6540b21d65059dfd",
+      "query_sha256": "4d0982bb7d0bc25fd0f0c24f136fddb1e2e9e1571502aadcae1c84644c40bd5a",
+      "gold": [
+        {
+          "path": "sympy/functions/elementary/miscellaneous.py",
+          "start_line": 339,
+          "end_line": 346
+        },
+        {
+          "path": "sympy/functions/elementary/miscellaneous.py",
+          "start_line": 340,
+          "end_line": 371
+        },
+        {
+          "path": "sympy/functions/elementary/miscellaneous.py",
+          "start_line": 508,
+          "end_line": 534
+        },
+        {
+          "path": "sympy/functions/elementary/miscellaneous.py",
+          "start_line": 645,
+          "end_line": 732
+        },
+        {
+          "path": "sympy/functions/elementary/miscellaneous.py",
+          "start_line": 765,
+          "end_line": 797
+        }
+      ]
+    },
+    {
+      "id": "SWE-Bench-Verified__python__maintenance__bugfix__50a39953",
+      "repo": "sympy/sympy",
+      "base_commit": "193e3825645d93c73e31cdceb6d742cc6919624d",
+      "query_sha256": "c45c55bcffb2b526d21ed6b0c8d19976455280d6ce9343f7f2d62d96c3d3e037",
+      "gold": [
+        {
+          "path": "sympy/polys/rings.py",
+          "start_line": 606,
+          "end_line": 629
+        },
+        {
+          "path": "sympy/polys/rings.py",
+          "start_line": 616,
+          "end_line": 625
+        }
+      ]
+    },
+    {
+      "id": "SWE-Bench-Verified__python__maintenance__bugfix__a443322c",
+      "repo": "sympy/sympy",
+      "base_commit": "624217179aaf8d094e6ff75b7493ad1ee47599b0",
+      "query_sha256": "e199bb269f9d7eedd813b73859ebc266bbf9180ba44e93fee83257f13a7b3c38",
+      "gold": [
+        {
+          "path": "sympy/core/mod.py",
+          "start_line": 40,
+          "end_line": 45
+        },
+        {
+          "path": "sympy/core/mod.py",
+          "start_line": 50,
+          "end_line": 106
+        },
+        {
+          "path": "sympy/core/mod.py",
+          "start_line": 108,
+          "end_line": 165
+        },
+        {
+          "path": "sympy/core/mod.py",
+          "start_line": 166,
+          "end_line": 175
+        },
+        {
+          "path": "sympy/core/mod.py",
+          "start_line": 175,
+          "end_line": 221
+        }
+      ]
+    },
+    {
+      "id": "SWE-Bench-Verified__python__maintenance__bugfix__7080a326",
+      "repo": "sympy/sympy",
+      "base_commit": "5e17a90c19f7eecfa10c1ab872648ae7e2131323",
+      "query_sha256": "cf4081c50e2bce78ef90503152dbf7f94f2f8cf0323ee9cd68cf0e3a60835d6e",
+      "gold": [
+        {
+          "path": "sympy/core/mod.py",
+          "start_line": 1,
+          "end_line": 6
+        },
+        {
+          "path": "sympy/core/mod.py",
+          "start_line": 26,
+          "end_line": 141
+        },
+        {
+          "path": "sympy/core/mod.py",
+          "start_line": 45,
+          "end_line": 51
+        },
+        {
+          "path": "sympy/core/mod.py",
+          "start_line": 64,
+          "end_line": 70
+        },
+        {
+          "path": "sympy/core/mod.py",
+          "start_line": 139,
+          "end_line": 144
+        },
+        {
+          "path": "sympy/core/tests/test_arit.py",
+          "start_line": 1618,
+          "end_line": 1635
+        }
+      ]
+    },
+    {
+      "id": "SWE-Bench-Pro__python__maintenance__bugfix__739b23db",
+      "repo": "ansible/ansible",
+      "base_commit": "252685092cacdd0f8b485ed6f105ec7acc29c7a4",
+      "query_sha256": "cba4baba413c6e57757d93a5dbcc2033b2349896226ca00c889903a4ea4fc3f3",
+      "gold": [
+        {
+          "path": "lib/ansible/executor/play_iterator.py",
+          "start_line": 181,
+          "end_line": 190
+        },
+        {
+          "path": "lib/ansible/executor/play_iterator.py",
+          "start_line": 244,
+          "end_line": 250
+        },
+        {
+          "path": "lib/ansible/executor/play_iterator.py",
+          "start_line": 254,
+          "end_line": 260
+        },
+        {
+          "path": "lib/ansible/executor/play_iterator.py",
+          "start_line": 318,
+          "end_line": 324
+        },
+        {
+          "path": "lib/ansible/executor/play_iterator.py",
+          "start_line": 359,
+          "end_line": 365
+        },
+        {
+          "path": "lib/ansible/executor/play_iterator.py",
+          "start_line": 389,
+          "end_line": 395
+        },
+        {
+          "path": "lib/ansible/executor/play_iterator.py",
+          "start_line": 411,
+          "end_line": 421
+        },
+        {
+          "path": "lib/ansible/playbook/block.py",
+          "start_line": 54,
+          "end_line": 62
+        },
+        {
+          "path": "lib/ansible/playbook/block.py",
+          "start_line": 203,
+          "end_line": 209
+        },
+        {
+          "path": "lib/ansible/playbook/block.py",
+          "start_line": 236,
+          "end_line": 242
+        },
+        {
+          "path": "lib/ansible/playbook/block.py",
+          "start_line": 263,
+          "end_line": 269
+        },
+        {
+          "path": "lib/ansible/playbook/role/__init__.py",
+          "start_line": 422,
+          "end_line": 428
+        },
+        {
+          "path": "lib/ansible/playbook/role/__init__.py",
+          "start_line": 437,
+          "end_line": 442
+        },
+        {
+          "path": "lib/ansible/playbook/role/__init__.py",
+          "start_line": 450,
+          "end_line": 463
+        },
+        {
+          "path": "lib/ansible/plugins/strategy/__init__.py",
+          "start_line": 744,
+          "end_line": 752
+        },
+        {
+          "path": "lib/ansible/plugins/strategy/__init__.py",
+          "start_line": 1125,
+          "end_line": 1135
+        },
+        {
+          "path": "lib/ansible/plugins/strategy/__init__.py",
+          "start_line": 1192,
+          "end_line": 1197
+        },
+        {
+          "path": "lib/ansible/plugins/strategy/linear.py",
+          "start_line": 248,
+          "end_line": 253
+        },
+        {
+          "path": "lib/ansible/plugins/strategy/linear.py",
+          "start_line": 276,
+          "end_line": 282
+        }
+      ]
+    },
+    {
+      "id": "SWE-Bench-Pro__python__maintenance__bugfix__183dd4c4",
+      "repo": "ansible/ansible",
+      "base_commit": "8502c2302871e35e59fb7092b4b01b937c934031",
+      "query_sha256": "c5ff03251b67df17b906360fdda6985ac69664a9176f22c80b33f1c4efd3935a",
+      "gold": [
+        {
+          "path": "lib/ansible/modules/async_status.py",
+          "start_line": 87,
+          "end_line": 136
+        },
+        {
+          "path": "lib/ansible/modules/async_wrapper.py",
+          "start_line": 31,
+          "end_line": 51
+        },
+        {
+          "path": "lib/ansible/modules/async_wrapper.py",
+          "start_line": 55,
+          "end_line": 65
+        },
+        {
+          "path": "lib/ansible/modules/async_wrapper.py",
+          "start_line": 126,
+          "end_line": 139
+        },
+        {
+          "path": "lib/ansible/modules/async_wrapper.py",
+          "start_line": 173,
+          "end_line": 179
+        },
+        {
+          "path": "lib/ansible/modules/async_wrapper.py",
+          "start_line": 185,
+          "end_line": 191
+        },
+        {
+          "path": "lib/ansible/modules/async_wrapper.py",
+          "start_line": 196,
+          "end_line": 215
+        },
+        {
+          "path": "lib/ansible/modules/async_wrapper.py",
+          "start_line": 232,
+          "end_line": 248
+        },
+        {
+          "path": "lib/ansible/modules/async_wrapper.py",
+          "start_line": 272,
+          "end_line": 281
+        },
+        {
+          "path": "lib/ansible/modules/async_wrapper.py",
+          "start_line": 307,
+          "end_line": 343
+        },
+        {
+          "path": "lib/ansible/plugins/action/__init__.py",
+          "start_line": 960,
+          "end_line": 1115
+        },
+        {
+          "path": "lib/ansible/plugins/action/__init__.py",
+          "start_line": 1150,
+          "end_line": 1173
+        },
+        {
+          "path": "test/units/modules/test_async_wrapper.py",
+          "start_line": 20,
+          "end_line": 57
+        }
+      ]
+    },
+    {
+      "id": "SWE-Bench-Pro__python__maintenance__bugfix__5ec14acf",
+      "repo": "ansible/ansible",
+      "base_commit": "20ec92728004bc94729ffc08cbc483b7496c0c1f",
+      "query_sha256": "3b36c9aee44860195016acc9390029951ab7c9c41add693c3f89b56c7925980e",
+      "gold": [
+        {
+          "path": "lib/ansible/module_utils/network/icx/icx.py",
+          "start_line": 17,
+          "end_line": 36
+        },
+        {
+          "path": "lib/ansible/modules/network/icx/icx_static_route.py",
+          "start_line": 144,
+          "end_line": 181
+        },
+        {
+          "path": "lib/ansible/modules/network/icx/icx_static_route.py",
+          "start_line": 220,
+          "end_line": 254
+        }
+      ]
+    },
+    {
+      "id": "SWE-Bench-Pro__python__maintenance__bugfix__62badbbf",
+      "repo": "ansible/ansible",
+      "base_commit": "38067860e271ce2f68d6d5d743d70286e5209623",
+      "query_sha256": "085db4a64c8ed233448e145fe9d743cc19c1db06bbcad802b9b0131e276dce84",
+      "gold": [
+        {
+          "path": "lib/ansible/executor/task_queue_manager.py",
+          "start_line": 56,
+          "end_line": 61
+        },
+        {
+          "path": "lib/ansible/executor/task_queue_manager.py",
+          "start_line": 61,
+          "end_line": 67
+        },
+        {
+          "path": "lib/ansible/executor/task_queue_manager.py",
+          "start_line": 69,
+          "end_line": 77
+        },
+        {
+          "path": "lib/ansible/executor/task_queue_manager.py",
+          "start_line": 79,
+          "end_line": 108
+        },
+        {
+          "path": "lib/ansible/executor/task_queue_manager.py",
+          "start_line": 95,
+          "end_line": 103
+        },
+        {
+          "path": "lib/ansible/plugins/strategy/__init__.py",
+          "start_line": 54,
+          "end_line": 60
+        },
+        {
+          "path": "lib/ansible/plugins/strategy/__init__.py",
+          "start_line": 113,
+          "end_line": 155
+        },
+        {
+          "path": "lib/ansible/plugins/strategy/__init__.py",
+          "start_line": 117,
+          "end_line": 123
+        },
+        {
+          "path": "lib/ansible/utils/display.py",
+          "start_line": 118,
+          "end_line": 123
+        },
+        {
+          "path": "lib/ansible/utils/display.py",
+          "start_line": 319,
+          "end_line": 328
+        },
+        {
+          "path": "lib/ansible/utils/display.py",
+          "start_line": 337,
+          "end_line": 342
+        },
+        {
+          "path": "lib/ansible/utils/display.py",
+          "start_line": 346,
+          "end_line": 358
+        },
+        {
+          "path": "lib/ansible/utils/display.py",
+          "start_line": 475,
+          "end_line": 480
+        },
+        {
+          "path": "lib/ansible/utils/display.py",
+          "start_line": 491,
+          "end_line": 496
+        }
+      ]
+    },
+    {
+      "id": "SWE-Bench-Pro__python__maintenance__bugfix__c6afe1c7",
+      "repo": "ansible/ansible",
+      "base_commit": "f9a450551de47ac2b9d1d7e66a103cbf8f05c37f",
+      "query_sha256": "cf36e625ad02e2edfe984db872a83b5579fb28402fba7293e03e66d5ffb1463f",
+      "gold": [
+        {
+          "path": "docs/docsite/rst/dev_guide/developing_collections_distributing.rst",
+          "start_line": 146,
+          "end_line": 156
+        },
+        {
+          "path": "docs/docsite/rst/dev_guide/developing_collections_distributing.rst",
+          "start_line": 175,
+          "end_line": 186
+        },
+        {
+          "path": "lib/ansible/constants.py",
+          "start_line": 99,
+          "end_line": 115
+        },
+        {
+          "path": "lib/ansible/galaxy/__init__.py",
+          "start_line": 37,
+          "end_line": 41
+        },
+        {
+          "path": "lib/ansible/galaxy/collection/__init__.py",
+          "start_line": 1,
+          "end_line": 47
+        },
+        {
+          "path": "lib/ansible/galaxy/collection/__init__.py",
+          "start_line": 25,
+          "end_line": 30
+        },
+        {
+          "path": "lib/ansible/galaxy/collection/__init__.py",
+          "start_line": 40,
+          "end_line": 45
+        },
+        {
+          "path": "lib/ansible/galaxy/collection/__init__.py",
+          "start_line": 112,
+          "end_line": 119
+        },
+        {
+          "path": "lib/ansible/galaxy/collection/__init__.py",
+          "start_line": 130,
+          "end_line": 135
+        },
+        {
+          "path": "lib/ansible/galaxy/collection/__init__.py",
+          "start_line": 433,
+          "end_line": 476
+        },
+        {
+          "path": "lib/ansible/galaxy/collection/__init__.py",
+          "start_line": 452,
+          "end_line": 457
+        },
+        {
+          "path": "lib/ansible/galaxy/collection/__init__.py",
+          "start_line": 1007,
+          "end_line": 1013
+        },
+        {
+          "path": "lib/ansible/galaxy/collection/__init__.py",
+          "start_line": 1007,
+          "end_line": 1094
+        },
+        {
+          "path": "lib/ansible/galaxy/collection/__init__.py",
+          "start_line": 1025,
+          "end_line": 1049
+        },
+        {
+          "path": "lib/ansible/galaxy/collection/__init__.py",
+          "start_line": 1066,
+          "end_line": 1076
+        },
+        {
+          "path": "lib/ansible/galaxy/collection/__init__.py",
+          "start_line": 1081,
+          "end_line": 1093
+        },
+        {
+          "path": "lib/ansible/galaxy/collection/__init__.py",
+          "start_line": 1097,
+          "end_line": 1127
+        },
+        {
+          "path": "lib/ansible/galaxy/collection/__init__.py",
+          "start_line": 1130,
+          "end_line": 1197
+        },
+        {
+          "path": "lib/ansible/galaxy/collection/__init__.py",
+          "start_line": 1404,
+          "end_line": 1441
+        },
+        {
+          "path": "lib/ansible/galaxy/collection/__init__.py",
+          "start_line": 1427,
+          "end_line": 1432
+        },
+        {
+          "path": "lib/ansible/galaxy/collection/__init__.py",
+          "start_line": 1567,
+          "end_line": 1577
+        },
+        {
+          "path": "lib/ansible/galaxy/collection/concrete_artifact_manager.py",
+          "start_line": 518,
+          "end_line": 588
+        },
+        {
+          "path": "lib/ansible/galaxy/collection/concrete_artifact_manager.py",
+          "start_line": 601,
+          "end_line": 636
+        },
+        {
+          "path": "lib/ansible/galaxy/data/collections_galaxy_meta.yml",
+          "start_line": 90,
+          "end_line": 110
+        },
+        {
+          "path": "lib/ansible/galaxy/data/collections_galaxy_meta.yml",
+          "start_line": 106,
+          "end_line": 110
+        }
+      ]
+    },
+    {
+      "id": "SWE-Bench-Pro__python__maintenance__bugfix__d131db7a",
+      "repo": "ansible/ansible",
+      "base_commit": "59ca05b70994b07a9507f61a0871146a4991b262",
+      "query_sha256": "af08437f39a9500e19108530d2fe4e8378bef7abd065b52f78caf1f143dde4e8",
+      "gold": [
+        {
+          "path": "lib/ansible/module_utils/basic.py",
+          "start_line": 573,
+          "end_line": 587
+        },
+        {
+          "path": "lib/ansible/module_utils/basic.py",
+          "start_line": 1202,
+          "end_line": 1207
+        },
+        {
+          "path": "lib/ansible/module_utils/basic.py",
+          "start_line": 1482,
+          "end_line": 1505
+        },
+        {
+          "path": "lib/ansible/module_utils/common/parameters.py",
+          "start_line": 569,
+          "end_line": 637
+        },
+        {
+          "path": "lib/ansible/module_utils/common/parameters.py",
+          "start_line": 688,
+          "end_line": 785
+        },
+        {
+          "path": "lib/ansible/module_utils/common/validation.py",
+          "start_line": 13,
+          "end_line": 18
+        },
+        {
+          "path": "lib/ansible/module_utils/common/validation.py",
+          "start_line": 39,
+          "end_line": 44
+        },
+        {
+          "path": "lib/ansible/module_utils/common/validation.py",
+          "start_line": 42,
+          "end_line": 67
+        },
+        {
+          "path": "lib/ansible/module_utils/common/validation.py",
+          "start_line": 415,
+          "end_line": 421
+        },
+        {
+          "path": "lib/ansible/module_utils/common/validation.py",
+          "start_line": 427,
+          "end_line": 436
+        },
+        {
+          "path": "lib/ansible/module_utils/common/validation.py",
+          "start_line": 457,
+          "end_line": 462
+        },
+        {
+          "path": "lib/ansible/module_utils/common/warnings.py",
+          "start_line": 9,
+          "end_line": 40
+        },
+        {
+          "path": "lib/ansible/module_utils/csharp/Ansible.Basic.cs",
+          "start_line": 463,
+          "end_line": 518
+        },
+        {
+          "path": "lib/ansible/module_utils/errors.py",
+          "start_line": 9,
+          "end_line": 120
+        }
+      ]
+    },
+    {
+      "id": "SWE-Bench-Pro__python__maintenance__bugfix__9c878ad5",
+      "repo": "ansible/ansible",
+      "base_commit": "016b7f71b10539c90ddbb3246f19f9cbf0e65428",
+      "query_sha256": "31a223fda6f43864ed5afc4430f22b6bbab4f74032625c78a63bdb70b2455f2a",
+      "gold": [
+        {
+          "path": "lib/ansible/plugins/lookup/password.py",
+          "start_line": 36,
+          "end_line": 43
+        },
+        {
+          "path": "lib/ansible/plugins/lookup/password.py",
+          "start_line": 132,
+          "end_line": 132
+        },
+        {
+          "path": "lib/ansible/plugins/lookup/password.py",
+          "start_line": 192,
+          "end_line": 211
+        },
+        {
+          "path": "lib/ansible/plugins/lookup/password.py",
+          "start_line": 197,
+          "end_line": 214
+        },
+        {
+          "path": "lib/ansible/plugins/lookup/password.py",
+          "start_line": 214,
+          "end_line": 238
+        },
+        {
+          "path": "lib/ansible/plugins/lookup/password.py",
+          "start_line": 338,
+          "end_line": 385
+        },
+        {
+          "path": "lib/ansible/utils/encrypt.py",
+          "start_line": 77,
+          "end_line": 87
+        },
+        {
+          "path": "lib/ansible/utils/encrypt.py",
+          "start_line": 175,
+          "end_line": 191
+        },
+        {
+          "path": "lib/ansible/utils/encrypt.py",
+          "start_line": 193,
+          "end_line": 201
+        },
+        {
+          "path": "lib/ansible/utils/encrypt.py",
+          "start_line": 203,
+          "end_line": 215
+        },
+        {
+          "path": "lib/ansible/utils/encrypt.py",
+          "start_line": 240,
+          "end_line": 251
+        }
+      ]
+    },
+    {
+      "id": "SWE-Bench-Pro__python__maintenance__bugfix__10a41eff",
+      "repo": "ansible/ansible",
+      "base_commit": "79f67ed56116be11b1c992fade04acf06d9208d1",
+      "query_sha256": "7ca64a2f399b9cfebb4cc48aca103711fae3cab34ddc5bae8abe844f595bd94c",
+      "gold": [
+        {
+          "path": "lib/ansible/module_utils/urls.py",
+          "start_line": 1306,
+          "end_line": 1352
+        },
+        {
+          "path": "lib/ansible/module_utils/urls.py",
+          "start_line": 1307,
+          "end_line": 1313
+        },
+        {
+          "path": "lib/ansible/module_utils/urls.py",
+          "start_line": 1345,
+          "end_line": 1350
+        },
+        {
+          "path": "lib/ansible/module_utils/urls.py",
+          "start_line": 1358,
+          "end_line": 1497
+        },
+        {
+          "path": "lib/ansible/module_utils/urls.py",
+          "start_line": 1361,
+          "end_line": 1367
+        },
+        {
+          "path": "lib/ansible/module_utils/urls.py",
+          "start_line": 1402,
+          "end_line": 1407
+        },
+        {
+          "path": "lib/ansible/module_utils/urls.py",
+          "start_line": 1430,
+          "end_line": 1435
+        },
+        {
+          "path": "lib/ansible/module_utils/urls.py",
+          "start_line": 1484,
+          "end_line": 1490
+        },
+        {
+          "path": "lib/ansible/module_utils/urls.py",
+          "start_line": 1649,
+          "end_line": 1668
+        },
+        {
+          "path": "lib/ansible/module_utils/urls.py",
+          "start_line": 1652,
+          "end_line": 1658
+        },
+        {
+          "path": "lib/ansible/module_utils/urls.py",
+          "start_line": 1665,
+          "end_line": 1671
+        },
+        {
+          "path": "lib/ansible/module_utils/urls.py",
+          "start_line": 1818,
+          "end_line": 1824
+        },
+        {
+          "path": "lib/ansible/module_utils/urls.py",
+          "start_line": 1818,
+          "end_line": 1824
+        },
+        {
+          "path": "lib/ansible/module_utils/urls.py",
+          "start_line": 1839,
+          "end_line": 1844
+        },
+        {
+          "path": "lib/ansible/module_utils/urls.py",
+          "start_line": 1875,
+          "end_line": 1905
+        },
+        {
+          "path": "lib/ansible/module_utils/urls.py",
+          "start_line": 1902,
+          "end_line": 1908
+        },
+        {
+          "path": "lib/ansible/modules/get_url.py",
+          "start_line": 180,
+          "end_line": 194
+        },
+        {
+          "path": "lib/ansible/modules/get_url.py",
+          "start_line": 189,
+          "end_line": 194
+        },
+        {
+          "path": "lib/ansible/modules/get_url.py",
+          "start_line": 380,
+          "end_line": 386
+        },
+        {
+          "path": "lib/ansible/modules/get_url.py",
+          "start_line": 382,
+          "end_line": 393
+        },
+        {
+          "path": "lib/ansible/modules/get_url.py",
+          "start_line": 389,
+          "end_line": 395
+        },
+        {
+          "path": "lib/ansible/modules/get_url.py",
+          "start_line": 468,
+          "end_line": 502
+        },
+        {
+          "path": "lib/ansible/modules/get_url.py",
+          "start_line": 476,
+          "end_line": 481
+        },
+        {
+          "path": "lib/ansible/modules/get_url.py",
+          "start_line": 497,
+          "end_line": 502
+        },
+        {
+          "path": "lib/ansible/modules/get_url.py",
+          "start_line": 521,
+          "end_line": 527
+        },
+        {
+          "path": "lib/ansible/modules/get_url.py",
+          "start_line": 521,
+          "end_line": 527
+        },
+        {
+          "path": "lib/ansible/modules/get_url.py",
+          "start_line": 599,
+          "end_line": 605
+        },
+        {
+          "path": "lib/ansible/modules/get_url.py",
+          "start_line": 599,
+          "end_line": 605
+        },
+        {
+          "path": "lib/ansible/modules/uri.py",
+          "start_line": 206,
+          "end_line": 217
+        },
+        {
+          "path": "lib/ansible/modules/uri.py",
+          "start_line": 215,
+          "end_line": 220
+        },
+        {
+          "path": "lib/ansible/modules/uri.py",
+          "start_line": 545,
+          "end_line": 551
+        },
+        {
+          "path": "lib/ansible/modules/uri.py",
+          "start_line": 545,
+          "end_line": 576
+        },
+        {
+          "path": "lib/ansible/modules/uri.py",
+          "start_line": 570,
+          "end_line": 576
+        },
+        {
+          "path": "lib/ansible/modules/uri.py",
+          "start_line": 605,
+          "end_line": 610
+        },
+        {
+          "path": "lib/ansible/modules/uri.py",
+          "start_line": 605,
+          "end_line": 633
+        },
+        {
+          "path": "lib/ansible/modules/uri.py",
+          "start_line": 628,
+          "end_line": 633
+        },
+        {
+          "path": "lib/ansible/modules/uri.py",
+          "start_line": 671,
+          "end_line": 677
+        },
+        {
+          "path": "lib/ansible/modules/uri.py",
+          "start_line": 671,
+          "end_line": 677
+        },
+        {
+          "path": "lib/ansible/plugins/lookup/url.py",
+          "start_line": 100,
+          "end_line": 167
+        },
+        {
+          "path": "lib/ansible/plugins/lookup/url.py",
+          "start_line": 113,
+          "end_line": 118
+        },
+        {
+          "path": "lib/ansible/plugins/lookup/url.py",
+          "start_line": 213,
+          "end_line": 233
+        },
+        {
+          "path": "lib/ansible/plugins/lookup/url.py",
+          "start_line": 230,
+          "end_line": 235
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__typescript__evolution__feature__34826a6a",
+      "repo": "mui/material-ui",
+      "base_commit": "567e6cf97dce71eba9370e8c13519d206a98ffd2",
+      "query_sha256": "e8186a3fe54d234b4c548f3763f9707ef6a07dd60aa2366e3c21b0ea451e18ac",
+      "gold": [
+        {
+          "path": "docs/pages/api-docs/step-label.json",
+          "start_line": 2,
+          "end_line": 7
+        },
+        {
+          "path": "docs/translations/api-docs/step-label/step-label.json",
+          "start_line": 3,
+          "end_line": 8
+        },
+        {
+          "path": "docs/translations/api-docs/step-label/step-label.json",
+          "start_line": 24,
+          "end_line": 49
+        },
+        {
+          "path": "docs/translations/api-docs/step-label/step-label.json",
+          "start_line": 52,
+          "end_line": 63
+        },
+        {
+          "path": "packages/material-ui/src/StepLabel/StepLabel.d.ts",
+          "start_line": 14,
+          "end_line": 19
+        },
+        {
+          "path": "packages/material-ui/src/StepLabel/StepLabel.js",
+          "start_line": 4,
+          "end_line": 10
+        },
+        {
+          "path": "packages/material-ui/src/StepLabel/StepLabel.js",
+          "start_line": 64,
+          "end_line": 74
+        },
+        {
+          "path": "packages/material-ui/src/StepLabel/StepLabel.js",
+          "start_line": 64,
+          "end_line": 80
+        },
+        {
+          "path": "packages/material-ui/src/StepLabel/StepLabel.js",
+          "start_line": 124,
+          "end_line": 129
+        },
+        {
+          "path": "packages/material-ui/src/StepLabel/StepLabel.js",
+          "start_line": 124,
+          "end_line": 180
+        },
+        {
+          "path": "packages/material-ui/src/StepLabel/StepLabel.js",
+          "start_line": 170,
+          "end_line": 180
+        },
+        {
+          "path": "packages/material-ui/src/StepLabel/StepLabel.js",
+          "start_line": 202,
+          "end_line": 207
+        },
+        {
+          "path": "packages/material-ui/src/StepLabel/stepLabelClasses.ts",
+          "start_line": 7,
+          "end_line": 27
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__typescript__maintenance__bugfix__05b26677",
+      "repo": "mui/material-ui",
+      "base_commit": "eec5b60861adb72df83b6de80c602940ce773663",
+      "query_sha256": "49ba9198b9d8d373e9ba368403660ce0a33e60927c8476385f49685c9b5f100e",
+      "gold": [
+        {
+          "path": "packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js",
+          "start_line": 1,
+          "end_line": 7
+        },
+        {
+          "path": "packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js",
+          "start_line": 94,
+          "end_line": 94
+        },
+        {
+          "path": "packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js",
+          "start_line": 658,
+          "end_line": 658
+        },
+        {
+          "path": "packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js",
+          "start_line": 755,
+          "end_line": 760
+        },
+        {
+          "path": "packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js",
+          "start_line": 767,
+          "end_line": 790
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__typescript__maintenance__bugfix__6688f2d9",
+      "repo": "mui/material-ui",
+      "base_commit": "b8a28e13dc0821314700f1aefc9f8e1134cf9034",
+      "query_sha256": "0b2c65f5d2b8e86b3508c53b476dfd9b877278008959eefff341f46c918c4f0a",
+      "gold": [
+        {
+          "path": "packages/mui-material/src/styles/responsiveFontSizes.js",
+          "start_line": 4,
+          "end_line": 34
+        },
+        {
+          "path": "packages/mui-material/src/styles/responsiveFontSizes.js",
+          "start_line": 34,
+          "end_line": 39
+        },
+        {
+          "path": "packages/mui-material/src/styles/responsiveFontSizes.js",
+          "start_line": 35,
+          "end_line": 81
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__typescript__evolution__feature__07098661",
+      "repo": "mui/material-ui",
+      "base_commit": "18aa6293ad8b67dc8a323db19117c93efa966c7c",
+      "query_sha256": "22c4920f78671e82e4a9fd4573fb1fecab7a7d938095577d7ee5c7d1bc73cf81",
+      "gold": [
+        {
+          "path": "packages/material-ui/src/styles/withTheme.d.ts",
+          "start_line": 3,
+          "end_line": 8
+        },
+        {
+          "path": "packages/material-ui/src/styles/withTheme.js",
+          "start_line": 1,
+          "end_line": 4
+        },
+        {
+          "path": "packages/material-ui/src/styles/withTheme.js",
+          "start_line": 44,
+          "end_line": 53
+        },
+        {
+          "path": "packages/material-ui/src/styles/withTheme.js",
+          "start_line": 44,
+          "end_line": 53
+        },
+        {
+          "path": "packages/material-ui/src/withWidth/withWidth.d.ts",
+          "start_line": 7,
+          "end_line": 12
+        },
+        {
+          "path": "packages/material-ui/src/withWidth/withWidth.js",
+          "start_line": 95,
+          "end_line": 135
+        },
+        {
+          "path": "packages/material-ui/src/withWidth/withWidth.js",
+          "start_line": 98,
+          "end_line": 104
+        },
+        {
+          "path": "packages/material-ui/src/withWidth/withWidth.js",
+          "start_line": 127,
+          "end_line": 133
+        },
+        {
+          "path": "packages/material-ui/src/withWidth/withWidth.js",
+          "start_line": 144,
+          "end_line": 149
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__typescript__evolution__feature__a565b4b4",
+      "repo": "mui/material-ui",
+      "base_commit": "72a477f3ca678afd1c2d03cb05df4d20089c85cf",
+      "query_sha256": "33ec02d85cd1e5e2a0f630efdfdb575a9314887f34200db44628f3d0950314d1",
+      "gold": [
+        {
+          "path": "docs/pages/api-docs/tree-item.md",
+          "start_line": 36,
+          "end_line": 41
+        },
+        {
+          "path": "packages/material-ui-lab/src/TreeItem/TreeItem.d.ts",
+          "start_line": 20,
+          "end_line": 29
+        },
+        {
+          "path": "packages/material-ui-lab/src/TreeItem/TreeItem.js",
+          "start_line": 54,
+          "end_line": 59
+        },
+        {
+          "path": "packages/material-ui-lab/src/TreeItem/TreeItem.js",
+          "start_line": 92,
+          "end_line": 97
+        },
+        {
+          "path": "packages/material-ui-lab/src/TreeItem/TreeItem.js",
+          "start_line": 161,
+          "end_line": 186
+        },
+        {
+          "path": "packages/material-ui-lab/src/TreeItem/TreeItem.js",
+          "start_line": 166,
+          "end_line": 172
+        },
+        {
+          "path": "packages/material-ui-lab/src/TreeItem/TreeItem.js",
+          "start_line": 383,
+          "end_line": 393
+        },
+        {
+          "path": "packages/material-ui-lab/src/TreeItem/TreeItem.js",
+          "start_line": 386,
+          "end_line": 393
+        },
+        {
+          "path": "packages/material-ui-lab/src/TreeItem/TreeItem.js",
+          "start_line": 457,
+          "end_line": 466
+        },
+        {
+          "path": "packages/material-ui-lab/src/TreeView/TreeView.js",
+          "start_line": 219,
+          "end_line": 228
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__typescript__maintenance__bugfix__6da325be",
+      "repo": "mui/material-ui",
+      "base_commit": "550e949bab55d3fe3f3aba04f76baa7e45d324cc",
+      "query_sha256": "789580dd034c0b59fd39923eec40efc7dd0216e78394cbbea5a2165ebe56336a",
+      "gold": [
+        {
+          "path": "packages/material-ui/src/Modal/ModalManager.js",
+          "start_line": 10,
+          "end_line": 50
+        },
+        {
+          "path": "packages/material-ui/src/Modal/ModalManager.js",
+          "start_line": 50,
+          "end_line": 58
+        },
+        {
+          "path": "packages/material-ui/src/Modal/ModalManager.js",
+          "start_line": 52,
+          "end_line": 61
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__typescript__maintenance__bugfix__15589352",
+      "repo": "mui/material-ui",
+      "base_commit": "1e09429e1804ddd7505fe78f3d606e24e98aa16f",
+      "query_sha256": "982248f87dd8b5f128f10b033011e3e05159c773c97fa7ae651e986c1c7cc6cc",
+      "gold": [
+        {
+          "path": "packages/mui-base/src/SliderUnstyled/SliderUnstyled.js",
+          "start_line": 45,
+          "end_line": 74
+        },
+        {
+          "path": "packages/mui-base/src/SliderUnstyled/SliderUnstyled.js",
+          "start_line": 46,
+          "end_line": 51
+        },
+        {
+          "path": "packages/mui-base/src/SliderUnstyled/SliderUnstyled.js",
+          "start_line": 78,
+          "end_line": 92
+        },
+        {
+          "path": "packages/mui-base/src/SliderUnstyled/SliderUnstyled.js",
+          "start_line": 94,
+          "end_line": 109
+        },
+        {
+          "path": "packages/mui-base/src/SliderUnstyled/SliderUnstyled.js",
+          "start_line": 117,
+          "end_line": 125
+        },
+        {
+          "path": "packages/mui-base/src/SliderUnstyled/SliderUnstyled.js",
+          "start_line": 179,
+          "end_line": 185
+        },
+        {
+          "path": "packages/mui-base/src/SliderUnstyled/SliderUnstyled.js",
+          "start_line": 187,
+          "end_line": 189
+        },
+        {
+          "path": "packages/mui-base/src/SliderUnstyled/SliderUnstyled.js",
+          "start_line": 280,
+          "end_line": 290
+        },
+        {
+          "path": "packages/mui-base/src/SliderUnstyled/SliderUnstyled.js",
+          "start_line": 282,
+          "end_line": 287
+        },
+        {
+          "path": "packages/mui-base/src/SliderUnstyled/useSlider.ts",
+          "start_line": 181,
+          "end_line": 200
+        },
+        {
+          "path": "packages/mui-base/src/SliderUnstyled/useSlider.ts",
+          "start_line": 591,
+          "end_line": 606
+        },
+        {
+          "path": "packages/mui-base/src/SliderUnstyled/useSlider.ts",
+          "start_line": 630,
+          "end_line": 674
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__typescript__maintenance__bugfix__338a2426",
+      "repo": "mui/material-ui",
+      "base_commit": "4f074722a67fe3d1d468f5a014322f238b6d48bc",
+      "query_sha256": "ba90fa1f0f8ed8052f7b64d9671a17543f7942610f8ee009aedf1ab0131c4867",
+      "gold": [
+        {
+          "path": "packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js",
+          "start_line": 130,
+          "end_line": 136
+        },
+        {
+          "path": "packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js",
+          "start_line": 206,
+          "end_line": 241
+        },
+        {
+          "path": "packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js",
+          "start_line": 251,
+          "end_line": 275
+        },
+        {
+          "path": "packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js",
+          "start_line": 293,
+          "end_line": 323
+        },
+        {
+          "path": "packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js",
+          "start_line": 325,
+          "end_line": 393
+        },
+        {
+          "path": "packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js",
+          "start_line": 373,
+          "end_line": 379
+        },
+        {
+          "path": "packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js",
+          "start_line": 395,
+          "end_line": 397
+        },
+        {
+          "path": "packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js",
+          "start_line": 437,
+          "end_line": 459
+        },
+        {
+          "path": "packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js",
+          "start_line": 454,
+          "end_line": 461
+        },
+        {
+          "path": "packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js",
+          "start_line": 642,
+          "end_line": 648
+        },
+        {
+          "path": "packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js",
+          "start_line": 650,
+          "end_line": 668
+        },
+        {
+          "path": "packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js",
+          "start_line": 652,
+          "end_line": 659
+        },
+        {
+          "path": "packages/material-ui-lab/src/useAutocomplete/useAutocomplete.js",
+          "start_line": 726,
+          "end_line": 733
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__typescript__maintenance__bugfix__4f3cb6be",
+      "repo": "microsoft/vscode",
+      "base_commit": "a993ada9300a531c09dfa6a1be772b1abc1492ad",
+      "query_sha256": "da3e2c0df066c548fbb743d3c986ed210f3c92093abedacf6b62cab83acbafb2",
+      "gold": [
+        {
+          "path": "src/vs/editor/common/controller/cursorCommon.ts",
+          "start_line": 423,
+          "end_line": 425
+        },
+        {
+          "path": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+          "start_line": 554,
+          "end_line": 609
+        },
+        {
+          "path": "src/vs/editor/common/controller/cursorTypeOperations.ts",
+          "start_line": 598,
+          "end_line": 604
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__typescript__maintenance__bugfix__48468065",
+      "repo": "microsoft/vscode",
+      "base_commit": "440e61ffab2ba257f30852940fdce18a48a168ea",
+      "query_sha256": "acdb327e92c6ffa44f8ea36bb0ecfdb78312afaa567ca5d39d3bd6634986cc91",
+      "gold": [
+        {
+          "path": "src/vs/workbench/contrib/files/browser/views/explorerView.ts",
+          "start_line": 105,
+          "end_line": 145
+        },
+        {
+          "path": "src/vs/workbench/contrib/files/browser/views/explorerView.ts",
+          "start_line": 108,
+          "end_line": 113
+        },
+        {
+          "path": "src/vs/workbench/contrib/files/browser/views/explorerView.ts",
+          "start_line": 334,
+          "end_line": 336
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__typescript__maintenance__bugfix__16d1ff7a",
+      "repo": "microsoft/vscode",
+      "base_commit": "88ffbc7a7a81a926c7969ad7428e2ffc54370f42",
+      "query_sha256": "b4905191da145a21fc1d7d4a43c70e31fe3544b913f9a21630043d5758a5097a",
+      "gold": [
+        {
+          "path": "src/vs/editor/common/languages/linkComputer.ts",
+          "start_line": 146,
+          "end_line": 150
+        },
+        {
+          "path": "src/vs/editor/common/languages/linkComputer.ts",
+          "start_line": 221,
+          "end_line": 228
+        },
+        {
+          "path": "src/vs/editor/common/languages/linkComputer.ts",
+          "start_line": 258,
+          "end_line": 272
+        },
+        {
+          "path": "src/vs/editor/common/languages/linkComputer.ts",
+          "start_line": 271,
+          "end_line": 278
+        },
+        {
+          "path": "src/vs/editor/common/languages/linkComputer.ts",
+          "start_line": 287,
+          "end_line": 291
+        },
+        {
+          "path": "src/vs/editor/common/languages/linkComputer.ts",
+          "start_line": 318,
+          "end_line": 325
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__typescript__maintenance__bugfix__cb7a4329",
+      "repo": "microsoft/vscode",
+      "base_commit": "f5fdf679b8d22a0dd0dcb6fd8e3bc96bbeb99f75",
+      "query_sha256": "0c30c87a3a2cda172b4853a18f067d2c7c9d2147522bead57eda2dc2ea6fbd32",
+      "gold": [
+        {
+          "path": "src/vs/editor/common/services/modelService.ts",
+          "start_line": 765,
+          "end_line": 797
+        },
+        {
+          "path": "src/vs/editor/common/services/modelService.ts",
+          "start_line": 770,
+          "end_line": 775
+        },
+        {
+          "path": "src/vs/editor/common/services/modelService.ts",
+          "start_line": 789,
+          "end_line": 794
+        },
+        {
+          "path": "src/vs/editor/common/services/modelService.ts",
+          "start_line": 812,
+          "end_line": 825
+        },
+        {
+          "path": "src/vs/editor/common/services/modelService.ts",
+          "start_line": 814,
+          "end_line": 820
+        },
+        {
+          "path": "src/vs/editor/common/services/modelService.ts",
+          "start_line": 851,
+          "end_line": 908
+        },
+        {
+          "path": "src/vs/editor/common/services/modelService.ts",
+          "start_line": 868,
+          "end_line": 873
+        },
+        {
+          "path": "src/vs/editor/common/services/modelService.ts",
+          "start_line": 898,
+          "end_line": 904
+        },
+        {
+          "path": "src/vs/editor/common/services/modelService.ts",
+          "start_line": 918,
+          "end_line": 924
+        },
+        {
+          "path": "src/vs/editor/common/services/modelService.ts",
+          "start_line": 918,
+          "end_line": 950
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__typescript__maintenance__bugfix__22615f27",
+      "repo": "microsoft/vscode",
+      "base_commit": "1a599e2d1792630bc7c53232404d83214acb88f4",
+      "query_sha256": "aac626d429dbd960286420e15de8ede5389beae6903ccf09687f7ce45f1bc64c",
+      "gold": [
+        {
+          "path": "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts",
+          "start_line": 59,
+          "end_line": 64
+        },
+        {
+          "path": "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts",
+          "start_line": 66,
+          "end_line": 78
+        },
+        {
+          "path": "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts",
+          "start_line": 411,
+          "end_line": 417
+        },
+        {
+          "path": "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts",
+          "start_line": 411,
+          "end_line": 430
+        },
+        {
+          "path": "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts",
+          "start_line": 485,
+          "end_line": 498
+        },
+        {
+          "path": "src/vs/editor/common/viewModel/monospaceLineBreaksComputer.ts",
+          "start_line": 489,
+          "end_line": 497
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__typescript__maintenance__bugfix__2599ed5a",
+      "repo": "microsoft/vscode",
+      "base_commit": "5b8bd1c45ca3041a2a947e499d2db21c0a2df20d",
+      "query_sha256": "39257a62861f8211a25ad98e4d69f54e0de2eaba40bcb423a1bf7662b21d309e",
+      "gold": [
+        {
+          "path": "src/vs/workbench/contrib/debug/node/terminals.ts",
+          "start_line": 110,
+          "end_line": 127
+        },
+        {
+          "path": "src/vs/workbench/contrib/debug/node/terminals.ts",
+          "start_line": 120,
+          "end_line": 125
+        },
+        {
+          "path": "src/vs/workbench/contrib/debug/node/terminals.ts",
+          "start_line": 148,
+          "end_line": 151
+        },
+        {
+          "path": "src/vs/workbench/contrib/debug/node/terminals.ts",
+          "start_line": 155,
+          "end_line": 162
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__typescript__maintenance__bugfix__2487b02a",
+      "repo": "microsoft/vscode",
+      "base_commit": "384b03f26310fc3c4ea86156b7c6aefb431d594f",
+      "query_sha256": "3dbeddcd717428f3d1a5e8d25bc210ba3f3918b31f14beef919c69a3ca029be6",
+      "gold": [
+        {
+          "path": "src/vs/workbench/contrib/terminal/common/terminalConfiguration.ts",
+          "start_line": 451,
+          "end_line": 457
+        },
+        {
+          "path": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalLinkParsing.ts",
+          "start_line": 1,
+          "end_line": 30
+        },
+        {
+          "path": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalLinkParsing.ts",
+          "start_line": 205,
+          "end_line": 211
+        },
+        {
+          "path": "src/vs/workbench/contrib/terminalContrib/links/browser/terminalLinkParsing.ts",
+          "start_line": 205,
+          "end_line": 220
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__typescript__maintenance__bugfix__62f78810",
+      "repo": "microsoft/vscode",
+      "base_commit": "2dff5deef71fed71f039f8064e4e6deb818b1e3d",
+      "query_sha256": "3c2d106f2047a9b68ba4034221c7c64a0fba6e8e6c64034a60b84ca9601dbe38",
+      "gold": [
+        {
+          "path": "src/vs/base/browser/markdownRenderer.ts",
+          "start_line": 120,
+          "end_line": 160
+        },
+        {
+          "path": "src/vs/base/browser/markdownRenderer.ts",
+          "start_line": 130,
+          "end_line": 159
+        },
+        {
+          "path": "src/vs/base/browser/markdownRenderer.ts",
+          "start_line": 265,
+          "end_line": 275
+        },
+        {
+          "path": "src/vs/base/browser/markdownRenderer.ts",
+          "start_line": 267,
+          "end_line": 272
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__javascript__maintenance__bugfix__4d090fc6",
+      "repo": "serverless/serverless",
+      "base_commit": "5d4003dbad6f3bd07d98ff5d835ddbaa6b093724",
+      "query_sha256": "f31436ebbca54fc2d36804464d5d401bc49cd23e43a4d1962068709ed8abea6c",
+      "gold": [
+        {
+          "path": "lib/plugins/aws/deploy/lib/createStack.js",
+          "start_line": 7,
+          "end_line": 37
+        },
+        {
+          "path": "lib/plugins/aws/lib/monitorStack.js",
+          "start_line": 8,
+          "end_line": 44
+        },
+        {
+          "path": "lib/plugins/aws/lib/monitorStack.js",
+          "start_line": 45,
+          "end_line": 67
+        },
+        {
+          "path": "lib/plugins/aws/lib/monitorStack.js",
+          "start_line": 77,
+          "end_line": 83
+        },
+        {
+          "path": "lib/plugins/aws/lib/monitorStack.js",
+          "start_line": 87,
+          "end_line": 107
+        },
+        {
+          "path": "lib/plugins/aws/lib/updateStack.js",
+          "start_line": 8,
+          "end_line": 83
+        },
+        {
+          "path": "lib/plugins/aws/remove/index.js",
+          "start_line": 9,
+          "end_line": 23
+        },
+        {
+          "path": "lib/plugins/aws/tests/monitorStack.js",
+          "start_line": 191,
+          "end_line": 228
+        },
+        {
+          "path": "lib/plugins/aws/tests/monitorStack.js",
+          "start_line": 230,
+          "end_line": 303
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__javascript__maintenance__bugfix__6888b9ab",
+      "repo": "serverless/serverless",
+      "base_commit": "aba4e09c7be7e1c89b14728428f0f1a3bf9ccbbb",
+      "query_sha256": "1232776d85bc68a3880b9c0571c1927e3bf015db52a952007901d414b1cb66f3",
+      "gold": [
+        {
+          "path": "docs/providers/aws/events/cloudwatch-log.md",
+          "start_line": 17,
+          "end_line": 43
+        },
+        {
+          "path": "docs/providers/aws/events/cloudwatch-log.md",
+          "start_line": 26,
+          "end_line": 31
+        },
+        {
+          "path": "lib/plugins/aws/deploy/lib/checkForChanges.js",
+          "start_line": 238,
+          "end_line": 287
+        },
+        {
+          "path": "lib/plugins/aws/lib/naming.js",
+          "start_line": 340,
+          "end_line": 431
+        },
+        {
+          "path": "lib/plugins/aws/lib/naming.test.js",
+          "start_line": 519,
+          "end_line": 637
+        },
+        {
+          "path": "lib/plugins/aws/package/compile/events/cloudWatchLog/index.js",
+          "start_line": 15,
+          "end_line": 88
+        },
+        {
+          "path": "lib/plugins/aws/package/compile/events/cloudWatchLog/index.js",
+          "start_line": 89,
+          "end_line": 146
+        },
+        {
+          "path": "lib/plugins/aws/package/compile/events/cloudWatchLog/index.js",
+          "start_line": 151,
+          "end_line": 157
+        },
+        {
+          "path": "lib/plugins/aws/package/compile/events/cloudWatchLog/index.js",
+          "start_line": 159,
+          "end_line": 165
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__javascript__maintenance__bugfix__4a0345cb",
+      "repo": "serverless/serverless",
+      "base_commit": "7479a9ae82b44fb06de3ab84094b18e8f72affc4",
+      "query_sha256": "23724ad8f641eb58e6ff807ce861807d221a8f1ec344cff243eb96975e59a48f",
+      "gold": [
+        {
+          "path": "lib/plugins/aws/info/display.js",
+          "start_line": 6,
+          "end_line": 27
+        },
+        {
+          "path": "lib/plugins/aws/info/getResourceCount.js",
+          "start_line": 4,
+          "end_line": 19
+        },
+        {
+          "path": "lib/plugins/aws/info/getResourceCount.test.js",
+          "start_line": 11,
+          "end_line": 139
+        },
+        {
+          "path": "lib/plugins/aws/info/index.js",
+          "start_line": 10,
+          "end_line": 55
+        },
+        {
+          "path": "lib/plugins/aws/provider/awsProvider.js",
+          "start_line": 652,
+          "end_line": 667
+        },
+        {
+          "path": "tests/utils/cloudformation/index.js",
+          "start_line": 34,
+          "end_line": 49
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__javascript__maintenance__bugfix__246db671",
+      "repo": "serverless/serverless",
+      "base_commit": "05eec837ec20ec0d321b3592e5440d126de9c218",
+      "query_sha256": "370873722a9712a7df1cc9a5f332c414f340100c66aab77e339f0f400f8f66df",
+      "gold": [
+        {
+          "path": "docs/providers/aws/events/apigateway.md",
+          "start_line": 66,
+          "end_line": 80
+        },
+        {
+          "path": "docs/providers/aws/events/apigateway.md",
+          "start_line": 1482,
+          "end_line": 1496
+        },
+        {
+          "path": "docs/providers/aws/events/apigateway.md",
+          "start_line": 1494,
+          "end_line": 1499
+        },
+        {
+          "path": "lib/plugins/aws/package/compile/events/apiGateway/index.js",
+          "start_line": 1,
+          "end_line": 105
+        },
+        {
+          "path": "lib/plugins/aws/package/compile/events/apiGateway/lib/method/index.js",
+          "start_line": 1,
+          "end_line": 120
+        },
+        {
+          "path": "lib/plugins/aws/package/compile/events/apiGateway/lib/method/integration.js",
+          "start_line": 1,
+          "end_line": 246
+        },
+        {
+          "path": "lib/plugins/aws/package/compile/events/apiGateway/lib/method/integration.js",
+          "start_line": 97,
+          "end_line": 109
+        },
+        {
+          "path": "lib/plugins/aws/package/compile/events/apiGateway/lib/method/integration.js",
+          "start_line": 151,
+          "end_line": 156
+        },
+        {
+          "path": "lib/plugins/aws/package/compile/events/apiGateway/lib/restApi.js",
+          "start_line": 1,
+          "end_line": 115
+        },
+        {
+          "path": "lib/plugins/aws/package/compile/events/apiGateway/lib/validate.js",
+          "start_line": 1,
+          "end_line": 162
+        },
+        {
+          "path": "lib/plugins/aws/package/compile/events/apiGateway/lib/validate.js",
+          "start_line": 380,
+          "end_line": 509
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__javascript__maintenance__bugfix__bdc85da2",
+      "repo": "serverless/serverless",
+      "base_commit": "fa6b32ce5e1258b656c6729ad024cd85d4a006d0",
+      "query_sha256": "17faa4a8b196fa30a64a1056b69f9d3da1bbc2e38dab44abd9b9252557d91159",
+      "gold": [
+        {
+          "path": "docs/providers/aws/events/cognito-user-pool.md",
+          "start_line": 15,
+          "end_line": 38
+        },
+        {
+          "path": "lib/plugins/aws/lib/naming.js",
+          "start_line": 25,
+          "end_line": 41
+        },
+        {
+          "path": "lib/plugins/aws/lib/naming.js",
+          "start_line": 249,
+          "end_line": 291
+        },
+        {
+          "path": "lib/plugins/aws/package/compile/events/cognitoUserPool/index.js",
+          "start_line": 1,
+          "end_line": 24
+        },
+        {
+          "path": "lib/plugins/aws/package/compile/events/cognitoUserPool/index.js",
+          "start_line": 20,
+          "end_line": 38
+        },
+        {
+          "path": "lib/plugins/aws/package/compile/events/cognitoUserPool/index.js",
+          "start_line": 39,
+          "end_line": 81
+        },
+        {
+          "path": "lib/plugins/aws/package/compile/events/cognitoUserPool/index.js",
+          "start_line": 80,
+          "end_line": 130
+        },
+        {
+          "path": "lib/plugins/aws/package/compile/events/cognitoUserPool/index.js",
+          "start_line": 159,
+          "end_line": 164
+        },
+        {
+          "path": "tests/integration/aws/cognito-user-pool/single-pool-single-event-single-function/service/serverless.yml",
+          "start_line": 1,
+          "end_line": 14
+        },
+        {
+          "path": "tests/integration/aws/cognito-user-pool/single-pool-single-event-single-function/tests.js",
+          "start_line": 14,
+          "end_line": 23
+        },
+        {
+          "path": "tests/utils/index.js",
+          "start_line": 44,
+          "end_line": 73
+        },
+        {
+          "path": "tests/utils/index.js",
+          "start_line": 182,
+          "end_line": 194
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__javascript__maintenance__bugfix__f4541fb1",
+      "repo": "serverless/serverless",
+      "base_commit": "fea269947104889165e3ebb0f64638921caf2052",
+      "query_sha256": "e40efa7a5e14c9e8eca51cbc307c6bf426551ec0a8f839f9b97058642032ce5f",
+      "gold": [
+        {
+          "path": "CHANGELOG.md",
+          "start_line": 58,
+          "end_line": 60
+        },
+        {
+          "path": "lib/plugins/aws/package/compile/events/stream/index.js",
+          "start_line": 106,
+          "end_line": 175
+        },
+        {
+          "path": "lib/plugins/aws/package/compile/events/stream/index.js",
+          "start_line": 136,
+          "end_line": 141
+        },
+        {
+          "path": "lib/plugins/aws/package/compile/events/stream/index.js",
+          "start_line": 187,
+          "end_line": 203
+        },
+        {
+          "path": "lib/plugins/aws/package/compile/events/stream/index.test.js",
+          "start_line": 110,
+          "end_line": 219
+        },
+        {
+          "path": "lib/plugins/aws/package/compile/functions/index.js",
+          "start_line": 31,
+          "end_line": 68
+        },
+        {
+          "path": "lib/plugins/aws/package/compile/functions/index.js",
+          "start_line": 149,
+          "end_line": 155
+        },
+        {
+          "path": "lib/plugins/aws/package/compile/functions/index.test.js",
+          "start_line": 129,
+          "end_line": 152
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__javascript__maintenance__bugfix__1d1e6b31",
+      "repo": "serverless/serverless",
+      "base_commit": "866cc82cb070a4c928ea7521103ca62263b52d65",
+      "query_sha256": "681f6bdbea36647531a7e2f4ed301a9c2716d4ad7a7ac47b22f339ffe240163d",
+      "gold": [
+        {
+          "path": "CHANGELOG.md",
+          "start_line": 1,
+          "end_line": 3
+        },
+        {
+          "path": "CHANGELOG.md",
+          "start_line": 1,
+          "end_line": 12
+        },
+        {
+          "path": "lib/plugins/aws/lib/validate.js",
+          "start_line": 16,
+          "end_line": 36
+        },
+        {
+          "path": "lib/plugins/aws/lib/validate.js",
+          "start_line": 22,
+          "end_line": 28
+        },
+        {
+          "path": "package.json",
+          "start_line": 1,
+          "end_line": 6
+        },
+        {
+          "path": "package.json",
+          "start_line": 1,
+          "end_line": 10
+        }
+      ]
+    },
+    {
+      "id": "SWE-PolyBench__javascript__maintenance__bugfix__59dd675b",
+      "repo": "serverless/serverless",
+      "base_commit": "8518000d4fbf3a6cf0a6e2f81bd6421e017a1b5f",
+      "query_sha256": "e2628a5a0169e8257561bf74482f9ea69a5ed528b785cc11ee31f7d403573e7c",
+      "gold": [
+        {
+          "path": "lib/classes/PluginManager.js",
+          "start_line": 155,
+          "end_line": 158
+        },
+        {
+          "path": "lib/classes/Utils.js",
+          "start_line": 128,
+          "end_line": 170
+        },
+        {
+          "path": "lib/utils/config/index.js",
+          "start_line": 1,
+          "end_line": 129
+        },
+        {
+          "path": "lib/utils/config/initialSetup.js",
+          "start_line": 1,
+          "end_line": 45
+        },
+        {
+          "path": "lib/utils/fs/fileExistsSync.js",
+          "start_line": 1,
+          "end_line": 14
+        },
+        {
+          "path": "lib/utils/fs/fileExistsSync.js",
+          "start_line": 4,
+          "end_line": 10
+        },
+        {
+          "path": "lib/utils/fs/fileExistsSync.test.js",
+          "start_line": 1,
+          "end_line": 19
+        },
+        {
+          "path": "lib/utils/getFrameworkId.js",
+          "start_line": 1,
+          "end_line": 10
+        },
+        {
+          "path": "lib/utils/isTrackingDisabled.js",
+          "start_line": 1,
+          "end_line": 5
+        }
+      ]
+    },
+    {
+      "id": "SWE-Bench-Pro__javascript__maintenance__bugfix__4eb0e647",
+      "repo": "NodeBB/NodeBB",
+      "base_commit": "1e137b07052bc3ea0da44ed201702c94055b8ad2",
+      "query_sha256": "e063181d444133d67464e5bdd49c8effc4f8952af9826cabf04416823c369994",
+      "gold": [
+        {
+          "path": "public/language/en-GB/admin/manage/users.json",
+          "start_line": 50,
+          "end_line": 55
+        },
+        {
+          "path": "public/language/en-GB/error.json",
+          "start_line": 47,
+          "end_line": 52
+        },
+        {
+          "path": "public/openapi/components/schemas/UserObject.yaml",
+          "start_line": 622,
+          "end_line": 627
+        },
+        {
+          "path": "public/openapi/components/schemas/UserObject.yaml",
+          "start_line": 675,
+          "end_line": 680
+        },
+        {
+          "path": "src/controllers/admin/users.js",
+          "start_line": 164,
+          "end_line": 173
+        },
+        {
+          "path": "src/controllers/admin/users.js",
+          "start_line": 179,
+          "end_line": 184
+        },
+        {
+          "path": "src/database/mongo/hash.js",
+          "start_line": 82,
+          "end_line": 152
+        },
+        {
+          "path": "src/database/mongo/main.js",
+          "start_line": 77,
+          "end_line": 82
+        },
+        {
+          "path": "src/database/postgres/hash.js",
+          "start_line": 131,
+          "end_line": 152
+        },
+        {
+          "path": "src/database/postgres/main.js",
+          "start_line": 119,
+          "end_line": 124
+        },
+        {
+          "path": "src/database/redis/hash.js",
+          "start_line": 84,
+          "end_line": 148
+        },
+        {
+          "path": "src/database/redis/main.js",
+          "start_line": 60,
+          "end_line": 65
+        },
+        {
+          "path": "src/socket.io/admin/user.js",
+          "start_line": 62,
+          "end_line": 93
+        },
+        {
+          "path": "src/socket.io/admin/user.js",
+          "start_line": 65,
+          "end_line": 70
+        },
+        {
+          "path": "src/socket.io/admin/user.js",
+          "start_line": 77,
+          "end_line": 83
+        },
+        {
+          "path": "src/user/delete.js",
+          "start_line": 86,
+          "end_line": 155
+        },
+        {
+          "path": "src/user/delete.js",
+          "start_line": 149,
+          "end_line": 154
+        },
+        {
+          "path": "src/user/email.js",
+          "start_line": 44,
+          "end_line": 71
+        },
+        {
+          "path": "src/user/email.js",
+          "start_line": 47,
+          "end_line": 82
+        },
+        {
+          "path": "src/user/email.js",
+          "start_line": 78,
+          "end_line": 84
+        },
+        {
+          "path": "src/user/email.js",
+          "start_line": 84,
+          "end_line": 187
+        },
+        {
+          "path": "src/user/email.js",
+          "start_line": 134,
+          "end_line": 146
+        },
+        {
+          "path": "src/user/email.js",
+          "start_line": 165,
+          "end_line": 170
+        },
+        {
+          "path": "src/user/index.js",
+          "start_line": 13,
+          "end_line": 32
+        },
+        {
+          "path": "src/user/index.js",
+          "start_line": 71,
+          "end_line": 87
+        },
+        {
+          "path": "src/views/admin/manage/users.tpl",
+          "start_line": 109,
+          "end_line": 120
+        },
+        {
+          "path": "test/database/hash.js",
+          "start_line": 75,
+          "end_line": 113
+        },
+        {
+          "path": "test/database/hash.js",
+          "start_line": 209,
+          "end_line": 239
+        }
+      ]
+    },
+    {
+      "id": "SWE-Bench-Pro__javascript__maintenance__bugfix__e31ec45c",
+      "repo": "NodeBB/NodeBB",
+      "base_commit": "f0d989e4ba5b0dccff6e56022fc6d378d05ab404",
+      "query_sha256": "99396b8b3c733f8069efb66251c1c6fd6073ba1612675aaf38d6f7bffbec3c4b",
+      "gold": [
+        {
+          "path": "public/openapi/write/posts/pid.yaml",
+          "start_line": 1,
+          "end_line": 27
+        },
+        {
+          "path": "public/src/client/topic.js",
+          "start_line": 300,
+          "end_line": 363
+        },
+        {
+          "path": "public/src/client/topic.js",
+          "start_line": 315,
+          "end_line": 321
+        },
+        {
+          "path": "public/src/client/topic/postTools.js",
+          "start_line": 296,
+          "end_line": 359
+        },
+        {
+          "path": "public/src/client/topic/postTools.js",
+          "start_line": 313,
+          "end_line": 325
+        },
+        {
+          "path": "public/src/modules/topicThumbs.js",
+          "start_line": 3,
+          "end_line": 15
+        },
+        {
+          "path": "src/api/posts.js",
+          "start_line": 8,
+          "end_line": 13
+        },
+        {
+          "path": "src/api/posts.js",
+          "start_line": 23,
+          "end_line": 39
+        },
+        {
+          "path": "src/api/posts.js",
+          "start_line": 42,
+          "end_line": 47
+        },
+        {
+          "path": "src/controllers/write/posts.js",
+          "start_line": 7,
+          "end_line": 13
+        },
+        {
+          "path": "src/posts/index.js",
+          "start_line": 56,
+          "end_line": 102
+        },
+        {
+          "path": "src/posts/summary.js",
+          "start_line": 13,
+          "end_line": 62
+        },
+        {
+          "path": "src/routes/write/posts.js",
+          "start_line": 8,
+          "end_line": 35
+        },
+        {
+          "path": "src/socket.io/posts.js",
+          "start_line": 18,
+          "end_line": 38
+        },
+        {
+          "path": "src/socket.io/posts.js",
+          "start_line": 80,
+          "end_line": 94
+        },
+        {
+          "path": "test/posts.js",
+          "start_line": 808,
+          "end_line": 912
+        }
+      ]
+    },
+    {
+      "id": "SWE-Bench-Pro__javascript__maintenance__bugfix__ac8400d9",
+      "repo": "NodeBB/NodeBB",
+      "base_commit": "140f9d2481f7a97941593eb6c158013deeb0c0d4",
+      "query_sha256": "81ff177dc4cc925708a7656d74608ff6e59d4a34a4c8dbb803216b5ec78f4022",
+      "gold": [
+        {
+          "path": "public/language/en-GB/error.json",
+          "start_line": 12,
+          "end_line": 18
+        },
+        {
+          "path": "public/language/en-GB/error.json",
+          "start_line": 13,
+          "end_line": 18
+        },
+        {
+          "path": "public/language/en-GB/error.json",
+          "start_line": 166,
+          "end_line": 180
+        },
+        {
+          "path": "public/src/client/chats/messages.js",
+          "start_line": 8,
+          "end_line": 34
+        },
+        {
+          "path": "public/src/client/chats/messages.js",
+          "start_line": 43,
+          "end_line": 59
+        },
+        {
+          "path": "public/src/client/chats/messages.js",
+          "start_line": 140,
+          "end_line": 184
+        },
+        {
+          "path": "public/src/client/flags/detail.js",
+          "start_line": 23,
+          "end_line": 33
+        },
+        {
+          "path": "src/api/chats.js",
+          "start_line": 41,
+          "end_line": 74
+        },
+        {
+          "path": "src/controllers/write/chats.js",
+          "start_line": 38,
+          "end_line": 54
+        },
+        {
+          "path": "src/controllers/write/chats.js",
+          "start_line": 67,
+          "end_line": 73
+        },
+        {
+          "path": "src/messaging/data.js",
+          "start_line": 15,
+          "end_line": 45
+        },
+        {
+          "path": "src/messaging/edit.js",
+          "start_line": 11,
+          "end_line": 87
+        },
+        {
+          "path": "src/messaging/edit.js",
+          "start_line": 47,
+          "end_line": 52
+        },
+        {
+          "path": "src/messaging/index.js",
+          "start_line": 4,
+          "end_line": 54
+        },
+        {
+          "path": "src/messaging/index.js",
+          "start_line": 20,
+          "end_line": 25
+        },
+        {
+          "path": "src/posts/index.js",
+          "start_line": 30,
+          "end_line": 33
+        },
+        {
+          "path": "src/routes/write/chats.js",
+          "start_line": 10,
+          "end_line": 27
+        },
+        {
+          "path": "src/routes/write/chats.js",
+          "start_line": 23,
+          "end_line": 29
+        },
+        {
+          "path": "src/socket.io/modules.js",
+          "start_line": 25,
+          "end_line": 41
+        },
+        {
+          "path": "src/socket.io/modules.js",
+          "start_line": 61,
+          "end_line": 74
+        },
+        {
+          "path": "src/socket.io/modules.js",
+          "start_line": 146,
+          "end_line": 151
+        },
+        {
+          "path": "src/socket.io/modules.js",
+          "start_line": 148,
+          "end_line": 154
+        },
+        {
+          "path": "src/topics/index.js",
+          "start_line": 38,
+          "end_line": 42
+        },
+        {
+          "path": "src/user/invite.js",
+          "start_line": 38,
+          "end_line": 56
+        },
+        {
+          "path": "src/user/invite.js",
+          "start_line": 145,
+          "end_line": 149
+        }
+      ]
+    },
+    {
+      "id": "SWE-Bench-Pro__javascript__maintenance__bugfix__99b38b09",
+      "repo": "NodeBB/NodeBB",
+      "base_commit": "a592ebd1ff1915c72a71b7f738f1dc0ec7ed4f03",
+      "query_sha256": "69dbc8c297f7ab679da1395099fe46b2b066ed0b67ab3a31c57a37165b1ad18e",
+      "gold": [
+        {
+          "path": "public/language/en-GB/user.json",
+          "start_line": 89,
+          "end_line": 94
+        },
+        {
+          "path": "public/openapi/components/schemas/UserObject.yaml",
+          "start_line": 32,
+          "end_line": 44
+        },
+        {
+          "path": "public/openapi/components/schemas/UserObject.yaml",
+          "start_line": 135,
+          "end_line": 142
+        },
+        {
+          "path": "public/openapi/read/config.yaml",
+          "start_line": 137,
+          "end_line": 140
+        },
+        {
+          "path": "public/src/client/account/edit.js",
+          "start_line": 34,
+          "end_line": 59
+        },
+        {
+          "path": "public/src/client/account/edit.js",
+          "start_line": 62,
+          "end_line": 68
+        },
+        {
+          "path": "public/src/client/account/edit.js",
+          "start_line": 74,
+          "end_line": 79
+        },
+        {
+          "path": "public/src/client/account/edit.js",
+          "start_line": 93,
+          "end_line": 103
+        },
+        {
+          "path": "public/src/client/account/edit.js",
+          "start_line": 96,
+          "end_line": 101
+        },
+        {
+          "path": "public/src/client/account/edit.js",
+          "start_line": 120,
+          "end_line": 125
+        },
+        {
+          "path": "public/src/client/account/edit.js",
+          "start_line": 134,
+          "end_line": 150
+        },
+        {
+          "path": "public/src/client/account/edit.js",
+          "start_line": 300,
+          "end_line": 308
+        },
+        {
+          "path": "public/src/modules/helpers.js",
+          "start_line": 277,
+          "end_line": 319
+        },
+        {
+          "path": "public/src/modules/helpers.js",
+          "start_line": 284,
+          "end_line": 289
+        },
+        {
+          "path": "src/controllers/api.js",
+          "start_line": 77,
+          "end_line": 82
+        },
+        {
+          "path": "src/socket.io/user/picture.js",
+          "start_line": 33,
+          "end_line": 39
+        },
+        {
+          "path": "src/user/data.js",
+          "start_line": 19,
+          "end_line": 33
+        },
+        {
+          "path": "src/user/data.js",
+          "start_line": 21,
+          "end_line": 37
+        },
+        {
+          "path": "src/user/data.js",
+          "start_line": 203,
+          "end_line": 211
+        },
+        {
+          "path": "src/user/data.js",
+          "start_line": 203,
+          "end_line": 211
+        },
+        {
+          "path": "src/user/data.js",
+          "start_line": 272,
+          "end_line": 277
+        },
+        {
+          "path": "src/user/profile.js",
+          "start_line": 15,
+          "end_line": 36
+        },
+        {
+          "path": "src/user/profile.js",
+          "start_line": 63,
+          "end_line": 66
+        },
+        {
+          "path": "src/views/admin/manage/admins-mods.tpl",
+          "start_line": 5,
+          "end_line": 12
+        },
+        {
+          "path": "src/views/emails/digest.tpl",
+          "start_line": 28,
+          "end_line": 33
+        }
+      ]
+    },
+    {
+      "id": "SWE-Bench-Pro__javascript__maintenance__bugfix__0155d9d9",
+      "repo": "NodeBB/NodeBB",
+      "base_commit": "b94bb1bf93390e5204551bfc647049c6f8c5a60d",
+      "query_sha256": "7a4259f3a038526c5977c96faa6705376f9db18158bf656937c72f6329b6388b",
+      "gold": [
+        {
+          "path": "install/data/defaults.json",
+          "start_line": 25,
+          "end_line": 30
+        },
+        {
+          "path": "public/language/en-GB/admin/settings/advanced.json",
+          "start_line": 3,
+          "end_line": 8
+        },
+        {
+          "path": "public/src/admin/settings.js",
+          "start_line": 30,
+          "end_line": 60
+        },
+        {
+          "path": "public/src/admin/settings.js",
+          "start_line": 148,
+          "end_line": 192
+        },
+        {
+          "path": "src/controllers/admin/settings.js",
+          "start_line": 44,
+          "end_line": 49
+        },
+        {
+          "path": "src/controllers/admin/settings.js",
+          "start_line": 48,
+          "end_line": 53
+        },
+        {
+          "path": "src/groups/membership.js",
+          "start_line": 65,
+          "end_line": 100
+        },
+        {
+          "path": "src/groups/update.js",
+          "start_line": 274,
+          "end_line": 281
+        },
+        {
+          "path": "src/meta/configs.js",
+          "start_line": 14,
+          "end_line": 55
+        },
+        {
+          "path": "src/meta/configs.js",
+          "start_line": 106,
+          "end_line": 121
+        },
+        {
+          "path": "src/middleware/maintenance.js",
+          "start_line": 4,
+          "end_line": 9
+        },
+        {
+          "path": "src/middleware/maintenance.js",
+          "start_line": 10,
+          "end_line": 39
+        },
+        {
+          "path": "src/middleware/maintenance.js",
+          "start_line": 20,
+          "end_line": 27
+        },
+        {
+          "path": "src/posts/queue.js",
+          "start_line": 81,
+          "end_line": 97
+        },
+        {
+          "path": "src/routes/admin.js",
+          "start_line": 34,
+          "end_line": 39
+        },
+        {
+          "path": "src/routes/admin.js",
+          "start_line": 34,
+          "end_line": 41
+        },
+        {
+          "path": "src/views/admin/partials/menu.tpl",
+          "start_line": 36,
+          "end_line": 60
+        },
+        {
+          "path": "src/views/admin/settings/advanced.tpl",
+          "start_line": 21,
+          "end_line": 26
+        },
+        {
+          "path": "src/views/admin/settings/post.tpl",
+          "start_line": 116,
+          "end_line": 153
+        }
+      ]
+    },
+    {
+      "id": "SWE-Bench-Pro__javascript__maintenance__bugfix__09eb0d6d",
+      "repo": "NodeBB/NodeBB",
+      "base_commit": "7800016f2f1b89d2d3cfea6a7da7c77096b7b927",
+      "query_sha256": "22cc2a57970823545dce5a76d72f5ecffd2c3d857f3a2fce6d1b7a054bccc47e",
+      "gold": [
+        {
+          "path": "install/package.json",
+          "start_line": 107,
+          "end_line": 116
+        },
+        {
+          "path": "public/language/el/error.json",
+          "start_line": 154,
+          "end_line": 159
+        },
+        {
+          "path": "public/language/en-GB/admin/settings/user.json",
+          "start_line": 64,
+          "end_line": 69
+        },
+        {
+          "path": "public/language/en-GB/user.json",
+          "start_line": 111,
+          "end_line": 116
+        },
+        {
+          "path": "public/openapi/components/schemas/SettingsObj.yaml",
+          "start_line": 31,
+          "end_line": 39
+        },
+        {
+          "path": "public/openapi/components/schemas/SettingsObj.yaml",
+          "start_line": 31,
+          "end_line": 39
+        },
+        {
+          "path": "public/openapi/components/schemas/SettingsObj.yaml",
+          "start_line": 131,
+          "end_line": 144
+        },
+        {
+          "path": "public/src/client/account/settings.js",
+          "start_line": 2,
+          "end_line": 9
+        },
+        {
+          "path": "public/src/client/account/settings.js",
+          "start_line": 19,
+          "end_line": 71
+        },
+        {
+          "path": "public/src/client/account/settings.js",
+          "start_line": 45,
+          "end_line": 50
+        },
+        {
+          "path": "public/src/client/account/settings.js",
+          "start_line": 53,
+          "end_line": 58
+        },
+        {
+          "path": "public/src/client/account/settings.js",
+          "start_line": 68,
+          "end_line": 73
+        },
+        {
+          "path": "public/src/client/account/settings.js",
+          "start_line": 159,
+          "end_line": 163
+        },
+        {
+          "path": "public/src/modules/autocomplete.js",
+          "start_line": 28,
+          "end_line": 72
+        },
+        {
+          "path": "public/src/modules/autocomplete.js",
+          "start_line": 55,
+          "end_line": 60
+        },
+        {
+          "path": "src/controllers/accounts/settings.js",
+          "start_line": 20,
+          "end_line": 52
+        },
+        {
+          "path": "src/controllers/accounts/settings.js",
+          "start_line": 43,
+          "end_line": 48
+        },
+        {
+          "path": "src/controllers/accounts/settings.js",
+          "start_line": 254,
+          "end_line": 256
+        },
+        {
+          "path": "src/messaging/index.js",
+          "start_line": 337,
+          "end_line": 380
+        },
+        {
+          "path": "src/messaging/index.js",
+          "start_line": 358,
+          "end_line": 376
+        },
+        {
+          "path": "src/upgrades/4.3.0/normalize_thumbs_uploads.js",
+          "start_line": 8,
+          "end_line": 20
+        },
+        {
+          "path": "src/upgrades/4.3.0/topic_follower_counts.js",
+          "start_line": 7,
+          "end_line": 35
+        },
+        {
+          "path": "src/user/settings.js",
+          "start_line": 50,
+          "end_line": 93
+        },
+        {
+          "path": "src/user/settings.js",
+          "start_line": 76,
+          "end_line": 82
+        },
+        {
+          "path": "src/user/settings.js",
+          "start_line": 89,
+          "end_line": 97
+        },
+        {
+          "path": "src/user/settings.js",
+          "start_line": 106,
+          "end_line": 169
+        },
+        {
+          "path": "src/user/settings.js",
+          "start_line": 145,
+          "end_line": 151
+        },
+        {
+          "path": "src/user/settings.js",
+          "start_line": 155,
+          "end_line": 160
+        },
+        {
+          "path": "src/views/admin/settings/user.tpl",
+          "start_line": 286,
+          "end_line": 365
+        },
+        {
+          "path": "src/views/admin/settings/user.tpl",
+          "start_line": 296,
+          "end_line": 303
+        }
+      ]
+    },
+    {
+      "id": "SWE-Bench-Pro__javascript__maintenance__bugfix__bc5ac89f",
+      "repo": "NodeBB/NodeBB",
+      "base_commit": "09f3ac6574b3192497df0403306aff8d6f20448b",
+      "query_sha256": "71284b9113e0cfadb2e83ca414d1159949558c6545489b17540212b8cf9140a7",
+      "gold": [
+        {
+          "path": "install/data/defaults.json",
+          "start_line": 146,
+          "end_line": 151
+        },
+        {
+          "path": "public/language/en-GB/admin/settings/email.json",
+          "start_line": 5,
+          "end_line": 10
+        },
+        {
+          "path": "public/src/modules/messages.js",
+          "start_line": 17,
+          "end_line": 52
+        },
+        {
+          "path": "public/src/modules/messages.js",
+          "start_line": 38,
+          "end_line": 49
+        },
+        {
+          "path": "src/controllers/write/users.js",
+          "start_line": 286,
+          "end_line": 306
+        },
+        {
+          "path": "src/middleware/header.js",
+          "start_line": 78,
+          "end_line": 108
+        },
+        {
+          "path": "src/socket.io/user.js",
+          "start_line": 24,
+          "end_line": 38
+        },
+        {
+          "path": "src/user/create.js",
+          "start_line": 107,
+          "end_line": 117
+        },
+        {
+          "path": "src/user/email.js",
+          "start_line": 47,
+          "end_line": 64
+        },
+        {
+          "path": "src/user/email.js",
+          "start_line": 49,
+          "end_line": 60
+        },
+        {
+          "path": "src/user/email.js",
+          "start_line": 63,
+          "end_line": 68
+        },
+        {
+          "path": "src/user/email.js",
+          "start_line": 88,
+          "end_line": 94
+        },
+        {
+          "path": "src/user/email.js",
+          "start_line": 88,
+          "end_line": 131
+        },
+        {
+          "path": "src/user/email.js",
+          "start_line": 97,
+          "end_line": 108
+        },
+        {
+          "path": "src/user/email.js",
+          "start_line": 119,
+          "end_line": 131
+        },
+        {
+          "path": "src/user/email.js",
+          "start_line": 146,
+          "end_line": 197
+        },
+        {
+          "path": "src/user/interstitials.js",
+          "start_line": 42,
+          "end_line": 51
+        },
+        {
+          "path": "src/user/interstitials.js",
+          "start_line": 64,
+          "end_line": 71
+        },
+        {
+          "path": "src/views/admin/settings/email.tpl",
+          "start_line": 28,
+          "end_line": 56
+        },
+        {
+          "path": "src/views/admin/settings/email.tpl",
+          "start_line": 68,
+          "end_line": 73
+        },
+        {
+          "path": "src/views/admin/settings/user.tpl",
+          "start_line": 4,
+          "end_line": 16
+        },
+        {
+          "path": "test/user/emails.js",
+          "start_line": 14,
+          "end_line": 48
+        }
+      ]
+    },
+    {
+      "id": "SWE-Bench-Pro__javascript__maintenance__bugfix__ad093510",
+      "repo": "NodeBB/NodeBB",
+      "base_commit": "34d99c15afd9441ab022b8feb203084a61e338b7",
+      "query_sha256": "5bb3c2489a964c6146ee10944d7b7cfe6f42a3bed4060253a6e65226cd271787",
+      "gold": [
+        {
+          "path": "public/openapi/write.yaml",
+          "start_line": 79,
+          "end_line": 105
+        },
+        {
+          "path": "public/openapi/write.yaml",
+          "start_line": 102,
+          "end_line": 107
+        },
+        {
+          "path": "public/openapi/write/groups/slug/invites.yaml",
+          "start_line": 1,
+          "end_line": 47
+        },
+        {
+          "path": "public/openapi/write/groups/slug/pending/uid.yaml",
+          "start_line": 1,
+          "end_line": 66
+        },
+        {
+          "path": "public/openapi/write/groups/slug/pending/uid.yaml",
+          "start_line": 17,
+          "end_line": 23
+        },
+        {
+          "path": "public/openapi/write/groups/slug/pending/uid.yaml",
+          "start_line": 50,
+          "end_line": 56
+        },
+        {
+          "path": "public/src/client/groups/details.js",
+          "start_line": 72,
+          "end_line": 145
+        },
+        {
+          "path": "public/src/client/groups/details.js",
+          "start_line": 120,
+          "end_line": 131
+        },
+        {
+          "path": "public/src/client/groups/details.js",
+          "start_line": 250,
+          "end_line": 291
+        },
+        {
+          "path": "public/src/client/groups/details.js",
+          "start_line": 260,
+          "end_line": 274
+        },
+        {
+          "path": "src/api/groups.js",
+          "start_line": 257,
+          "end_line": 263
+        },
+        {
+          "path": "src/api/groups.js",
+          "start_line": 269,
+          "end_line": 277
+        },
+        {
+          "path": "src/controllers/write/groups.js",
+          "start_line": 67,
+          "end_line": 69
+        },
+        {
+          "path": "src/groups/invite.js",
+          "start_line": 11,
+          "end_line": 74
+        },
+        {
+          "path": "src/routes/write/groups.js",
+          "start_line": 10,
+          "end_line": 34
+        },
+        {
+          "path": "src/routes/write/groups.js",
+          "start_line": 26,
+          "end_line": 34
+        },
+        {
+          "path": "src/socket.io/groups.js",
+          "start_line": 56,
+          "end_line": 71
+        },
+        {
+          "path": "src/socket.io/groups.js",
+          "start_line": 59,
+          "end_line": 139
+        },
+        {
+          "path": "src/socket.io/groups.js",
+          "start_line": 117,
+          "end_line": 143
+        },
+        {
+          "path": "test/groups.js",
+          "start_line": 956,
+          "end_line": 1046
+        }
+      ]
+    },
+    {
+      "id": "Multi-SWE-Bench__go__maintenance__bugfix__9e8a151e",
+      "repo": "cli/cli",
+      "base_commit": "26f3601a81cbeb3fd5087dfa63775caa04ccc1bc",
+      "query_sha256": "07edd23175b927603c78939f5e5b47e62f1237521990addbd3fff84305ce9b49",
+      "gold": [
+        {
+          "path": "go.mod",
+          "start_line": 9,
+          "end_line": 15
+        },
+        {
+          "path": "go.mod",
+          "start_line": 51,
+          "end_line": 58
+        },
+        {
+          "path": "go.sum",
+          "start_line": 21,
+          "end_line": 37
+        },
+        {
+          "path": "go.sum",
+          "start_line": 183,
+          "end_line": 189
+        },
+        {
+          "path": "go.sum",
+          "start_line": 199,
+          "end_line": 205
+        },
+        {
+          "path": "internal/tableprinter/table_printer.go",
+          "start_line": 1,
+          "end_line": 6
+        },
+        {
+          "path": "internal/tableprinter/table_printer.go",
+          "start_line": 12,
+          "end_line": 35
+        },
+        {
+          "path": "internal/tableprinter/table_printer.go",
+          "start_line": 39,
+          "end_line": 53
+        },
+        {
+          "path": "internal/text/text.go",
+          "start_line": 77,
+          "end_line": 79
+        },
+        {
+          "path": "pkg/cmd/cache/list/list.go",
+          "start_line": 115,
+          "end_line": 122
+        },
+        {
+          "path": "pkg/cmd/codespace/list.go",
+          "start_line": 7,
+          "end_line": 15
+        },
+        {
+          "path": "pkg/cmd/codespace/list.go",
+          "start_line": 116,
+          "end_line": 140
+        },
+        {
+          "path": "pkg/cmd/codespace/list.go",
+          "start_line": 158,
+          "end_line": 174
+        },
+        {
+          "path": "pkg/cmd/codespace/list.go",
+          "start_line": 176,
+          "end_line": 188
+        },
+        {
+          "path": "pkg/cmd/codespace/ports.go",
+          "start_line": 107,
+          "end_line": 121
+        },
+        {
+          "path": "pkg/cmd/codespace/view.go",
+          "start_line": 73,
+          "end_line": 79
+        },
+        {
+          "path": "pkg/cmd/extension/command.go",
+          "start_line": 18,
+          "end_line": 24
+        },
+        {
+          "path": "pkg/cmd/extension/command.go",
+          "start_line": 217,
+          "end_line": 225
+        },
+        {
+          "path": "pkg/cmd/extension/command.go",
+          "start_line": 270,
+          "end_line": 277
+        },
+        {
+          "path": "pkg/cmd/extension/command.go",
+          "start_line": 281,
+          "end_line": 293
+        },
+        {
+          "path": "pkg/cmd/gist/list/list.go",
+          "start_line": 7,
+          "end_line": 17
+        },
+        {
+          "path": "pkg/cmd/gist/list/list.go",
+          "start_line": 94,
+          "end_line": 102
+        },
+        {
+          "path": "pkg/cmd/gist/list/list.go",
+          "start_line": 118,
+          "end_line": 133
+        },
+        {
+          "path": "pkg/cmd/gpg-key/list/list.go",
+          "start_line": 7,
+          "end_line": 16
+        },
+        {
+          "path": "pkg/cmd/gpg-key/list/list.go",
+          "start_line": 71,
+          "end_line": 100
+        },
+        {
+          "path": "pkg/cmd/gpg-key/list/list.go",
+          "start_line": 104,
+          "end_line": 110
+        },
+        {
+          "path": "pkg/cmd/issue/develop/develop.go",
+          "start_line": 199,
+          "end_line": 205
+        },
+        {
+          "path": "pkg/cmd/issue/shared/display.go",
+          "start_line": 7,
+          "end_line": 39
+        },
+        {
+          "path": "pkg/cmd/label/list.go",
+          "start_line": 7,
+          "end_line": 16
+        },
+        {
+          "path": "pkg/cmd/label/list.go",
+          "start_line": 134,
+          "end_line": 146
+        },
+        {
+          "path": "pkg/cmd/org/list/list.go",
+          "start_line": 6,
+          "end_line": 12
+        },
+        {
+          "path": "pkg/cmd/org/list/list.go",
+          "start_line": 85,
+          "end_line": 100
+        },
+        {
+          "path": "pkg/cmd/pr/checks/output.go",
+          "start_line": 92,
+          "end_line": 98
+        },
+        {
+          "path": "pkg/cmd/pr/list/list.go",
+          "start_line": 11,
+          "end_line": 21
+        },
+        {
+          "path": "pkg/cmd/pr/list/list.go",
+          "start_line": 199,
+          "end_line": 222
+        },
+        {
+          "path": "pkg/cmd/project/field-list/field_list.go",
+          "start_line": 52,
+          "end_line": 58
+        },
+        {
+          "path": "pkg/cmd/project/field-list/field_list.go",
+          "start_line": 109,
+          "end_line": 116
+        },
+        {
+          "path": "pkg/cmd/project/item-list/item_list.go",
+          "start_line": 52,
+          "end_line": 58
+        },
+        {
+          "path": "pkg/cmd/project/item-list/item_list.go",
+          "start_line": 108,
+          "end_line": 115
+        },
+        {
+          "path": "pkg/cmd/project/list/list.go",
+          "start_line": 52,
+          "end_line": 58
+        },
+        {
+          "path": "pkg/cmd/project/list/list.go",
+          "start_line": 157,
+          "end_line": 164
+        },
+        {
+          "path": "pkg/cmd/release/list/list.go",
+          "start_line": 78,
+          "end_line": 86
+        },
+        {
+          "path": "pkg/cmd/release/view/view.go",
+          "start_line": 10,
+          "end_line": 21
+        },
+        {
+          "path": "pkg/cmd/release/view/view.go",
+          "start_line": 154,
+          "end_line": 164
+        },
+        {
+          "path": "pkg/cmd/repo/deploy-key/list/list.go",
+          "start_line": 7,
+          "end_line": 16
+        },
+        {
+          "path": "pkg/cmd/repo/deploy-key/list/list.go",
+          "start_line": 77,
+          "end_line": 104
+        },
+        {
+          "path": "pkg/cmd/repo/list/list.go",
+          "start_line": 12,
+          "end_line": 21
+        },
+        {
+          "path": "pkg/cmd/repo/list/list.go",
+          "start_line": 176,
+          "end_line": 184
+        },
+        {
+          "path": "pkg/cmd/repo/list/list.go",
+          "start_line": 192,
+          "end_line": 204
+        },
+        {
+          "path": "pkg/cmd/repo/list/list.go",
+          "start_line": 208,
+          "end_line": 218
+        },
+        {
+          "path": "pkg/cmd/ruleset/list/list.go",
+          "start_line": 161,
+          "end_line": 168
+        },
+        {
+          "path": "pkg/cmd/run/list/list.go",
+          "start_line": 7,
+          "end_line": 18
+        },
+        {
+          "path": "pkg/cmd/run/list/list.go",
+          "start_line": 138,
+          "end_line": 178
+        },
+        {
+          "path": "pkg/cmd/search/commits/commits.go",
+          "start_line": 155,
+          "end_line": 162
+        },
+        {
+          "path": "pkg/cmd/search/repos/repos.go",
+          "start_line": 158,
+          "end_line": 165
+        },
+        {
+          "path": "pkg/cmd/search/shared/shared.go",
+          "start_line": 95,
+          "end_line": 108
+        },
+        {
+          "path": "pkg/cmd/search/shared/shared.go",
+          "start_line": 115,
+          "end_line": 121
+        },
+        {
+          "path": "pkg/cmd/search/shared/shared.go",
+          "start_line": 125,
+          "end_line": 140
+        },
+        {
+          "path": "pkg/cmd/secret/list/list.go",
+          "start_line": 158,
+          "end_line": 169
+        },
+        {
+          "path": "pkg/cmd/ssh-key/list/list.go",
+          "start_line": 10,
+          "end_line": 20
+        },
+        {
+          "path": "pkg/cmd/ssh-key/list/list.go",
+          "start_line": 79,
+          "end_line": 114
+        },
+        {
+          "path": "pkg/cmd/status/status.go",
+          "start_line": 15,
+          "end_line": 25
+        },
+        {
+          "path": "pkg/cmd/status/status.go",
+          "start_line": 677,
+          "end_line": 708
+        },
+        {
+          "path": "pkg/cmd/variable/list/list.go",
+          "start_line": 124,
+          "end_line": 135
+        },
+        {
+          "path": "pkg/cmd/workflow/list/list.go",
+          "start_line": 111,
+          "end_line": 118
+        },
+        {
+          "path": "pkg/cmd/workflow/view/view.go",
+          "start_line": 11,
+          "end_line": 23
+        },
+        {
+          "path": "pkg/cmd/workflow/view/view.go",
+          "start_line": 213,
+          "end_line": 220
+        },
+        {
+          "path": "pkg/cmd/workflow/view/view.go",
+          "start_line": 228,
+          "end_line": 253
+        },
+        {
+          "path": "pkg/iostreams/color.go",
+          "start_line": 9,
+          "end_line": 24
+        },
+        {
+          "path": "pkg/iostreams/color.go",
+          "start_line": 39,
+          "end_line": 44
+        },
+        {
+          "path": "pkg/iostreams/color.go",
+          "start_line": 104,
+          "end_line": 109
+        },
+        {
+          "path": "utils/table_printer.go",
+          "start_line": 1,
+          "end_line": 89
+        }
+      ]
+    },
+    {
+      "id": "Multi-SWE-Bench__go__maintenance__bugfix__0b78ed50",
+      "repo": "cli/cli",
+      "base_commit": "504cfbc654b39b994895d69f792859e69fa2589c",
+      "query_sha256": "20206efdbfa5c2568c890e04dfe928466743ce4fdec06ef1b84a1f90d81466b1",
+      "gold": [
+        {
+          "path": "pkg/cmd/pr/merge/merge.go",
+          "start_line": 22,
+          "end_line": 35
+        },
+        {
+          "path": "pkg/cmd/pr/merge/merge.go",
+          "start_line": 52,
+          "end_line": 96
+        },
+        {
+          "path": "pkg/cmd/pr/merge/merge.go",
+          "start_line": 54,
+          "end_line": 62
+        },
+        {
+          "path": "pkg/cmd/pr/merge/merge.go",
+          "start_line": 102,
+          "end_line": 108
+        },
+        {
+          "path": "pkg/cmd/pr/merge/merge.go",
+          "start_line": 105,
+          "end_line": 108
+        },
+        {
+          "path": "pkg/cmd/pr/merge/merge_test.go",
+          "start_line": 35,
+          "end_line": 46
+        }
+      ]
+    },
+    {
+      "id": "Multi-SWE-Bench__go__maintenance__bugfix__d129d52f",
+      "repo": "cli/cli",
+      "base_commit": "2df3dd4f7dd98e7969e6d9b760f0725aac8a2158",
+      "query_sha256": "3a730c8f11e4287b2166aed419b389b4c3c377e8d6efc399064b612971c32560",
+      "gold": [
+        {
+          "path": "pkg/cmd/issue/delete/delete.go",
+          "start_line": 22,
+          "end_line": 58
+        },
+        {
+          "path": "pkg/cmd/issue/delete/delete.go",
+          "start_line": 26,
+          "end_line": 31
+        },
+        {
+          "path": "pkg/cmd/issue/delete/delete.go",
+          "start_line": 54,
+          "end_line": 59
+        },
+        {
+          "path": "pkg/cmd/issue/delete/delete.go",
+          "start_line": 60,
+          "end_line": 104
+        },
+        {
+          "path": "pkg/cmd/issue/delete/delete.go",
+          "start_line": 73,
+          "end_line": 80
+        }
+      ]
+    },
+    {
+      "id": "Multi-SWE-Bench__go__maintenance__bugfix__0498ad7f",
+      "repo": "cli/cli",
+      "base_commit": "bdce08a793abe4744c02d537e37c9ba63601a849",
+      "query_sha256": "c06d05aaed6212ad7a48957756a034b80a2b4643552805d4aa6c88bdb4e72996",
+      "gold": [
+        {
+          "path": "pkg/cmd/auth/status/status.go",
+          "start_line": 81,
+          "end_line": 91
+        },
+        {
+          "path": "pkg/cmd/auth/status/status.go",
+          "start_line": 139,
+          "end_line": 144
+        },
+        {
+          "path": "pkg/cmd/auth/status/status.go",
+          "start_line": 139,
+          "end_line": 147
+        }
+      ]
+    },
+    {
+      "id": "Multi-SWE-Bench__go__maintenance__bugfix__3d1b3145",
+      "repo": "cli/cli",
+      "base_commit": "41a457136e3134e5b5e6c17cba2704309ac609bb",
+      "query_sha256": "9b1422d8c0d63cd6ac80bbf591e4028a8bedde21bf9b671c7e0ff45975b5e611",
+      "gold": [
+        {
+          "path": "pkg/cmd/pr/status/status.go",
+          "start_line": 135,
+          "end_line": 153
+        }
+      ]
+    },
+    {
+      "id": "Multi-SWE-Bench__go__maintenance__bugfix__ff0cfab5",
+      "repo": "cli/cli",
+      "base_commit": "d21c11d774df552b9c36d3d35aa8eb12e5aebd55",
+      "query_sha256": "c01271efc76d8bc980fdfd3958bf142d6dc7fbe44fca9f974e7583f5164341c4",
+      "gold": [
+        {
+          "path": "pkg/cmd/gist/create/create.go",
+          "start_line": 104,
+          "end_line": 134
+        },
+        {
+          "path": "pkg/cmd/gist/create/create.go",
+          "start_line": 112,
+          "end_line": 136
+        },
+        {
+          "path": "pkg/cmd/gist/create/create.go",
+          "start_line": 151,
+          "end_line": 174
+        },
+        {
+          "path": "pkg/cmd/gist/create/create.go",
+          "start_line": 161,
+          "end_line": 166
+        }
+      ]
+    },
+    {
+      "id": "Multi-SWE-Bench__go__maintenance__bugfix__3c9b757f",
+      "repo": "cli/cli",
+      "base_commit": "6e14426dfb076350796b6f081b27399a5f4be904",
+      "query_sha256": "a2f030a7035f5c9b39e6faae1c13af5a1f561ce811e6102ced45a92996986ce4",
+      "gold": [
+        {
+          "path": "pkg/cmd/release/create/create.go",
+          "start_line": 389,
+          "end_line": 401
+        },
+        {
+          "path": "pkg/cmd/release/create/create.go",
+          "start_line": 399,
+          "end_line": 418
+        },
+        {
+          "path": "pkg/cmd/release/create/create.go",
+          "start_line": 420,
+          "end_line": 452
+        },
+        {
+          "path": "pkg/cmd/release/create/create.go",
+          "start_line": 443,
+          "end_line": 449
+        },
+        {
+          "path": "pkg/cmd/release/create/http.go",
+          "start_line": 155,
+          "end_line": 162
+        },
+        {
+          "path": "pkg/cmd/release/create/http.go",
+          "start_line": 158,
+          "end_line": 183
+        }
+      ]
+    },
+    {
+      "id": "Multi-SWE-Bench__go__maintenance__bugfix__2fea5f6b",
+      "repo": "cli/cli",
+      "base_commit": "954689ea9f26e3131ca816285eee8930cd8aa835",
+      "query_sha256": "8c2ad78648dd780c67f4f3cf53d1b2d1f1b9f486fc1f6559c0db8c989985f707",
+      "gold": [
+        {
+          "path": "git/git.go",
+          "start_line": 370,
+          "end_line": 383
+        },
+        {
+          "path": "internal/config/config.go",
+          "start_line": 19,
+          "end_line": 25
+        },
+        {
+          "path": "internal/config/config.go",
+          "start_line": 58,
+          "end_line": 78
+        },
+        {
+          "path": "internal/ghrepo/repo.go",
+          "start_line": 95,
+          "end_line": 102
+        },
+        {
+          "path": "pkg/cmd/repo/clone/clone.go",
+          "start_line": 90,
+          "end_line": 131
+        },
+        {
+          "path": "pkg/cmd/repo/clone/clone.go",
+          "start_line": 139,
+          "end_line": 178
+        },
+        {
+          "path": "pkg/cmd/repo/clone/clone.go",
+          "start_line": 159,
+          "end_line": 174
+        }
+      ]
+    },
+    {
+      "id": "SWE-Bench-Pro__go__maintenance__bugfix__40a717e5",
+      "repo": "flipt-io/flipt",
+      "base_commit": "266e5e143e87519047b9be3202a0aba273b83de3",
+      "query_sha256": "787ccfc42be66115c270b11011a9a0823121301024170ff975fdfff0bea4c170",
+      "gold": [
+        {
+          "path": "CHANGELOG.md",
+          "start_line": 5,
+          "end_line": 10
+        },
+        {
+          "path": "DEPRECATIONS.md",
+          "start_line": 32,
+          "end_line": 50
+        },
+        {
+          "path": "cmd/flipt/main.go",
+          "start_line": 38,
+          "end_line": 44
+        },
+        {
+          "path": "cmd/flipt/main.go",
+          "start_line": 156,
+          "end_line": 169
+        },
+        {
+          "path": "cmd/flipt/main.go",
+          "start_line": 232,
+          "end_line": 238
+        },
+        {
+          "path": "config/default.yml",
+          "start_line": 9,
+          "end_line": 24
+        },
+        {
+          "path": "internal/config/cache.go",
+          "start_line": 25,
+          "end_line": 49
+        },
+        {
+          "path": "internal/config/cache.go",
+          "start_line": 52,
+          "end_line": 58
+        },
+        {
+          "path": "internal/config/cache.go",
+          "start_line": 52,
+          "end_line": 70
+        },
+        {
+          "path": "internal/config/cache.go",
+          "start_line": 60,
+          "end_line": 66
+        },
+        {
+          "path": "internal/config/config.go",
+          "start_line": 24,
+          "end_line": 31
+        },
+        {
+          "path": "internal/config/config.go",
+          "start_line": 45,
+          "end_line": 54
+        },
+        {
+          "path": "internal/config/config.go",
+          "start_line": 61,
+          "end_line": 98
+        },
+        {
+          "path": "internal/config/config.go",
+          "start_line": 101,
+          "end_line": 111
+        },
+        {
+          "path": "internal/config/config.go",
+          "start_line": 114,
+          "end_line": 132
+        },
+        {
+          "path": "internal/config/config_test.go",
+          "start_line": 163,
+          "end_line": 222
+        },
+        {
+          "path": "internal/config/config_test.go",
+          "start_line": 242,
+          "end_line": 273
+        },
+        {
+          "path": "internal/config/config_test.go",
+          "start_line": 441,
+          "end_line": 498
+        },
+        {
+          "path": "internal/config/database.go",
+          "start_line": 59,
+          "end_line": 69
+        },
+        {
+          "path": "internal/config/deprecations.go",
+          "start_line": 8,
+          "end_line": 25
+        },
+        {
+          "path": "internal/config/testdata/advanced.yml",
+          "start_line": 3,
+          "end_line": 11
+        },
+        {
+          "path": "internal/config/testdata/advanced.yml",
+          "start_line": 46,
+          "end_line": 50
+        },
+        {
+          "path": "internal/config/testdata/deprecated/cache_memory_enabled.yml",
+          "start_line": 1,
+          "end_line": 4
+        },
+        {
+          "path": "internal/config/testdata/deprecated/database_migrations_path.yml",
+          "start_line": 1,
+          "end_line": 3
+        },
+        {
+          "path": "internal/config/ui.go",
+          "start_line": 5,
+          "end_line": 18
+        },
+        {
+          "path": "internal/config/ui.go",
+          "start_line": 16,
+          "end_line": 18
+        }
+      ]
+    },
+    {
+      "id": "SWE-Bench-Pro__go__maintenance__bugfix__ebadd40b",
+      "repo": "flipt-io/flipt",
+      "base_commit": "b64891e57df74861e89ebcfa81394e4bc096f8c7",
+      "query_sha256": "7a998f68c5c515ac87a13c9bb6ae5085784e0c90a2dbdd161b0ac36c53360bcf",
+      "gold": [
+        {
+          "path": "go.work.sum",
+          "start_line": 605,
+          "end_line": 610
+        },
+        {
+          "path": "internal/common/store_mock.go",
+          "start_line": 17,
+          "end_line": 24
+        },
+        {
+          "path": "internal/common/store_mock.go",
+          "start_line": 19,
+          "end_line": 25
+        },
+        {
+          "path": "internal/ext/common.go",
+          "start_line": 8,
+          "end_line": 13
+        },
+        {
+          "path": "internal/ext/common.go",
+          "start_line": 10,
+          "end_line": 15
+        },
+        {
+          "path": "internal/server/evaluation/data/evaluation_store_mock.go",
+          "start_line": 17,
+          "end_line": 24
+        },
+        {
+          "path": "internal/server/evaluation/data/server.go",
+          "start_line": 19,
+          "end_line": 23
+        },
+        {
+          "path": "internal/server/evaluation/data/server.go",
+          "start_line": 102,
+          "end_line": 140
+        },
+        {
+          "path": "internal/server/middleware/http/middleware.go",
+          "start_line": 12,
+          "end_line": 36
+        },
+        {
+          "path": "internal/storage/fs/git/store.go",
+          "start_line": 355,
+          "end_line": 359
+        },
+        {
+          "path": "internal/storage/fs/local/store.go",
+          "start_line": 59,
+          "end_line": 85
+        },
+        {
+          "path": "internal/storage/fs/object/file.go",
+          "start_line": 7,
+          "end_line": 16
+        },
+        {
+          "path": "internal/storage/fs/object/file.go",
+          "start_line": 9,
+          "end_line": 42
+        },
+        {
+          "path": "internal/storage/fs/object/file.go",
+          "start_line": 20,
+          "end_line": 26
+        },
+        {
+          "path": "internal/storage/fs/object/file.go",
+          "start_line": 32,
+          "end_line": 42
+        },
+        {
+          "path": "internal/storage/fs/object/fileinfo.go",
+          "start_line": 8,
+          "end_line": 61
+        },
+        {
+          "path": "internal/storage/fs/object/fileinfo.go",
+          "start_line": 16,
+          "end_line": 21
+        },
+        {
+          "path": "internal/storage/fs/object/fileinfo.go",
+          "start_line": 48,
+          "end_line": 61
+        },
+        {
+          "path": "internal/storage/fs/object/store.go",
+          "start_line": 2,
+          "end_line": 7
+        },
+        {
+          "path": "internal/storage/fs/object/store.go",
+          "start_line": 22,
+          "end_line": 140
+        },
+        {
+          "path": "internal/storage/fs/object/store.go",
+          "start_line": 133,
+          "end_line": 138
+        },
+        {
+          "path": "internal/storage/fs/object/store.go",
+          "start_line": 161,
+          "end_line": 168
+        },
+        {
+          "path": "internal/storage/fs/oci/store.go",
+          "start_line": 73,
+          "end_line": 103
+        },
+        {
+          "path": "internal/storage/fs/oci/store.go",
+          "start_line": 89,
+          "end_line": 95
+        },
+        {
+          "path": "internal/storage/fs/snapshot.go",
+          "start_line": 31,
+          "end_line": 88
+        },
+        {
+          "path": "internal/storage/fs/snapshot.go",
+          "start_line": 46,
+          "end_line": 51
+        },
+        {
+          "path": "internal/storage/fs/snapshot.go",
+          "start_line": 67,
+          "end_line": 72
+        },
+        {
+          "path": "internal/storage/fs/snapshot.go",
+          "start_line": 75,
+          "end_line": 80
+        },
+        {
+          "path": "internal/storage/fs/snapshot.go",
+          "start_line": 110,
+          "end_line": 145
+        },
+        {
+          "path": "internal/storage/fs/snapshot.go",
+          "start_line": 118,
+          "end_line": 123
+        },
+        {
+          "path": "internal/storage/fs/snapshot.go",
+          "start_line": 161,
+          "end_line": 167
+        },
+        {
+          "path": "internal/storage/fs/snapshot.go",
+          "start_line": 179,
+          "end_line": 233
+        },
+        {
+          "path": "internal/storage/fs/snapshot.go",
+          "start_line": 226,
+          "end_line": 231
+        },
+        {
+          "path": "internal/storage/fs/snapshot.go",
+          "start_line": 537,
+          "end_line": 543
+        },
+        {
+          "path": "internal/storage/fs/snapshot.go",
+          "start_line": 854,
+          "end_line": 866
+        },
+        {
+          "path": "internal/storage/fs/snapshot.go",
+          "start_line": 860,
+          "end_line": 866
+        },
+        {
+          "path": "internal/storage/fs/store.go",
+          "start_line": 73,
+          "end_line": 120
+        },
+        {
+          "path": "internal/storage/fs/store.go",
+          "start_line": 185,
+          "end_line": 322
+        },
+        {
+          "path": "internal/storage/fs/store.go",
+          "start_line": 316,
+          "end_line": 322
+        },
+        {
+          "path": "internal/storage/storage.go",
+          "start_line": 156,
+          "end_line": 183
+        },
+        {
+          "path": "internal/storage/storage.go",
+          "start_line": 381,
+          "end_line": 415
+        }
+      ]
+    },
+    {
+      "id": "SWE-Bench-Pro__go__maintenance__bugfix__b91d5788",
+      "repo": "flipt-io/flipt",
+      "base_commit": "9c3cab439846ad339a0a9aa73574f0d05849246e",
+      "query_sha256": "fe3dbd2d2e4ab5dad530ce067bd9e220ae1abb0e0f0a8a284578a20dabd7c8f9",
+      "gold": [
+        {
+          "path": "config/flipt.schema.cue",
+          "start_line": 22,
+          "end_line": 45
+        },
+        {
+          "path": "config/flipt.schema.cue",
+          "start_line": 32,
+          "end_line": 37
+        },
+        {
+          "path": "config/flipt.schema.json",
+          "start_line": 44,
+          "end_line": 78
+        },
+        {
+          "path": "config/flipt.schema.json",
+          "start_line": 70,
+          "end_line": 75
+        },
+        {
+          "path": "internal/cmd/auth.go",
+          "start_line": 26,
+          "end_line": 63
+        },
+        {
+          "path": "internal/cmd/auth.go",
+          "start_line": 47,
+          "end_line": 54
+        },
+        {
+          "path": "internal/config/authentication.go",
+          "start_line": 35,
+          "end_line": 44
+        },
+        {
+          "path": "internal/config/authentication.go",
+          "start_line": 163,
+          "end_line": 177
+        },
+        {
+          "path": "internal/config/authentication.go",
+          "start_line": 260,
+          "end_line": 274
+        },
+        {
+          "path": "internal/config/authentication.go",
+          "start_line": 261,
+          "end_line": 267
+        },
+        {
+          "path": "internal/config/authentication.go",
+          "start_line": 273,
+          "end_line": 278
+        },
+        {
+          "path": "internal/config/config_test.go",
+          "start_line": 466,
+          "end_line": 488
+        },
+        {
+          "path": "internal/server/auth/method/token/server.go",
+          "start_line": 13,
+          "end_line": 63
+        },
+        {
+          "path": "internal/storage/auth/auth.go",
+          "start_line": 21,
+          "end_line": 49
+        },
+        {
+          "path": "internal/storage/auth/auth.go",
+          "start_line": 46,
+          "end_line": 51
+        },
+        {
+          "path": "internal/storage/auth/bootstrap.go",
+          "start_line": 3,
+          "end_line": 18
+        },
+        {
+          "path": "internal/storage/auth/bootstrap.go",
+          "start_line": 11,
+          "end_line": 37
+        },
+        {
+          "path": "internal/storage/auth/bootstrap.go",
+          "start_line": 22,
+          "end_line": 34
+        },
+        {
+          "path": "internal/storage/auth/memory/store.go",
+          "start_line": 83,
+          "end_line": 114
+        },
+        {
+          "path": "internal/storage/auth/memory/store.go",
+          "start_line": 89,
+          "end_line": 95
+        },
+        {
+          "path": "internal/storage/auth/memory/store.go",
+          "start_line": 100,
+          "end_line": 105
+        },
+        {
+          "path": "internal/storage/auth/sql/store.go",
+          "start_line": 90,
+          "end_line": 137
+        },
+        {
+          "path": "internal/storage/auth/sql/store.go",
+          "start_line": 91,
+          "end_line": 97
+        },
+        {
+          "path": "internal/storage/auth/sql/store.go",
+          "start_line": 102,
+          "end_line": 107
+        }
+      ]
+    },
+    {
+      "id": "SWE-Bench-Pro__go__maintenance__bugfix__43d6d59b",
+      "repo": "flipt-io/flipt",
+      "base_commit": "32864671f44b7bbd9edc8e2bc1d6255906c31f5b",
+      "query_sha256": "c03c156525d6ea9c98b5829154a9796a6413ca37be76ed0de73033a5623bcf3b",
+      "gold": [
+        {
+          "path": "config/flipt.schema.cue",
+          "start_line": 224,
+          "end_line": 236
+        },
+        {
+          "path": "config/flipt.schema.cue",
+          "start_line": 228,
+          "end_line": 233
+        },
+        {
+          "path": "config/flipt.schema.json",
+          "start_line": 647,
+          "end_line": 691
+        },
+        {
+          "path": "config/flipt.schema.json",
+          "start_line": 670,
+          "end_line": 675
+        },
+        {
+          "path": "go.mod",
+          "start_line": 10,
+          "end_line": 15
+        },
+        {
+          "path": "go.mod",
+          "start_line": 97,
+          "end_line": 103
+        },
+        {
+          "path": "go.work.sum",
+          "start_line": 1234,
+          "end_line": 1345
+        },
+        {
+          "path": "go.work.sum",
+          "start_line": 1353,
+          "end_line": 1387
+        },
+        {
+          "path": "go.work.sum",
+          "start_line": 1397,
+          "end_line": 1403
+        },
+        {
+          "path": "go.work.sum",
+          "start_line": 1409,
+          "end_line": 1422
+        },
+        {
+          "path": "go.work.sum",
+          "start_line": 1425,
+          "end_line": 1431
+        },
+        {
+          "path": "go.work.sum",
+          "start_line": 1439,
+          "end_line": 1470
+        },
+        {
+          "path": "go.work.sum",
+          "start_line": 1485,
+          "end_line": 1504
+        },
+        {
+          "path": "go.work.sum",
+          "start_line": 1514,
+          "end_line": 1545
+        },
+        {
+          "path": "internal/cmd/grpc.go",
+          "start_line": 21,
+          "end_line": 26
+        },
+        {
+          "path": "internal/cmd/grpc.go",
+          "start_line": 321,
+          "end_line": 355
+        },
+        {
+          "path": "internal/cmd/grpc.go",
+          "start_line": 330,
+          "end_line": 335
+        },
+        {
+          "path": "internal/config/audit.go",
+          "start_line": 13,
+          "end_line": 24
+        },
+        {
+          "path": "internal/config/audit.go",
+          "start_line": 25,
+          "end_line": 57
+        },
+        {
+          "path": "internal/config/audit.go",
+          "start_line": 30,
+          "end_line": 35
+        },
+        {
+          "path": "internal/config/audit.go",
+          "start_line": 45,
+          "end_line": 50
+        },
+        {
+          "path": "internal/config/audit.go",
+          "start_line": 59,
+          "end_line": 78
+        },
+        {
+          "path": "internal/config/audit.go",
+          "start_line": 61,
+          "end_line": 66
+        },
+        {
+          "path": "internal/server/audit/audit.go",
+          "start_line": 180,
+          "end_line": 186
+        },
+        {
+          "path": "internal/server/audit/audit.go",
+          "start_line": 180,
+          "end_line": 259
+        },
+        {
+          "path": "internal/server/audit/audit.go",
+          "start_line": 195,
+          "end_line": 201
+        },
+        {
+          "path": "internal/server/audit/audit.go",
+          "start_line": 224,
+          "end_line": 230
+        },
+        {
+          "path": "internal/server/audit/audit.go",
+          "start_line": 242,
+          "end_line": 255
+        },
+        {
+          "path": "internal/server/audit/checker.go",
+          "start_line": 9,
+          "end_line": 90
+        },
+        {
+          "path": "internal/server/audit/logfile/logfile.go",
+          "start_line": 1,
+          "end_line": 6
+        },
+        {
+          "path": "internal/server/audit/logfile/logfile.go",
+          "start_line": 1,
+          "end_line": 62
+        },
+        {
+          "path": "internal/server/audit/logfile/logfile.go",
+          "start_line": 35,
+          "end_line": 41
+        }
+      ]
+    },
+    {
+      "id": "SWE-Bench-Pro__go__maintenance__bugfix__09f45300",
+      "repo": "flipt-io/flipt",
+      "base_commit": "d26eba77ddd985eb621c79642b55b607cf125941",
+      "query_sha256": "0ca0693e47a3e91082f1c1ec65f41f42ebfa09b5d5f8b69e05cd462cb9ac4154",
+      "gold": [
+        {
+          "path": "cmd/flipt/flipt.go",
+          "start_line": 59,
+          "end_line": 72
+        },
+        {
+          "path": "cmd/flipt/flipt.go",
+          "start_line": 111,
+          "end_line": 117
+        },
+        {
+          "path": "cmd/flipt/flipt.go",
+          "start_line": 231,
+          "end_line": 237
+        },
+        {
+          "path": "cmd/flipt/flipt.go",
+          "start_line": 231,
+          "end_line": 277
+        },
+        {
+          "path": "cmd/flipt/import.go",
+          "start_line": 41,
+          "end_line": 57
+        },
+        {
+          "path": "cmd/flipt/import.go",
+          "start_line": 89,
+          "end_line": 95
+        },
+        {
+          "path": "config/config.go",
+          "start_line": 17,
+          "end_line": 105
+        },
+        {
+          "path": "config/config.go",
+          "start_line": 69,
+          "end_line": 80
+        },
+        {
+          "path": "config/config.go",
+          "start_line": 158,
+          "end_line": 198
+        },
+        {
+          "path": "config/config.go",
+          "start_line": 192,
+          "end_line": 197
+        },
+        {
+          "path": "config/config.go",
+          "start_line": 213,
+          "end_line": 288
+        },
+        {
+          "path": "config/config.go",
+          "start_line": 290,
+          "end_line": 295
+        },
+        {
+          "path": "config/config.go",
+          "start_line": 323,
+          "end_line": 341
+        },
+        {
+          "path": "config/default.yml",
+          "start_line": 25,
+          "end_line": 31
+        },
+        {
+          "path": "config/testdata/config/advanced.yml",
+          "start_line": 18,
+          "end_line": 37
+        },
+        {
+          "path": "go.mod",
+          "start_line": 4,
+          "end_line": 10
+        },
+        {
+          "path": "go.mod",
+          "start_line": 19,
+          "end_line": 24
+        },
+        {
+          "path": "go.sum",
+          "start_line": 19,
+          "end_line": 26
+        },
+        {
+          "path": "go.sum",
+          "start_line": 158,
+          "end_line": 163
+        },
+        {
+          "path": "go.sum",
+          "start_line": 222,
+          "end_line": 229
+        },
+        {
+          "path": "go.sum",
+          "start_line": 294,
+          "end_line": 299
+        },
+        {
+          "path": "go.sum",
+          "start_line": 318,
+          "end_line": 325
+        },
+        {
+          "path": "go.sum",
+          "start_line": 450,
+          "end_line": 455
+        },
+        {
+          "path": "go.sum",
+          "start_line": 501,
+          "end_line": 508
+        },
+        {
+          "path": "go.sum",
+          "start_line": 647,
+          "end_line": 652
+        },
+        {
+          "path": "storage/db/db.go",
+          "start_line": 4,
+          "end_line": 9
+        },
+        {
+          "path": "storage/db/db.go",
+          "start_line": 14,
+          "end_line": 22
+        },
+        {
+          "path": "storage/db/db.go",
+          "start_line": 35,
+          "end_line": 42
+        },
+        {
+          "path": "storage/db/db.go",
+          "start_line": 106,
+          "end_line": 119
+        },
+        {
+          "path": "storage/db/migrator.go",
+          "start_line": 28,
+          "end_line": 35
+        }
+      ]
+    },
+    {
+      "id": "Multi-SWE-Bench__c__maintenance__bugfix__1e842312",
+      "repo": "ponylang/ponyc",
+      "base_commit": "f00f95b30dd68c7faaff0aa88508c218bc19f02b",
+      "query_sha256": "23f4b96e76c224b67f30ba81cb4378e8150fb83fa00e31d89b2d25983da765ab",
+      "gold": [
+        {
+          "path": "src/libponyc/expr/reference.c",
+          "start_line": 50,
+          "end_line": 55
+        },
+        {
+          "path": "src/libponyc/expr/reference.c",
+          "start_line": 338,
+          "end_line": 346
+        },
+        {
+          "path": "src/libponyc/expr/reference.c",
+          "start_line": 339,
+          "end_line": 347
+        },
+        {
+          "path": "src/libponyc/pass/expr.c",
+          "start_line": 36,
+          "end_line": 114
+        },
+        {
+          "path": "src/libponyc/pass/expr.c",
+          "start_line": 221,
+          "end_line": 277
+        },
+        {
+          "path": "src/libponyc/pass/refer.c",
+          "start_line": 263,
+          "end_line": 275
+        },
+        {
+          "path": "src/libponyc/pass/verify.c",
+          "start_line": 93,
+          "end_line": 171
+        },
+        {
+          "path": "src/libponyc/pass/verify.c",
+          "start_line": 104,
+          "end_line": 190
+        },
+        {
+          "path": "src/libponyc/pass/verify.c",
+          "start_line": 188,
+          "end_line": 221
+        },
+        {
+          "path": "src/libponyc/pass/verify.c",
+          "start_line": 205,
+          "end_line": 211
+        }
+      ]
+    },
+    {
+      "id": "Multi-SWE-Bench__c__maintenance__bugfix__1ac60ce9",
+      "repo": "ponylang/ponyc",
+      "base_commit": "9e26f0ac4b65462fda4cadbb80cc2fa53e3042b3",
+      "query_sha256": "cd68c55025f82e05d52f877a0e17ec4e140fc0bce0085ea9307e753d3aad8a3b",
+      "gold": [
+        {
+          "path": "src/libponyc/codegen/genprim.c",
+          "start_line": 1030,
+          "end_line": 1074
+        },
+        {
+          "path": "src/libponyc/codegen/genprim.c",
+          "start_line": 1044,
+          "end_line": 1058
+        },
+        {
+          "path": "src/libponyc/codegen/genprim.c",
+          "start_line": 1065,
+          "end_line": 1074
+        },
+        {
+          "path": "src/libponyc/codegen/genprim.c",
+          "start_line": 1100,
+          "end_line": 1144
+        }
+      ]
+    },
+    {
+      "id": "Multi-SWE-Bench__c__maintenance__bugfix__634fe9b8",
+      "repo": "ponylang/ponyc",
+      "base_commit": "3ed6c09a5f410351cb0eb9eb545eae9114cbb065",
+      "query_sha256": "b280a933e850087fa8c83c195262a80a20abb7b0267aad05fc4ffca37ff2fa48",
+      "gold": [
+        {
+          "path": "src/libponyc/pass/sugar.c",
+          "start_line": 151,
+          "end_line": 156
+        },
+        {
+          "path": "src/libponyc/pass/sugar.c",
+          "start_line": 154,
+          "end_line": 238
+        },
+        {
+          "path": "src/libponyc/pass/sugar.c",
+          "start_line": 216,
+          "end_line": 221
+        },
+        {
+          "path": "src/libponyc/pass/sugar.c",
+          "start_line": 257,
+          "end_line": 285
+        },
+        {
+          "path": "src/libponyc/pass/sugar.c",
+          "start_line": 260,
+          "end_line": 311
+        }
+      ]
+    },
+    {
+      "id": "Multi-SWE-Bench__c__maintenance__bugfix__0f94ce4d",
+      "repo": "ponylang/ponyc",
+      "base_commit": "8ae0ecd7dcc1fc483cd964509f4a91ad35419dc3",
+      "query_sha256": "aae0404a9d00fe3591ace365b3eecff0afdd64d71bf6f6f5738efda84e46fd10",
+      "gold": [
+        {
+          "path": "CHANGELOG.md",
+          "start_line": 7,
+          "end_line": 12
+        },
+        {
+          "path": "src/libponyc/type/alias.c",
+          "start_line": 330,
+          "end_line": 362
+        },
+        {
+          "path": "src/libponyc/type/alias.c",
+          "start_line": 448,
+          "end_line": 450
+        },
+        {
+          "path": "src/libponyc/type/alias.h",
+          "start_line": 19,
+          "end_line": 24
+        },
+        {
+          "path": "src/libponyc/type/cap.c",
+          "start_line": 1076,
+          "end_line": 1081
+        },
+        {
+          "path": "src/libponyc/type/cap.h",
+          "start_line": 77,
+          "end_line": 82
+        }
+      ]
+    },
+    {
+      "id": "Multi-SWE-Bench__c__maintenance__bugfix__d22bf206",
+      "repo": "ponylang/ponyc",
+      "base_commit": "336000f438564ca2863d32685964ccd23ec9d174",
+      "query_sha256": "61a236ec20e2c673108b715c1a1bfab7c3ef3f4204a4a75a900db3a573527942",
+      "gold": [
+        {
+          "path": "CHANGELOG.md",
+          "start_line": 140,
+          "end_line": 145
+        },
+        {
+          "path": "src/libponyc/expr/call.c",
+          "start_line": 439,
+          "end_line": 444
+        },
+        {
+          "path": "src/libponyc/expr/call.c",
+          "start_line": 468,
+          "end_line": 473
+        },
+        {
+          "path": "src/libponyc/expr/call.c",
+          "start_line": 732,
+          "end_line": 737
+        },
+        {
+          "path": "src/libponyc/expr/postfix.c",
+          "start_line": 125,
+          "end_line": 161
+        },
+        {
+          "path": "src/libponyc/expr/postfix.c",
+          "start_line": 181,
+          "end_line": 215
+        },
+        {
+          "path": "src/libponyc/expr/reference.c",
+          "start_line": 632,
+          "end_line": 640
+        },
+        {
+          "path": "src/libponyc/expr/reference.c",
+          "start_line": 716,
+          "end_line": 725
+        }
+      ]
+    },
+    {
+      "id": "Multi-SWE-Bench__c__maintenance__bugfix__45da4482",
+      "repo": "ponylang/ponyc",
+      "base_commit": "12466227bb253b600b7a3ee995b56b442d02b6e2",
+      "query_sha256": "81cd82bc87cc951e987f0cd908c44bc418f81ad0698bc98b08cf84226a58332b",
+      "gold": [
+        {
+          "path": "examples/echo/echo.pony",
+          "start_line": 2,
+          "end_line": 12
+        },
+        {
+          "path": "examples/files/files.pony",
+          "start_line": 6,
+          "end_line": 12
+        },
+        {
+          "path": "examples/mandelbrot/mandelbrot.pony",
+          "start_line": 112,
+          "end_line": 123
+        },
+        {
+          "path": "examples/net/listener.pony",
+          "start_line": 27,
+          "end_line": 37
+        },
+        {
+          "path": "examples/net/listener.pony",
+          "start_line": 45,
+          "end_line": 60
+        },
+        {
+          "path": "examples/net/net.pony",
+          "start_line": 8,
+          "end_line": 17
+        },
+        {
+          "path": "examples/net/pong.pony",
+          "start_line": 13,
+          "end_line": 24
+        },
+        {
+          "path": "examples/under_pressure/main.pony",
+          "start_line": 118,
+          "end_line": 129
+        },
+        {
+          "path": "minimal-cases/issue-629/629.pony",
+          "start_line": 19,
+          "end_line": 37
+        },
+        {
+          "path": "packages/backpressure/backpressure.pony",
+          "start_line": 69,
+          "end_line": 79
+        },
+        {
+          "path": "packages/builtin/env.pony",
+          "start_line": 6,
+          "end_line": 16
+        },
+        {
+          "path": "packages/builtin/env.pony",
+          "start_line": 6,
+          "end_line": 27
+        },
+        {
+          "path": "packages/builtin/env.pony",
+          "start_line": 58,
+          "end_line": 71
+        },
+        {
+          "path": "packages/files/files.pony",
+          "start_line": 32,
+          "end_line": 38
+        },
+        {
+          "path": "packages/ini/ini.pony",
+          "start_line": 17,
+          "end_line": 23
+        },
+        {
+          "path": "packages/net/proxy.pony",
+          "start_line": 10,
+          "end_line": 16
+        },
+        {
+          "path": "packages/net/tcp_connection.pony",
+          "start_line": 66,
+          "end_line": 72
+        },
+        {
+          "path": "packages/net/tcp_connection.pony",
+          "start_line": 137,
+          "end_line": 143
+        },
+        {
+          "path": "packages/net/tcp_connection.pony",
+          "start_line": 180,
+          "end_line": 186
+        },
+        {
+          "path": "packages/net/tcp_connection.pony",
+          "start_line": 231,
+          "end_line": 237
+        },
+        {
+          "path": "packages/net/tcp_listener.pony",
+          "start_line": 41,
+          "end_line": 47
+        },
+        {
+          "path": "packages/net/udp_socket.pony",
+          "start_line": 48,
+          "end_line": 54
+        },
+        {
+          "path": "packages/net/udp_socket.pony",
+          "start_line": 87,
+          "end_line": 94
+        },
+        {
+          "path": "packages/process/process.pony",
+          "start_line": 23,
+          "end_line": 44
+        }
+      ]
+    },
+    {
+      "id": "Multi-SWE-Bench__c__maintenance__bugfix__1e195cd6",
+      "repo": "ponylang/ponyc",
+      "base_commit": "f8a2feebba3aea298bde89d445ad35ca48602ca7",
+      "query_sha256": "975481f8eb70f89f99465b6ace41d3f717b48dcd8a9f814e935d6df5308241e6",
+      "gold": [
+        {
+          "path": "src/libponyc/codegen/genmatch.c",
+          "start_line": 308,
+          "end_line": 332
+        },
+        {
+          "path": "src/libponyc/codegen/genmatch.c",
+          "start_line": 321,
+          "end_line": 326
+        }
+      ]
+    },
+    {
+      "id": "Multi-SWE-Bench__rust__maintenance__bugfix__3c69099b",
+      "repo": "clap-rs/clap",
+      "base_commit": "17ec7757891a38965e8492f7a0a48e674a9536eb",
+      "query_sha256": "ce482a8ce251358dc7a19914bae11bd7071c01a56e4479d8dee420e1e3e218ab",
+      "gold": [
+        {
+          "path": "Cargo.toml",
+          "start_line": 64,
+          "end_line": 70
+        },
+        {
+          "path": "Cargo.toml",
+          "start_line": 64,
+          "end_line": 87
+        },
+        {
+          "path": "Cargo.toml",
+          "start_line": 81,
+          "end_line": 87
+        },
+        {
+          "path": "Cargo.toml",
+          "start_line": 178,
+          "end_line": 188
+        },
+        {
+          "path": "Cargo.toml",
+          "start_line": 178,
+          "end_line": 194
+        },
+        {
+          "path": "Makefile",
+          "start_line": 15,
+          "end_line": 22
+        },
+        {
+          "path": "README.md",
+          "start_line": 152,
+          "end_line": 158
+        },
+        {
+          "path": "examples/multicall-busybox.rs",
+          "start_line": 1,
+          "end_line": 5
+        },
+        {
+          "path": "examples/multicall-hostname.rs",
+          "start_line": 1,
+          "end_line": 5
+        },
+        {
+          "path": "examples/repl.rs",
+          "start_line": 1,
+          "end_line": 5
+        },
+        {
+          "path": "src/builder/app_settings.rs",
+          "start_line": 150,
+          "end_line": 160
+        },
+        {
+          "path": "src/builder/app_settings.rs",
+          "start_line": 153,
+          "end_line": 159
+        },
+        {
+          "path": "src/builder/app_settings.rs",
+          "start_line": 466,
+          "end_line": 472
+        },
+        {
+          "path": "src/builder/app_settings.rs",
+          "start_line": 466,
+          "end_line": 539
+        },
+        {
+          "path": "src/builder/app_settings.rs",
+          "start_line": 533,
+          "end_line": 539
+        },
+        {
+          "path": "src/builder/command.rs",
+          "start_line": 637,
+          "end_line": 643
+        },
+        {
+          "path": "src/builder/command.rs",
+          "start_line": 637,
+          "end_line": 645
+        },
+        {
+          "path": "src/builder/command.rs",
+          "start_line": 3062,
+          "end_line": 3068
+        },
+        {
+          "path": "src/builder/command.rs",
+          "start_line": 3062,
+          "end_line": 3070
+        },
+        {
+          "path": "src/builder/command.rs",
+          "start_line": 3715,
+          "end_line": 3729
+        },
+        {
+          "path": "src/builder/command.rs",
+          "start_line": 3715,
+          "end_line": 3729
+        },
+        {
+          "path": "src/builder/command.rs",
+          "start_line": 4109,
+          "end_line": 4121
+        },
+        {
+          "path": "src/builder/command.rs",
+          "start_line": 4109,
+          "end_line": 4121
+        },
+        {
+          "path": "src/builder/command.rs",
+          "start_line": 4180,
+          "end_line": 4186
+        },
+        {
+          "path": "src/builder/command.rs",
+          "start_line": 4180,
+          "end_line": 4186
+        },
+        {
+          "path": "src/builder/command.rs",
+          "start_line": 4263,
+          "end_line": 4269
+        },
+        {
+          "path": "src/builder/command.rs",
+          "start_line": 4263,
+          "end_line": 4269
+        },
+        {
+          "path": "src/builder/debug_asserts.rs",
+          "start_line": 60,
+          "end_line": 74
+        },
+        {
+          "path": "src/builder/debug_asserts.rs",
+          "start_line": 60,
+          "end_line": 74
+        },
+        {
+          "path": "src/builder/debug_asserts.rs",
+          "start_line": 467,
+          "end_line": 473
+        },
+        {
+          "path": "src/builder/debug_asserts.rs",
+          "start_line": 467,
+          "end_line": 473
+        }
+      ]
+    },
+    {
+      "id": "Multi-SWE-Bench__rust__maintenance__bugfix__c9cd2b2c",
+      "repo": "clap-rs/clap",
+      "base_commit": "e3bfa50e8f451b31a00d99147d608607521419a3",
+      "query_sha256": "f79f76559c1501fc8d9b771a8aaea73de2ecddc39e2ce4cbc3c788ddb74e0646",
+      "gold": [
+        {
+          "path": "clap_derive/src/derives/arg_enum.rs",
+          "start_line": 108,
+          "end_line": 126
+        },
+        {
+          "path": "clap_derive/src/derives/arg_enum.rs",
+          "start_line": 118,
+          "end_line": 124
+        }
+      ]
+    },
+    {
+      "id": "Multi-SWE-Bench__rust__maintenance__bugfix__37f525d2",
+      "repo": "clap-rs/clap",
+      "base_commit": "15f01789d2a6b8952a01a8a3881b94aed4a44f4c",
+      "query_sha256": "26a44c9053e357436c04f213dc62466fc60ee9e296ed126be3942b2e734ddcc1",
+      "gold": [
+        {
+          "path": "src/parse/arg_matcher.rs",
+          "start_line": 101,
+          "end_line": 110
+        },
+        {
+          "path": "src/parse/validator.rs",
+          "start_line": 54,
+          "end_line": 60
+        }
+      ]
+    },
+    {
+      "id": "Multi-SWE-Bench__rust__maintenance__bugfix__2dc6f037",
+      "repo": "clap-rs/clap",
+      "base_commit": "750aba282f1ad4ed623ef32dfe9fb04588e6dd42",
+      "query_sha256": "be2583f6bee297a8827586cc64981e664ea06ea68ce1ac2987206246a90fc806",
+      "gold": [
+        {
+          "path": "src/parse/parser.rs",
+          "start_line": 82,
+          "end_line": 88
+        },
+        {
+          "path": "src/parse/parser.rs",
+          "start_line": 103,
+          "end_line": 109
+        },
+        {
+          "path": "src/parse/parser.rs",
+          "start_line": 302,
+          "end_line": 583
+        },
+        {
+          "path": "src/parse/parser.rs",
+          "start_line": 407,
+          "end_line": 419
+        },
+        {
+          "path": "src/parse/parser.rs",
+          "start_line": 584,
+          "end_line": 614
+        },
+        {
+          "path": "src/parse/parser.rs",
+          "start_line": 706,
+          "end_line": 739
+        },
+        {
+          "path": "src/parse/parser.rs",
+          "start_line": 844,
+          "end_line": 924
+        },
+        {
+          "path": "src/parse/parser.rs",
+          "start_line": 908,
+          "end_line": 914
+        },
+        {
+          "path": "src/parse/parser.rs",
+          "start_line": 1004,
+          "end_line": 1056
+        },
+        {
+          "path": "src/parse/parser.rs",
+          "start_line": 1012,
+          "end_line": 1017
+        },
+        {
+          "path": "src/parse/parser.rs",
+          "start_line": 1057,
+          "end_line": 1142
+        },
+        {
+          "path": "src/parse/parser.rs",
+          "start_line": 1074,
+          "end_line": 1086
+        },
+        {
+          "path": "src/parse/parser.rs",
+          "start_line": 1124,
+          "end_line": 1130
+        },
+        {
+          "path": "src/parse/parser.rs",
+          "start_line": 1316,
+          "end_line": 1321
+        }
+      ]
+    },
+    {
+      "id": "Multi-SWE-Bench__rust__maintenance__bugfix__d3133dfb",
+      "repo": "clap-rs/clap",
+      "base_commit": "8e510650a98a528d3c016cfdfddbe67ae3a470a5",
+      "query_sha256": "3284c15cbb5c1611dba512611e5b7e969462f122f7799b2de6ca7f7dfc4e0eb3",
+      "gold": [
+        {
+          "path": "CHANGELOG.md",
+          "start_line": 227,
+          "end_line": 232
+        },
+        {
+          "path": "CHANGELOG.md",
+          "start_line": 256,
+          "end_line": 261
+        },
+        {
+          "path": "CHANGELOG.md",
+          "start_line": 270,
+          "end_line": 277
+        },
+        {
+          "path": "clap_bench/benches/04_new_help.rs",
+          "start_line": 1,
+          "end_line": 13
+        },
+        {
+          "path": "clap_bench/benches/05_ripgrep.rs",
+          "start_line": 6,
+          "end_line": 12
+        },
+        {
+          "path": "clap_bench/benches/05_ripgrep.rs",
+          "start_line": 281,
+          "end_line": 290
+        },
+        {
+          "path": "src/builder/command.rs",
+          "start_line": 759,
+          "end_line": 767
+        },
+        {
+          "path": "src/builder/command.rs",
+          "start_line": 770,
+          "end_line": 793
+        },
+        {
+          "path": "src/builder/command.rs",
+          "start_line": 796,
+          "end_line": 806
+        },
+        {
+          "path": "src/builder/command.rs",
+          "start_line": 869,
+          "end_line": 876
+        },
+        {
+          "path": "src/builder/styled_str.rs",
+          "start_line": 22,
+          "end_line": 27
+        },
+        {
+          "path": "src/builder/styled_str.rs",
+          "start_line": 289,
+          "end_line": 294
+        },
+        {
+          "path": "src/error/mod.rs",
+          "start_line": 195,
+          "end_line": 200
+        }
+      ]
+    },
+    {
+      "id": "Multi-SWE-Bench__rust__maintenance__bugfix__0e4346f7",
+      "repo": "clap-rs/clap",
+      "base_commit": "6eacd8a7476e352d590c1bfae4b983e9eafae2b3",
+      "query_sha256": "b15e1feeaefde2a62c09034bb917f8ac69f02c93e78a4a98d7bbf0eec0ed14a7",
+      "gold": [
+        {
+          "path": "clap_derive/src/attrs.rs",
+          "start_line": 781,
+          "end_line": 802
+        },
+        {
+          "path": "clap_derive/src/derives/args.rs",
+          "start_line": 187,
+          "end_line": 210
+        },
+        {
+          "path": "clap_derive/src/derives/args.rs",
+          "start_line": 198,
+          "end_line": 210
+        },
+        {
+          "path": "clap_derive/src/derives/args.rs",
+          "start_line": 358,
+          "end_line": 365
+        },
+        {
+          "path": "clap_derive/src/derives/args.rs",
+          "start_line": 358,
+          "end_line": 367
+        },
+        {
+          "path": "clap_derive/src/derives/subcommand.rs",
+          "start_line": 170,
+          "end_line": 182
+        },
+        {
+          "path": "clap_derive/src/derives/subcommand.rs",
+          "start_line": 170,
+          "end_line": 188
+        },
+        {
+          "path": "clap_derive/src/derives/subcommand.rs",
+          "start_line": 218,
+          "end_line": 229
+        },
+        {
+          "path": "clap_derive/src/derives/subcommand.rs",
+          "start_line": 221,
+          "end_line": 230
+        },
+        {
+          "path": "clap_derive/src/derives/subcommand.rs",
+          "start_line": 264,
+          "end_line": 272
+        },
+        {
+          "path": "clap_derive/src/derives/subcommand.rs",
+          "start_line": 278,
+          "end_line": 284
+        },
+        {
+          "path": "clap_derive/src/derives/subcommand.rs",
+          "start_line": 278,
+          "end_line": 284
+        }
+      ]
+    }
+  ]
+}

@@ -134,8 +134,12 @@ uv run fastindex query PATH_TO_REPOSITORY \
 
 ## Read more
 
+- [Directory-routing paper and reproducible study](paper/README.md) includes
+  the manuscript, evaluation code, archived rankings, and case ledger.
 - [Hybrid retrieval study](docs/hybrid-evaluation.md) covers the Pi comparison,
   retrieval quality, cost, latency, ablations, failures, and reproduction.
+- [Code retrieval study plan](docs/code-retrieval-study-plan.md) reviews external
+  research and prioritizes the next candidate, ranking, and span ablations.
 - [Tree-decision evaluation](docs/tree-decision-evaluation.md) covers matched
   decision-model retrieval and routing-prompt experiments.
 - [Tree-reason design](docs/tree-reason.md) covers traversal, budgets, and emitted

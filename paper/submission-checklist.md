@@ -56,7 +56,7 @@ of peer review or acceptance.
 - [x] Build a portable LaTeX source package with the bibliography; compile
   it locally, render every page, and inspect text, tables, references,
   page breaks, and file names. The revised nine-page PDF was rendered and
-  inspected; the two-file source tar also compiled independently.
+  inspected; both two-file TeX archives compiled independently.
   arXiv prefers TeX source and does not accept a PDF generated from TeX
   as a PDF-only submission.
 - [x] Record the author's choice of CC BY 4.0 and no affiliation. No public

@@ -14,7 +14,7 @@ been made.
 - Distribution license: Creative Commons Attribution 4.0 International (CC BY 4.0)
 - Comments: 9 pages, 5 tables, 3 figures; code and data at the URL in the paper
 - Journal reference and DOI: leave blank (unpublished preprint)
-- Upload: `output/pdf/arxiv-source.tar.gz` (TeX source and bibliography)
+- Upload: `output/pdf/arxiv-tex-upload.zip` (TeX source and bibliography)
 
 Abstract (plain-text metadata):
 

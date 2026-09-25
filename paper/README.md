@@ -21,8 +21,10 @@ The full stage commands are in the two amendments.
 Build from this directory with `tectonic main.tex --outdir ../output/pdf`.
 The rendered PDF is at
 [`../output/pdf/evaluating-name-only-directory-routing.pdf`](../output/pdf/evaluating-name-only-directory-routing.pdf);
-[`../output/pdf/arxiv-source.tar.gz`](../output/pdf/arxiv-source.tar.gz)
-contains only `main.tex` and `references.bib` for an arXiv TeX upload.
+[`../output/pdf/arxiv-tex-upload.zip`](../output/pdf/arxiv-tex-upload.zip)
+is the preferred arXiv upload. It contains only `main.tex` and
+`references.bib`; a [tar.gz alternative](../output/pdf/arxiv-source.tar.gz)
+contains the same files.
 The PDF is an empirical preprint, not evidence of peer review or arXiv
 posting. [`arxiv-metadata.md`](arxiv-metadata.md) contains the draft upload
 fields; the author must review the revised title and abstract in arXiv's

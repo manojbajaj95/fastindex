@@ -1,7 +1,7 @@
 # Directory-routing preprint package
 
 The archived evaluation code and data are pinned at
-[commit `50721e1`](https://github.com/manojbajaj95/fastindex/tree/50721e114e37d908648bc5b30a0c63ac718d776e).
+[commit `5759fc9f0d4c84ec33c5e14b4366e3680194825e`](https://github.com/manojbajaj95/fastindex/tree/5759fc9f0d4c84ec33c5e14b4366e3680194825e).
 
 The manuscript is [`main.tex`](main.tex), with
 [`references.bib`](references.bib). A readable version is

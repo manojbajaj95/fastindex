@@ -17,6 +17,11 @@ of peer review or acceptance.
 - [x] Add the 82-case ID/commit/query-hash ledger, 51-span mechanical
   mismatch audit, macro and micro aggregation, table captions, method
   diagram, repository plot, and Codex assistance disclosure.
+- [x] Final review polish: RQ1 asks whether; Table 5 labels primary and
+  exploratory arms; a model-call plot shows the observed operating points;
+  Figure 2 separates the Serverless label; the full pinned commit and every
+  cited reference URL are clickable in the built PDF. Codex model provenance
+  is stated without assigning an unrecorded version.
 - [x] Finish and archive the post-study flat Jev, path-only, basename, and
   two-search `rg` controls, with their costs and losses. Keep the frozen
   82-case primary comparison separate from this extension.

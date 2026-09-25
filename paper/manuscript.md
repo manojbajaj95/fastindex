@@ -28,10 +28,12 @@ cases whose annotation text aligns with pre-fix source. A post-review
 flat path tournament using the same model reached 0.572 file recall@8,
 above tree, but used 24.6 versus 8.9 model calls per issue. Tree routing
 averaged 8.9 seconds and 12.2K input tokens per issue, versus a
-0.9-second FTS5 build and 7-millisecond query. These results support
-model-guided path-name search as a complementary candidate source for
-one-shot retrieval; they do not establish a quality advantage from
-hierarchy or superiority over an adaptive coding agent.
+0.9-second FTS5 build and 7-millisecond query. At equal candidate
+budgets, the evaluated tree router thus finds more annotated files and
+aligned lines than the selected one-shot lexical baselines while using
+less model computation than the higher-recall flat path control. The
+comparison does not isolate a quality effect of hierarchy or establish
+superiority over an adaptive coding agent.
 
 ## Introduction
 
@@ -66,7 +68,7 @@ example to general performance.
 
 ## Research questions
 
-- **RQ1:** When does model-guided directory routing add gold files that
+- **RQ1:** Does model-guided directory routing add gold files that
   tuned lexical search does not rank within the same top-k budget?
 - **RQ2:** Does adding tree candidates to lexical candidates improve complete
   file and line evidence under equal candidate and context budgets?
@@ -402,22 +404,32 @@ instruction differs from the tree instruction and it uses more calls. A
 two-search `rg` script forms a second query from rare terms in the first
 search's matched files, then fuses the two lists. It is fixed feedback,
 not an adaptive coding agent. All four controls use the same file and
-context budgets and the unchanged line selector.
+context budgets and the unchanged line selector. Table 5 compares
+observed operating points: the flat tournament has a different
+instruction and roughly 2.8 times as many model calls as tree. It is
+not a compute-matched causal test of hierarchy.
 
-**Table 5: Post-review controls and reference arms.** File recall is the
+**Table 5: Primary arms and exploratory post-study controls.** File recall is the
 issue mean on all 82 cases; aligned-line recall uses the 55 cases whose
-annotation text aligns with pinned source. New controls were not
-prespecified.
+annotation text aligns with pinned source.
 
 | Arm | File recall@8 | File recall@16 | Aligned-line recall@8, 16K |
 | --- | ---: | ---: | ---: |
+| *Prespecified primary arms* | | | |
 | Fixed full-issue `rg` | 0.245 | 0.328 | 0.116 |
-| Two-search `rg` | 0.260 | 0.316 | 0.209 |
 | Content + path FTS5 | 0.352 | 0.421 | 0.246 |
+| Name-only tree | 0.465 | 0.591 | 0.443 |
+| Tree + FTS5 | 0.491 | 0.571 | 0.499 |
+| *Exploratory post-study controls* | | | |
+| Two-search `rg` | 0.260 | 0.316 | 0.209 |
 | Path-only FTS5 | 0.191 | 0.237 | 0.214 |
 | Basename overlap | 0.173 | 0.219 | 0.226 |
-| Name-only tree | 0.465 | 0.591 | 0.443 |
 | Flat Jev tournament | **0.572** | **0.630** | **0.511** |
+
+**Figure 3 (PDF):** Observed Choice calls per issue versus file recall@8
+for FTS5 (0 calls, 0.352), tree Jev (8.9, 0.465), and flat Jev
+(24.6, 0.572). FTS5 has separate index and query costs; the two Jev
+procedures differ in prompt and menus.
 
 Flat Jev exceeded tree at eight files by +0.107 issue-mean recall
 [0.017, 0.224] in a post-study repository-cluster bootstrap; at sixteen
@@ -483,14 +495,14 @@ exhaust the space of intent-aware lexical search or query reformulation.
 
 ## Limitations and conclusion
 
-On this cohort, name-only tree routing found annotated files omitted by
-both one-shot lexical rankings and improved average file and
-delivered-line recall over FTS5 at equal budgets. The post-study flat
-model path tournament did better at retrieval quality while using more
-calls and tokens, so the study does not establish that hierarchy causes
-the gain over lexical search. Tree+FTS5 improves the lexical arm but
-does not reliably beat tree alone; fusion can push required files out of
-the shortlist.
+At equal candidate budgets on this cohort, the evaluated tree router
+found more annotated files and delivered lines than the selected
+one-shot lexical baselines while using much less model computation than
+the higher-recall exploratory flat path tournament. The procedures
+differ in prompt, menus, and calls, so the study does not isolate
+hierarchy as the cause of the quality difference. Equal-budget
+tree+FTS5 fusion improves over FTS5, but does not reliably improve over
+tree and can displace tree-selected gold files from a fixed shortlist.
 
 The primary study tests an issue's first fixed query, not an adaptive agent. A
 multi-turn agent can reformulate searches, inspect stack traces, and follow
@@ -534,7 +546,7 @@ benchmark, not a measured improvement in software repair.
 
 ## Reproducibility and data availability
 
-The [code and data at commit 50721e1](https://github.com/manojbajaj95/fastindex/tree/50721e114e37d908648bc5b30a0c63ac718d776e)
+The [code and data at commit `5759fc9f0d4c84ec33c5e14b4366e3680194825e`](https://github.com/manojbajaj95/fastindex/tree/5759fc9f0d4c84ec33c5e14b4366e3680194825e)
 include case selection, source policy, parameters, both amendments, and
 reproduction commands in `paper/` and `evals/`.
 The archived [`contextbench-case-ledger.json`](data/contextbench-case-ledger.json)
@@ -573,5 +585,6 @@ local results under `evals/results/`.
 implementation of the evaluation code, execution and analysis of the
 experiments, and preparation of this manuscript. The author is responsible
 for the study design, artifact checks, interpretation, and final text.
-Codex was a research and writing tool; the routing arm evaluated TypeSafe
-Jev 1.13.
+The study artifacts do not record a single Codex model/version identifier
+across those sessions. Codex was a research and writing tool; the evaluated
+routing decisions were produced by TypeSafe Jev 1.13.

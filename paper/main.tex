@@ -100,9 +100,11 @@ A post-review flat path tournament using the same model reached 0.572
 file recall@8, above tree, but used 24.6 versus 8.9 model calls per
 issue. Tree routing averaged 8.9 seconds and 12.2K input tokens per
 issue, versus a 0.9-second FTS5 build and 7-millisecond query.
-These results support model-guided path-name search as a complementary
-candidate source for one-shot retrieval; they do not establish a quality
-advantage from hierarchy or superiority over an adaptive coding agent.
+At equal candidate budgets, the evaluated tree router thus finds more
+annotated files and aligned lines than the selected one-shot lexical
+baselines while using less model computation than the higher-recall
+flat path control. The comparison does not isolate a quality effect of
+hierarchy or establish superiority over an adaptive coding agent.
 \end{abstract}
 
 \section{Introduction}\label{introduction}
@@ -144,7 +146,7 @@ from a selected three-file pilot example to general performance.
 \begin{itemize}
 \tightlist
 \item
-  \textbf{RQ1:} When does model-guided directory routing add gold
+  \textbf{RQ1:} Does model-guided directory routing add gold
   files that tuned lexical search does not rank within the same top-k
   budget?
 \item
@@ -557,24 +559,24 @@ Clap & 6 & 0.54 & 0.38 & 0.66 \\
 \begin{figure}[t]
 \centering\scriptsize
 \setlength{\unitlength}{1pt}
-% Dot x-coordinate = 155 + 300*(repository tree@8 - FTS5@8), rounded to points.
-\begin{picture}(300,184)
-\put(155,8){\line(0,1){164}}
-\put(123,174){\makebox(25,8){$-0.1$}}
-\put(150,174){\makebox(10,8){$0$}}
-\put(179,174){\makebox(25,8){$+0.1$}}
-\put(209,174){\makebox(25,8){$+0.2$}}
-\put(0,155){\makebox(145,9)[r]{Transformers}} \put(155,160){\line(1,0){56}} \put(211,160){\circle*{4}}
-\put(0,140){\makebox(145,9)[r]{SymPy}} \put(155,145){\line(1,0){13}} \put(168,145){\circle*{4}}
-\put(0,125){\makebox(145,9)[r]{Ansible}} \put(155,130){\line(1,0){46}} \put(201,130){\circle*{4}}
-\put(0,110){\makebox(145,9)[r]{Material UI}} \put(155,115){\line(1,0){83}} \put(238,115){\circle*{4}}
-\put(0,95){\makebox(145,9)[r]{VS Code}} \put(155,100){\circle*{4}}
-\put(0,80){\makebox(145,9)[r]{Serverless}} \put(134,85){\line(1,0){21}} \put(134,85){\circle*{4}}
-\put(0,65){\makebox(145,9)[r]{NodeBB}} \put(155,70){\line(1,0){35}} \put(190,70){\circle*{4}}
-\put(0,50){\makebox(145,9)[r]{GitHub CLI}} \put(155,55){\line(1,0){58}} \put(213,55){\circle*{4}}
-\put(0,35){\makebox(145,9)[r]{Flipt}} \put(155,40){\line(1,0){19}} \put(174,40){\circle*{4}}
-\put(0,20){\makebox(145,9)[r]{PonyC}} \put(155,25){\line(1,0){34}} \put(189,25){\circle*{4}}
-\put(0,5){\makebox(145,9)[r]{Clap}} \put(155,10){\line(1,0){47}} \put(202,10){\circle*{4}}
+% Dot x-coordinate = 180 + 300*(repository tree@8 - FTS5@8), rounded to points.
+\begin{picture}(325,184)
+\linethickness{0.7pt}\put(180,8){\line(0,1){164}}\thinlines
+\put(148,174){\makebox(25,8){$-0.1$}}
+\put(172,174){\makebox(16,8){$0$}}
+\put(204,174){\makebox(25,8){$+0.1$}}
+\put(234,174){\makebox(25,8){$+0.2$}}
+\put(0,155){\makebox(135,9)[r]{Transformers}} \put(180,160){\line(1,0){56}} \put(236,160){\circle*{4}}
+\put(0,140){\makebox(135,9)[r]{SymPy}} \put(180,145){\line(1,0){13}} \put(193,145){\circle*{4}}
+\put(0,125){\makebox(135,9)[r]{Ansible}} \put(180,130){\line(1,0){46}} \put(226,130){\circle*{4}}
+\put(0,110){\makebox(135,9)[r]{Material UI}} \put(180,115){\line(1,0){83}} \put(263,115){\circle*{4}}
+\put(0,95){\makebox(135,9)[r]{VS Code}} \put(180,100){\circle*{4}}
+\put(0,80){\makebox(135,9)[r]{Serverless}} \put(159,85){\line(1,0){21}} \put(159,85){\circle*{4}}
+\put(0,65){\makebox(135,9)[r]{NodeBB}} \put(180,70){\line(1,0){35}} \put(215,70){\circle*{4}}
+\put(0,50){\makebox(135,9)[r]{GitHub CLI}} \put(180,55){\line(1,0){58}} \put(238,55){\circle*{4}}
+\put(0,35){\makebox(135,9)[r]{Flipt}} \put(180,40){\line(1,0){19}} \put(199,40){\circle*{4}}
+\put(0,20){\makebox(135,9)[r]{PonyC}} \put(180,25){\line(1,0){34}} \put(214,25){\circle*{4}}
+\put(0,5){\makebox(135,9)[r]{Clap}} \put(180,10){\line(1,0){47}} \put(227,10){\circle*{4}}
 \end{picture}
 \caption{Repository mean difference in file recall@8 (tree minus FTS5).
 Dots right of zero favor tree; each repository contributes 5--8 issues.}
@@ -622,28 +624,60 @@ instruction and it uses more calls. A two-search \texttt{rg} script
 forms a second query from rare terms in the first search's matched
 files, then fuses the two lists. It is fixed feedback, not an adaptive
 coding agent. All four controls use the same file and context budgets
-and the unchanged line selector.
+and the unchanged line selector. Table~\ref{tab:poststudy} compares
+observed operating points: the flat tournament has a different
+instruction and roughly 2.8 times as many model calls as tree. It is
+not a compute-matched causal test of hierarchy.
 
 \Needspace{12\baselineskip}
-\captionof{table}{Post-review controls and reference arms. File recall is
-the issue mean on all 82 cases; L55@8 is delivered-line recall on the
-55 cases with aligned annotation text. New controls were not
-prespecified.}
+\captionof{table}{Primary arms and exploratory post-study controls. File
+recall is the issue mean on all 82 cases; L55@8 is delivered-line recall
+on the 55 cases with aligned annotation text.}
 \label{tab:poststudy}
 \begin{center}\small
 \begin{tabular}{lrrr}
 \toprule
 Arm & File@8 & File@16 & L55@8 \\
 \midrule
+\multicolumn{4}{l}{\textit{Prespecified primary arms}} \\
 Fixed full-issue \texttt{rg} & 0.245 & 0.328 & 0.116 \\
-Two-search \texttt{rg} & 0.260 & 0.316 & 0.209 \\
 Content + path FTS5 & 0.352 & 0.421 & 0.246 \\
+Name-only tree & 0.465 & 0.591 & 0.443 \\
+Tree + FTS5 & 0.491 & 0.571 & 0.499 \\
+\addlinespace[3pt]
+\multicolumn{4}{l}{\textit{Exploratory post-study controls}} \\
+Two-search \texttt{rg} & 0.260 & 0.316 & 0.209 \\
 Path-only FTS5 & 0.191 & 0.237 & 0.214 \\
 Basename overlap & 0.173 & 0.219 & 0.226 \\
-Name-only tree & 0.465 & 0.591 & 0.443 \\
 Flat Jev tournament & \textbf{0.572} & \textbf{0.630} & \textbf{0.511} \\
 \bottomrule
 \end{tabular}
+\end{center}
+
+\Needspace{15\baselineskip}
+\begin{center}\small
+\setlength{\unitlength}{1pt}
+\begin{picture}(330,118)
+\put(40,20){\vector(1,0){245}}
+\put(40,20){\vector(0,1){78}}
+\put(4,103){\makebox(52,9)[l]{File@8}}
+\put(100,0){\makebox(140,10){Choice calls per issue}}
+\put(34,8){\makebox(12,9){$0$}}
+\put(113,8){\makebox(15,9){$10$}}
+\put(193,8){\makebox(15,9){$20$}}
+\put(273,8){\makebox(15,9){$30$}}
+\put(5,15){\makebox(28,9)[r]{0.3}}
+\put(5,40){\makebox(28,9)[r]{0.4}}
+\put(5,65){\makebox(28,9)[r]{0.5}}
+\put(5,90){\makebox(28,9)[r]{0.6}}
+\put(40,33){\circle*{5}}\put(47,29){\makebox(50,10)[l]{FTS5}}
+\put(111,61){\circle*{5}}\put(118,57){\makebox(62,10)[l]{Tree Jev}}
+\put(237,88){\circle*{5}}\put(163,84){\makebox(68,10)[r]{Flat Jev}}
+\end{picture}
+\captionof{figure}{Observed model-call and file-recall operating points
+on 82 cases. FTS5 uses zero model calls but has separate index and query
+costs; tree and flat Jev differ in prompt, menus, and call counts.}
+\label{fig:cost-quality}
 \end{center}
 
 Flat Jev exceeded tree at eight files by +0.107 issue-mean recall
@@ -715,14 +749,14 @@ or query reformulation.
 
 \section{Limitations and conclusion}\label{limitations-and-conclusion}
 
-On this cohort, name-only tree routing found annotated files omitted
-by both one-shot lexical rankings and improved average file and
-delivered-line recall over FTS5 at equal budgets. The post-study flat
-model path tournament did better at retrieval quality while using more
-calls and tokens, so the study does not establish that hierarchy causes
-the gain over lexical search. Tree+FTS5 improves the lexical arm but
-does not reliably beat tree alone; fusion can push required files out
-of the shortlist.
+At equal candidate budgets on this cohort, the evaluated tree router
+found more annotated files and delivered lines than the selected
+one-shot lexical baselines while using much less model computation than
+the higher-recall exploratory flat path tournament. The procedures
+differ in prompt, menus, and calls, so the study does not isolate
+hierarchy as the cause of the quality difference. Equal-budget
+tree+FTS5 fusion improves over FTS5, but does not reliably improve over
+tree and can displace tree-selected gold files from a fixed shortlist.
 
 The primary study tests an issue's first fixed query, not an adaptive agent. A
 multi-turn agent can reformulate searches, inspect stack traces, and
@@ -769,9 +803,9 @@ fixed benchmark, not a measured improvement in software repair.
 \section{Reproducibility and data
 availability}\label{reproducibility-and-data-availability}
 
-The code and data are at
-\href{https://github.com/manojbajaj95/fastindex/tree/50721e114e37d908648bc5b30a0c63ac718d776e}{github.com/manojbajaj95/fastindex, commit 50721e1}.
-That stable commit records the case selection, source policy,
+The public code and data are pinned at
+\url{https://github.com/manojbajaj95/fastindex/tree/5759fc9f0d4c84ec33c5e14b4366e3680194825e}.
+That immutable commit records the case selection, source policy,
 parameters, budget amendments, and reproduction commands under
 \texttt{paper/} and \texttt{evals/}. It includes the pinned case
 manifest, a ledger of all 82 retained case IDs, commits, query hashes,
@@ -797,8 +831,10 @@ commands and writes local results under \texttt{evals/results/}.
 OpenAI Codex assisted with implementation of the evaluation code,
 execution and analysis of the experiments, and preparation of this
 manuscript. The author is responsible for the study design, artifact
-checks, interpretation, and final text. Codex was a research and
-writing tool; the routing arm evaluated TypeSafe Jev 1.13.
+checks, interpretation, and final text. The study artifacts do not
+record a single Codex model/version identifier across those sessions.
+Codex was a research and writing tool; the evaluated routing decisions
+were produced by TypeSafe Jev 1.13.
 
 \bibliographystyle{plain}
 \bibliography{references}

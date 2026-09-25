@@ -12,7 +12,7 @@ been made.
 - Public contact address: not provided; omit any optional public contact field
 - Primary category: cs.SE (Software Engineering)
 - Distribution license: Creative Commons Attribution 4.0 International (CC BY 4.0)
-- Comments: 9 pages, 5 tables, 2 figures; code and data at the URL in the paper
+- Comments: 9 pages, 5 tables, 3 figures; code and data at the URL in the paper
 - Journal reference and DOI: leave blank (unpublished preprint)
 - Upload: `output/pdf/arxiv-source.tar.gz` (TeX source and bibliography)
 
@@ -40,10 +40,12 @@ Abstract (plain-text metadata):
 > post-review flat path tournament using the same model reached 0.572 file
 > recall@8, above tree, but used 24.6 versus 8.9 model calls per issue. Tree
 > routing averaged 8.9 seconds and 12.2K input tokens per issue, versus a
-> 0.9-second FTS5 build and 7-millisecond query. These results support
-> model-guided path-name search as a complementary candidate source for
-> one-shot retrieval; they do not establish a quality advantage from
-> hierarchy or superiority over an adaptive coding agent.
+> 0.9-second FTS5 build and 7-millisecond query. At equal candidate budgets,
+> the evaluated tree router thus finds more annotated files and aligned lines
+> than the selected one-shot lexical baselines while using less model
+> computation than the higher-recall flat path control. The comparison does
+> not isolate a quality effect of hierarchy or establish superiority over
+> an adaptive coding agent.
 
 The author must confirm the final title, abstract, category, and license in
 arXiv's upload preview. Endorsement, if required for the account or category,

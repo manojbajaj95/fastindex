@@ -273,6 +273,10 @@ Table 2 gives prespecified paired differences; intervals resample the 11
 repositories and retain all issues within each sampled repository. A positive value favors
 the left arm. The intervals describe sampling uncertainty across this
 convenience cohort, not a general population guarantee.
+A post-study exact sign-flip sensitivity over the 11 repository-level
+paired tree--FTS5 contrasts gave p=0.0078 at eight files under
+exchangeable repository signs; it is not a test of generalization to
+unsampled repositories.
 
 **Table 2: Paired issue-mean differences and 95% repository-cluster bootstrap intervals.** File columns use 82 cases; line@8 uses the 55 aligned-text cases.
 
@@ -315,8 +319,10 @@ annotation-sensitive: 940/991 spans aligned with the pinned source and
 the annotated text elsewhere in the same file for 20 mismatched spans
 and did not find it in that file for 31; these labels do not establish
 why the dataset and source differ. The mismatch is fixed before retrieval
-and cannot vary by retrieval arm. Its repository distribution and case IDs
-are archived with the audit. We do not infer an exact-line improvement on
+and cannot vary by retrieval arm. Mismatched-case counts range from zero
+in GitHub CLI, Transformers, and PonyC to six of eight in Material UI;
+every repository's count and case IDs are archived with the audit. We do
+not infer an exact-line improvement on
 the 27 cases from numeric range overlap alone. The aligned subset is not
 a random sample of difficulty: tree file recall@8 was 0.531 there versus
 0.331 on the 27 mismatched cases. We use it for annotation validity, not
@@ -379,6 +385,7 @@ median/p95 were 4.8/20.6 ms and `rg` search median/p95 were 0.71/6.10
 seconds. These are observed
 operation times, not comparable prebuilt-index versus cold-start
 end-to-end latency claims. FTS5 and `rg` incurred no model API charge.
+
 Fusion's end-to-end wall time was not measured; running both sources
 and packing context cannot be represented by the FTS5 query time alone.
 
